@@ -23,7 +23,7 @@ Package files for each version are available from [GitHub Releases](https://gith
 
 - Show the document `label` under the title as a one-line lead in the muted color of the date line, when it differs from `name`. The same sentence already served as the sidebar tooltip and the link preview description, so a page can open with it instead of repeating it in the first paragraph.
 - Drop the rule above section headings. Sections are separated by the wide section gap alone, so a Details block or a figure before a heading no longer ends in two stacked lines.
-- Draw a Details block as a bordered box like a figure instead of two hairlines. The title row has inner padding so its hover shade fills the row inside the box, it is no longer bold, and the opened body sits inside the box under a light divider, aligned with the title text, without the vertical line. Consecutive Details blocks share one box with dividers between them, and a block keeps more room above and below than before.
+- Draw a Details block as a bordered box like a figure instead of two hairlines. The title row is in the body text color instead of the link color, is no longer bold, has inner padding so its hover shade fills the row inside the box, and opens with a chevron that turns from right to down over 320ms like the table sort arrow, instead of the `+` and `−` glyphs. The opened body sits inside the box under a light divider, aligned with the title text, without the vertical line. Consecutive Details blocks share one box with dividers between them, and a block keeps more room above and below than before.
 
 ## 0.28.1 — 2026-10-30
 

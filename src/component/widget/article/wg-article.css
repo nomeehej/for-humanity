@@ -630,37 +630,48 @@
     }
 }
 
-/* 펼침 표시는 기본 삼각형 대신 글자 폭의 +, −. 화면 낭독기는 Details의 열림 상태를 읽음 */
+/* 펼침 표시는 기본 삼각형 대신 표 정렬 화살표와 같은 셰브런. 본문 글자색이라 링크와 구분되고 화면 낭독기는 Details의 열림 상태를 읽음 */
 .wg_article__detailsSummary {
-    display: block;
+    display: flex;
+    gap: var(--app-space-inline);
+    align-items: center;
 
     /* 누르는 영역은 상자 안 줄 전체, hover 바탕은 상자 안쪽을 채움 */
     padding: var(--app-space-stack) var(--app-space-block);
-    color: var(--app-color-link);
+    color: var(--app-color-text-strong);
     cursor: pointer;
 
     &::-webkit-details-marker {
         display: none;
     }
 
-    /* 고정폭 한 칸과 라벨 간격, 두 표시의 글리프 폭과 무관한 제목 위치 */
+    /* 고정폭 한 칸의 셰브런. 닫히면 오른쪽, 열리면 천천히 돌아 아래를 가리킴 */
     &::before {
-        display: inline-block;
-        width: calc(1ch + var(--app-space-inline));
-
-        /* 대체 텍스트 문법을 모르는 Safari 17.3 이하는 앞 선언 사용 */
-        content: "+";
-        content: "+" / "";
+        content: "";
+        flex: none;
+        width: 1ch;
+        height: 1ch;
+        background: currentcolor;
+        color: var(--app-color-text-muted);
+        mask:
+            url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M5.5 3l5 5-5 5' fill='none' stroke='black' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")
+            center / contain no-repeat;
+        transform: rotate(0deg);
+        transition: transform 320ms var(--app-motion-easing-out);
     }
 
     &:hover {
         background: var(--app-color-accent-soft);
-        color: var(--app-color-link-hover);
+    }
+
+    /* 가리키면 셰브런도 글자색으로 */
+    &:hover::before {
+        color: var(--app-color-text-strong);
     }
 
     &:focus-visible {
         outline: var(--app-outline-focus);
-        outline-offset: var(--app-outline-focus-offset);
+        outline-offset: calc(-1 * var(--app-outline-focus-offset));
     }
 }
 
@@ -670,7 +681,7 @@
     border-bottom: 1px solid var(--app-color-border-layout);
 
     &::before {
-        content: "\2212";
-        content: "\2212" / "";
+        color: var(--app-color-text-strong);
+        transform: rotate(90deg);
     }
 }
