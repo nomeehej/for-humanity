@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 0.29.1 — 2026-11-02
 
 **Upgrade:** Existing projects remain compatible. Rebuild and redeploy. CLI commands, configuration, document syntax and Node.js requirements are unchanged.
 
