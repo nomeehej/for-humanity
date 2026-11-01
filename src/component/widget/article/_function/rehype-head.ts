@@ -15,8 +15,9 @@ interface HeadOptions {
 }
 
 /**
- * name 제목, 작성 날짜와 첫 절 앞 본문의 공통 머리. README는 원문의 h1 사용
+ * name 제목, label 글머리, 작성 날짜와 첫 절 앞 본문의 공통 머리. README는 원문의 h1 사용
  *
+ *   - label은 제목과 다를 때만 제목 아래 한 줄로 표시. 사이드바 툴팁과 미리보기 설명과 같은 문장
  *   - 날짜 라벨은 페이지 언어가 한국어면 한국어, 그 밖은 영어. 날짜는 적은 그대로
  */
 export const rehypeHead = (options: HeadOptions) => (tree: Root, file: VFile) => {
@@ -49,6 +50,16 @@ export const rehypeHead = (options: HeadOptions) => (tree: Root, file: VFile) =>
                           tagName: "h1",
                           properties: {className: ["wg_article__title"]},
                           children: [{type: "text", value: frontmatter.name}],
+                      } satisfies Element,
+                  ]),
+            ...(frontmatter === undefined || frontmatter.label.trim() === "" || frontmatter.label.trim() === frontmatter.name
+                ? []
+                : [
+                      {
+                          type: "element",
+                          tagName: "p",
+                          properties: {className: ["wg_article__lead"]},
+                          children: [{type: "text", value: frontmatter.label.trim()}],
                       } satisfies Element,
                   ]),
             ...(dates.length === 0

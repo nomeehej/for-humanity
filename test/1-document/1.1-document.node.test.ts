@@ -406,7 +406,7 @@ describe("문서", () => {
                 '</h1><p class="wg_article__dates">Created <time datetime="2022-12">2022-12</time>, Revised <time datetime="2026-10-05">2026-10-05</time></p><p>Lead.</p>',
             );
             expect(html["ko/post"]).toContain(
-                '<p class="wg_article__dates">작성일 <time datetime="2022-12">2022-12</time>, 수정일 <time datetime="2026-10-05">2026-10-05</time></p>',
+                '</h1><p class="wg_article__lead">글</p><p class="wg_article__dates">작성일 <time datetime="2022-12">2022-12</time>, 수정일 <time datetime="2026-10-05">2026-10-05</time></p>',
             );
             expect(html.note).toContain('<p class="wg_article__dates">Created <time datetime="2026-10">2026-10</time></p>');
             expect(html.plain).not.toContain("wg_article__dates");

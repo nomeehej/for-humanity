@@ -57,7 +57,7 @@ READMEs inside public and private are ordinary documents, so write frontmatter i
 | Field | Use | Required |
 | --- | --- | --- |
 | `name` | Title shown in the body and the sidebar | Required, a non-empty string |
-| `label` | Document description shown in the sidebar tooltip, search results and link previews | Required |
+| `label` | Document description shown under the title when it differs from `name`, and in the sidebar tooltip, search results and link previews | Required |
 | `group` | Sidebar group name or array of names | Required, a non-empty value |
 | `order` | Reading order within the same group | Optional, an integer of 0 or more |
 | `parent` | ID of the parent document in the same group | Optional |

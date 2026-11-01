@@ -62,9 +62,12 @@
         text-box: trim-start cap alphabetic;
     }
 
+    /* 제목 아래 label 글머리. 날짜 줄과 한 묶음이라 본문보다 흐린 색 */
     & .wg_article__lead {
         margin: 0 0 var(--app-space-stack);
+        color: var(--app-color-text-muted);
         font-size: var(--app-font-size-lead);
+        text-wrap: balance;
     }
 
     /* 제목 아래 작성 날짜, 클릭할 수 없는 라벨 */
@@ -100,6 +103,13 @@
     /* 가름 아래 절의 중복 구분선 제거 */
     & .wg_article__part + h2 {
         margin-top: var(--app-space-block);
+        padding-top: 0;
+        border-top: 0;
+    }
+
+    /* 접기 바로 아래 절은 접기의 아래 선을 구분선으로 쓰고 선과 제목 사이는 다른 절과 같게 */
+    & .wg_article__details + h2 {
+        margin-top: var(--app-space-subsection);
         padding-top: 0;
         border-top: 0;
     }

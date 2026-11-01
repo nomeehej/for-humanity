@@ -17,6 +17,13 @@ pnpm add -D --save-exact for-humanity@latest
 
 버전별 패키지 파일은 [GitHub Releases](https://github.com/nomeehej/for-humanity/releases)에서 받을 수 있습니다.
 
+## Unreleased
+
+**Upgrade:** Existing projects remain compatible. Rebuild and redeploy. A document whose `label` differs from its `name` now shows the label under the title; a document that should not show one sets `label` to the same text as `name`.
+
+- Show the document `label` under the title as a one-line lead in the muted color of the date line, when it differs from `name`. The same sentence already served as the sidebar tooltip and the link preview description, so a page can open with it instead of repeating it in the first paragraph.
+- Remove the doubled rule between a Details block and the section heading that follows it. The heading used to draw its own top line a section gap below the Details bottom line; it now uses the Details line and keeps the usual distance from line to heading.
+
 ## 0.28.1 — 2026-10-30
 
 **Upgrade:** Existing projects remain compatible. Rebuild and redeploy. Author syntax for figures is unchanged.
