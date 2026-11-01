@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 0.29.0 — 2026-11-01
 
 **Upgrade:** Existing projects remain compatible. Rebuild and redeploy. A document whose `label` differs from its `name` now shows the label under the title; a document that should not show one sets `label` to the same text as `name`.
 
