@@ -21,4 +21,9 @@ export interface DocFileData extends DocOutline {
      * 다른 문서의 제목을 가리키는 링크. read-docs 가 전체 수집 뒤 검증
      */
     anchors: DocAnchor[];
+
+    /**
+     * 문서 안 요소의 id. 제목의 자동 id와 원시 HTML에 쓴 id. hash 링크의 대상
+     */
+    ids: Set<string>;
 }

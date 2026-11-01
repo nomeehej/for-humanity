@@ -17,6 +17,12 @@ pnpm add -D --save-exact for-humanity@latest
 
 버전별 패키지 파일은 [GitHub Releases](https://github.com/nomeehej/for-humanity/releases)에서 받을 수 있습니다.
 
+## Unreleased
+
+**Upgrade:** Existing projects remain compatible. Rebuild and redeploy. CLI commands, configuration, document syntax and Node.js requirements are unchanged.
+
+- Count an id written in raw HTML, such as `<a id="01"></a>` inside a heading, as a target of a `#hash` link in the same document and in other documents. A document that keeps stable numbered anchors beside its heading text no longer prints `Link to a missing heading` for every link to them. A hash that matches neither a heading anchor nor a written id still warns.
+
 ## 0.29.0 — 2026-11-01
 
 **Upgrade:** Existing projects remain compatible. Rebuild and redeploy. A document whose `label` differs from its `name` now shows the label under the title; a document that should not show one sets `label` to the same text as `name`.

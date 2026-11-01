@@ -71,7 +71,7 @@ export const readDocs = async (params: ReadDocsParams): Promise<Doc[]> => {
         .filter((entry) => /\.mdx?$/i.test(entry.path) && !hasReservedFolder(entry.path));
 
     const rendered = await Promise.all(
-        entries.map(async (entry): Promise<{doc: Doc; path: string; anchors: DocFileData["anchors"]}> => {
+        entries.map(async (entry): Promise<{doc: Doc; path: string; anchors: DocFileData["anchors"]; ids: DocFileData["ids"]}> => {
             const absolutePath = join(params.scope.root, entry.path);
 
             assertContentPath({scope: params.scope, path: absolutePath});
@@ -130,7 +130,7 @@ export const readDocs = async (params: ReadDocsParams): Promise<Doc[]> => {
             };
 
             // 플러그인의 제목, 절 정보 공유
-            const fh: DocFileData = {frontmatter: data, locale: entry.locale, headings: [], sections: [], anchors: []};
+            const fh: DocFileData = {frontmatter: data, locale: entry.locale, headings: [], sections: [], anchors: [], ids: new Set()};
 
             file.data.fh = fh;
 
@@ -150,6 +150,7 @@ export const readDocs = async (params: ReadDocsParams): Promise<Doc[]> => {
                 },
                 path: entry.path,
                 anchors: fh.anchors,
+                ids: fh.ids,
             };
         }),
     );
@@ -165,12 +166,14 @@ export const readDocs = async (params: ReadDocsParams): Promise<Doc[]> => {
     // 전체 파일 수집 후 부모 참조 검증. 파일 읽기 순서와 무관한 문서 경로
     const docsById = new Map(docs.map((doc) => [doc.id, doc]));
 
-    // 다른 문서의 제목 대조. 없는 문서는 remark-links 가 이미 경고
+    // 다른 문서의 id 대조. 없는 문서는 remark-links 가 이미 경고
+    const idsById = new Map(rendered.map((entry) => [entry.doc.id, entry.ids]));
+
     for (const entry of rendered) {
         for (const anchor of entry.anchors) {
-            const target = docsById.get(anchor.id);
+            const ids = idsById.get(anchor.id);
 
-            if (target !== undefined && !target.outline.headings.some((heading) => heading.slug === anchor.hash)) {
+            if (ids !== undefined && !ids.has(anchor.hash)) {
                 logger.warn(`${anchor.line === undefined ? entry.path : `${entry.path}:${anchor.line}`} ${copy_warn_broken_anchor}: /${anchor.id}/#${anchor.hash}`);
             }
         }

@@ -20,10 +20,11 @@ const toHash = (raw: string): string => {
 };
 
 /**
- * hash 링크의 대상 제목 검사
+ * hash 링크의 대상 검사
  *
- *   - 같은 문서의 `#id` 는 제목 수집 직후 파일 경고
- *   - 다른 문서의 `/id/#hash` 는 fh.anchors 에 모아 read-docs 가 전체 수집 뒤 대조. 홈은 제외
+ *   - 대상은 문서 안 요소의 id. 제목의 자동 id와 원시 HTML에 쓴 id, 번호 링크용으로 제목 안에 둔 `<a id="01"></a>` 포함
+ *   - 같은 문서의 `#id` 는 id 수집 직후 파일 경고
+ *   - 다른 문서의 `/id/#hash` 는 fh.anchors 에 모아 read-docs 가 전체 수집 뒤 fh.ids 와 대조. 홈은 제외
  *   - 외부 주소, 문서가 아닌 자원 주소는 제외
  */
 export const rehypeAnchors = () => (tree: Root, file: VFile) => {
@@ -33,7 +34,11 @@ export const rehypeAnchors = () => (tree: Root, file: VFile) => {
         return;
     }
 
-    const slugs = new Set(fh.headings.map((heading) => heading.slug));
+    visit(tree, "element", (node) => {
+        if (typeof node.properties.id === "string") {
+            fh.ids.add(node.properties.id);
+        }
+    });
 
     visit(tree, "element", (node) => {
         const href = node.properties.href;
@@ -45,7 +50,7 @@ export const rehypeAnchors = () => (tree: Root, file: VFile) => {
         if (href.startsWith("#")) {
             const hash = toHash(href.slice(1));
 
-            if (hash !== "" && !slugs.has(hash)) {
+            if (hash !== "" && !fh.ids.has(hash)) {
                 file.message(`${copy_warn_broken_anchor}: ${href}`, node);
             }
 

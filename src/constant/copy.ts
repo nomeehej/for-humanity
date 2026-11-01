@@ -98,7 +98,7 @@ export const copy_error_url_encoding = "Invalid percent-encoding";
 export const copy_warn_broken_link = "Link to a missing document";
 
 /**
- * 없는 제목을 가리키는 hash 링크 경고. 빌드 계속
+ * 없는 제목이나 id를 가리키는 hash 링크 경고. 빌드 계속
  */
 export const copy_warn_broken_anchor = "Link to a missing heading";
 

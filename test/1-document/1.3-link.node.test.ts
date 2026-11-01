@@ -435,5 +435,68 @@ describe("문서 링크와 목차", () => {
              */
             expect(warn.mock.calls).toStrictEqual([[`${join("public", "screen.md")}:9 Link to a missing heading: /questions/#q4`]]);
         });
+
+        test("[LNK-025] 원시 HTML로 쓴 id를 가리키는 hash 링크는 같은 문서에서 경고하지 않는다", async ({scope}) => {
+            /**
+             * GIVEN
+             * 제목 안의 <a id>와 본문의 <span id>, 그 둘과 자동 id, 없는 id를 가리키는 링크
+             */
+            const site = siteConfigSchema.parse({});
+            const warn = vi.spyOn(logger, "warn").mockImplementation(() => undefined);
+
+            await writeFile(
+                join(scope.publicRoot, "guide.md"),
+                [
+                    "---\nname: Guide\nlabel: Guide\ngroup: Guide\n---",
+                    '## <a id="01"></a>01 Setup',
+                    '<span id="note"></span>A note.',
+                    "[Number](#01)",
+                    "[Slug](#01-setup)",
+                    "[Note](#note)",
+                    "[Missing](#02)",
+                ].join("\n\n"),
+            );
+
+            /**
+             * WHEN
+             * 문서 로드
+             */
+            await readDocs({scope, processor: toProcessor({site, scope})});
+
+            /**
+             * THEN
+             * 작성한 id와 자동 id는 통과, 없는 id만 경고
+             */
+            expect(warn.mock.calls).toStrictEqual([[`${join("public", "guide.md")}:17 Link to a missing heading: #02`]]);
+        });
+
+        test("[LNK-026] 다른 문서의 원시 HTML id를 가리키는 링크는 전체 수집 뒤에도 경고하지 않는다", async ({scope}) => {
+            /**
+             * GIVEN
+             * 다른 문서의 제목 안 <a id>, 그 자동 id, 없는 id를 가리키는 링크
+             */
+            const site = siteConfigSchema.parse({});
+            const warn = vi.spyOn(logger, "warn").mockImplementation(() => undefined);
+
+            await Promise.all([
+                writeFile(join(scope.publicRoot, "rules.md"), '---\nname: Rules\nlabel: Rules\ngroup: Guide\n---\n\n## <a id="03"></a>03 Traps\n'),
+                writeFile(
+                    join(scope.publicRoot, "notes.md"),
+                    "---\nname: Notes\nlabel: Notes\ngroup: Guide\n---\n\n[Number](rules.md#03)\n\n[Slug](rules.md#03-traps)\n\n[Missing](rules.md#04)\n",
+                ),
+            ]);
+
+            /**
+             * WHEN
+             * 문서 로드
+             */
+            await readDocs({scope, processor: toProcessor({site, scope})});
+
+            /**
+             * THEN
+             * 없는 id만 경고
+             */
+            expect(warn.mock.calls).toStrictEqual([[`${join("public", "notes.md")}:11 Link to a missing heading: /rules/#04`]]);
+        });
     });
 });
