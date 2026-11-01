@@ -77,11 +77,9 @@
         font-size: var(--app-font-size-detail);
     }
 
-    /* 구분선과 제목 사이는 제목과 본문 사이의 두 배, 제목을 아래 본문에 묶어 표시 */
+    /* 절 사이는 넓은 여백으로만 가르고 선은 긋지 않음. 제목은 아래 본문에 묶어 표시 */
     & h2 {
         margin: var(--app-space-section) 0 var(--app-space-block);
-        padding-top: var(--app-space-subsection);
-        border-top: 1px solid var(--app-color-border);
         color: var(--app-color-text-strong);
         font-size: var(--app-font-size-section);
         font-weight: var(--app-font-weight-strong);
@@ -93,25 +91,14 @@
         scroll-margin-top: calc(var(--app-space-anchor) + var(--wg-article-anchor-shift, 0px));
     }
 
-    /* 머리 아래 첫 절의 중복 구분선 제거 */
+    /* 머리 아래 첫 절은 머리의 선에 붙임 */
     & .wg_article__head + h2 {
         margin-top: var(--app-space-subsection);
-        padding-top: 0;
-        border-top: 0;
     }
 
-    /* 가름 아래 절의 중복 구분선 제거 */
+    /* 가름 아래 절은 가름에 붙임 */
     & .wg_article__part + h2 {
         margin-top: var(--app-space-block);
-        padding-top: 0;
-        border-top: 0;
-    }
-
-    /* 접기 바로 아래 절은 접기의 아래 선을 구분선으로 쓰고 선과 제목 사이는 다른 절과 같게 */
-    & .wg_article__details + h2 {
-        margin-top: var(--app-space-subsection);
-        padding-top: 0;
-        border-top: 0;
     }
 
     /* 앞 문단과는 세 줄쯤 떼고 아래 본문에 붙여 새 소절의 시작을 표시 */
@@ -611,23 +598,23 @@
     font-weight: var(--app-font-weight-strong);
 }
 
-/* 구현 상세, 펼침 상태는 네이티브 Details 소유 */
+/* 구현 상세. 그림 상자처럼 테두리와 안쪽 여백이 있는 상자, 펼침 상태는 네이티브 Details 소유 */
 .wg_article__details {
-    margin: var(--app-space-block) 0;
-    border-top: 1px solid var(--app-color-border);
-    border-bottom: 1px solid var(--app-color-border);
+    margin: var(--app-space-group) 0;
+    border: 1px solid var(--app-color-border);
+    background: var(--app-color-ground);
 
     /* 작성한 블록의 종류와 무관하게 마지막 블록의 아래 여백 제거 */
     & > :last-child {
         margin-bottom: 0;
     }
 
-    /* 접힌 제목 줄은 위아래 같은 여백, 펼친 본문 아래만 여백 */
+    /* 펼친 본문 아래 상자 여백 */
     &[open] {
-        padding-bottom: var(--app-space-stack);
+        padding-bottom: var(--app-space-block);
     }
 
-    /* 이어진 Details는 선 하나를 나눠 쓰는 목록 */
+    /* 이어진 Details는 한 상자 안의 목록. 앞 상자의 아래 선이 사이 선이 됨 */
     &:has(+ .wg_article__details) {
         margin-bottom: 0;
     }
@@ -637,11 +624,9 @@
         border-top: 0;
     }
 
-    /* 펼친 본문은 +, − 표시 아래 세로선으로 범위를 표시하고 글자는 제목 글자와 같은 시작선 */
+    /* 펼친 본문은 제목 글자와 같은 시작선, 양옆은 상자 여백 */
     &[open]::details-content {
-        margin-left: calc(0.5ch - 0.5px);
-        padding-left: calc(0.5ch + var(--app-space-inline) - 0.5px);
-        border-left: 1px solid var(--app-color-border);
+        padding: 0 var(--app-space-block) 0 calc(var(--app-space-block) + 1ch + var(--app-space-inline));
     }
 }
 
@@ -649,10 +634,9 @@
 .wg_article__detailsSummary {
     display: block;
 
-    /* 누르는 영역은 줄 전체, hover 바탕은 위아래 선과 같은 너비. 선 밖으로 넓히면 선 끝보다 튀어나옴 */
-    padding: var(--app-space-stack) 0;
+    /* 누르는 영역은 상자 안 줄 전체, hover 바탕은 상자 안쪽을 채움 */
+    padding: var(--app-space-stack) var(--app-space-block);
     color: var(--app-color-link);
-    font-weight: var(--app-font-weight-strong);
     cursor: pointer;
 
     &::-webkit-details-marker {
@@ -680,8 +664,13 @@
     }
 }
 
-/* 펼친 Details의 표시 */
-.wg_article__details[open] > .wg_article__detailsSummary::before {
-    content: "\2212";
-    content: "\2212" / "";
+/* 펼친 Details의 표시와 제목 줄 아래 본문 사이의 옅은 선 */
+.wg_article__details[open] > .wg_article__detailsSummary {
+    margin-bottom: var(--app-space-stack);
+    border-bottom: 1px solid var(--app-color-border-layout);
+
+    &::before {
+        content: "\2212";
+        content: "\2212" / "";
+    }
 }
