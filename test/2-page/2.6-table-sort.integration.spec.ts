@@ -1,5 +1,12 @@
 import {expect} from "@playwright/test";
-import {test} from "@test/_fixture/table-sort";
+import {test} from "@test/_fixture/site";
+
+// 이 파일의 페이지 주소 기준은 tableSortSite
+test.use({
+    baseURL: async ({tableSortSite}, use) => {
+        await use(tableSortSite);
+    },
+});
 
 /**
  * 표 정렬 위젯(src/component/widget/table-sort/wg-table-sort.tsx) 검증. 갤러리에서 마운트한 위젯

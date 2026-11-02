@@ -49,7 +49,4 @@ export const test = base.extend<Record<never, never>, {docsSite: string; basePat
         },
         {scope: "worker"},
     ],
-    baseURL: async ({docsSite}, use) => {
-        await use(docsSite);
-    },
 });

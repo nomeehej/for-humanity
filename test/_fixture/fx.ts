@@ -142,7 +142,4 @@ export const test = base.extend<Record<never, never>, {fxSite: string}>({
         },
         {scope: "worker"},
     ],
-    baseURL: async ({fxSite}, use) => {
-        await use(fxSite);
-    },
 });

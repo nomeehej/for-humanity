@@ -74,7 +74,4 @@ export const test = base.extend<Record<never, never>, {navigationSite: string}>(
         },
         {scope: "worker"},
     ],
-    baseURL: async ({navigationSite}, use) => {
-        await use(navigationSite);
-    },
 });

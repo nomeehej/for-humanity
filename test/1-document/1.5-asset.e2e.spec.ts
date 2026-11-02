@@ -1,5 +1,12 @@
 import {expect} from "@playwright/test";
-import {test} from "@test/_fixture/docs";
+import {test} from "@test/_fixture/site";
+
+// 이 파일의 페이지 주소 기준은 docsSite
+test.use({
+    baseURL: async ({docsSite}, use) => {
+        await use(docsSite);
+    },
+});
 
 /**
  * 그림 상자의 화면 폭별 크기(src/component/widget/article/_function/rehype-figures.ts, wg-article.css) 검증

@@ -1,5 +1,12 @@
 import {expect} from "@playwright/test";
-import {test} from "@test/_fixture/navigation";
+import {test} from "@test/_fixture/site";
+
+// 이 파일의 페이지 주소 기준은 navigationSite
+test.use({
+    baseURL: async ({navigationSite}, use) => {
+        await use(navigationSite);
+    },
+});
 
 test.use({viewport: {width: 1920, height: 600}});
 

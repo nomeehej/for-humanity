@@ -96,7 +96,4 @@ export const test = base.extend<Record<never, never>, {tableSortSite: string}>({
         },
         {scope: "worker"},
     ],
-    baseURL: async ({tableSortSite}, use) => {
-        await use(tableSortSite);
-    },
 });

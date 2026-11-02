@@ -1,6 +1,13 @@
 import {expect} from "@playwright/test";
 import {diagram_cases} from "@test/_constant/diagram";
-import {test} from "@test/_fixture/mermaid";
+import {test} from "@test/_fixture/site";
+
+// 이 파일의 페이지 주소 기준은 mermaidSite
+test.use({
+    baseURL: async ({mermaidSite}, use) => {
+        await use(mermaidSite);
+    },
+});
 
 /**
  * 다이어그램(src/component/widget/mermaid) 검증. 실제 CLI 빌드 결과

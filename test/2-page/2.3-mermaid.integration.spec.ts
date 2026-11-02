@@ -1,6 +1,13 @@
 import {expect} from "@playwright/test";
 import {diagram_cases} from "@test/_constant/diagram";
-import {test} from "@test/_fixture/mermaid";
+import {test} from "@test/_fixture/site";
+
+// 이 파일의 페이지 주소 기준은 mermaidSite
+test.use({
+    baseURL: async ({mermaidSite}, use) => {
+        await use(mermaidSite);
+    },
+});
 
 /**
  * 다이어그램 위젯(src/component/widget/mermaid/wg-mermaid.tsx) 검증. 갤러리에서 마운트한 위젯

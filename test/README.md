@@ -24,7 +24,7 @@ unit과 node는 Vitest, integration과 e2e는 Playwright입니다. 프로젝트 
 ```text
 test/
   _constant/    여러 검사가 공유하는 입력 자료. 공식 문법별 다이어그램 원문과 기대 라벨(diagram)
-  _fixture/     Vitest 임시 루트와 공개 범위(temp-root), Playwright 사이트별 서버(dev, docs, fx, mermaid, navigation, table-sort),
+  _fixture/     Vitest 임시 루트와 공개 범위(temp-root), Playwright 사이트별 서버(dev, docs, fx, mermaid, navigation, table-sort)와 이를 합친 site,
                 갤러리 번들(load-browser-script), 탐색 조회 도우미(read-navigation-scroll, to-navigation-html)
   _gallery/     공개 번들 밖에서 위젯을 마운트하고 해제하는 페이지 스크립트(fx-lifecycle, mermaid-lifecycle, navigation-lifecycle, table-sort-lifecycle)
   _type/        갤러리와 spec이 공유하는 브라우저 전역 계약(browser.d.ts)
@@ -99,7 +99,7 @@ pnpm exec playwright show-trace .cache/playwright/results/<case>/trace.zip
 ## fixture
 
 - Vitest의 `temp-root` fixture는 테스트마다 임시 루트(`root`)와 사이트 빌드와 같은 공개 범위(`scope`)를 제공합니다. 임시 루트는 심볼릭 링크를 따라간 실제 경로입니다. 문서는 `scope.publicRoot`, 홈은 `scope.root`에 씁니다.
-- Playwright fixture는 워커마다 임시 사이트를 만들고 빈 포트로 서버를 시작합니다. 각 테스트에는 새 브라우저 컨텍스트를 제공합니다. 성공과 실패에 관계없이 임시 파일과 서버를 정리합니다.
+- Playwright fixture는 워커마다 임시 사이트를 만들고 빈 포트로 서버를 시작합니다. 각 테스트에는 새 브라우저 컨텍스트를 제공합니다. 성공과 실패에 관계없이 임시 파일과 서버를 정리합니다. 브라우저 사양 파일은 `_fixture/site.ts`가 합친 `test`를 가져오고 파일 머리의 `test.use`로 `baseURL`을 그 파일이 쓰는 사이트로 지정합니다. Playwright는 worker fixture 목록이 같은 테스트만 한 워커에서 이어 실행하므로, 모듈별 `test`를 따로 가져오면 파일이 바뀔 때마다 워커와 사이트 빌드를 다시 시작합니다. 사이트 fixture는 워커가 처음 쓰는 테스트에서 빌드합니다.
 - Mermaid와 탐색 fixture는 제품과 같은 `toPreviewConfig`로 Vite preview를 실행합니다. 마운트와 해제 전용 갤러리 페이지는 임시 출력 폴더에만 추가하며 별도 정적 서버를 만들지 않습니다. 실제 설치 CLI의 preview는 패키지 검사에서 확인합니다.
 - 준비 코드의 전역 구독, 서버, 임시 파일은 fixture에서 만들고 정리합니다. fixture 매개변수는 실행기가 구조분해한 이름으로 의존성을 조회하므로 그 자리에서만 구조분해를 유지합니다.
 

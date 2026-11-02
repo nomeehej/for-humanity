@@ -1,8 +1,15 @@
 import type {BrowserContextOptions, ViewportSize} from "@playwright/test";
 import {expect} from "@playwright/test";
-import {test} from "@test/_fixture/navigation";
 import {readNavigationScroll} from "@test/_fixture/read-navigation-scroll";
+import {test} from "@test/_fixture/site";
 import {storage_scroll_key} from "@/store/navigation/_constant/storage";
+
+// 이 파일의 페이지 주소 기준은 navigationSite
+test.use({
+    baseURL: async ({navigationSite}, use) => {
+        await use(navigationSite);
+    },
+});
 
 /**
  * 탐색 배치 검사 한 건

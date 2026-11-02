@@ -1,5 +1,12 @@
 import {expect} from "@playwright/test";
-import {test} from "@test/_fixture/table-sort";
+import {test} from "@test/_fixture/site";
+
+// 이 파일의 페이지 주소 기준은 tableSortSite
+test.use({
+    baseURL: async ({tableSortSite}, use) => {
+        await use(tableSortSite);
+    },
+});
 
 /**
  * 표 정렬(src/component/widget/table-sort) 검증. 실제 CLI 빌드 결과

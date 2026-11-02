@@ -1,5 +1,12 @@
 import {expect} from "@playwright/test";
-import {test} from "@test/_fixture/docs";
+import {test} from "@test/_fixture/site";
+
+// 이 파일의 페이지 주소 기준은 docsSite
+test.use({
+    baseURL: async ({docsSite}, use) => {
+        await use(docsSite);
+    },
+});
 
 test.use({basePath: "/project-docs/"});
 

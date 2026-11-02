@@ -5,7 +5,8 @@ export default defineConfig({
     fullyParallel: true,
     forbidOnly: Boolean(process.env.CI),
     retries: 0,
-    workers: 2,
+    // GitHub 러너의 vCPU 수. 접근성 검사를 나눈 뒤 네 워커가 비슷한 길이의 묶음을 받음
+    workers: 4,
     timeout: 30000,
     expect: {timeout: 10000},
     outputDir: ".cache/playwright/results",

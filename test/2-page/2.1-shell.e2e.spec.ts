@@ -1,5 +1,13 @@
 import {expect} from "@playwright/test";
-import {test} from "@test/_fixture/dev";
+import {toDevUrl} from "@test/_fixture/dev";
+import {test} from "@test/_fixture/site";
+
+// 이 파일의 페이지 주소 기준은 devSite
+test.use({
+    baseURL: async ({devSite}, use) => {
+        await use(toDevUrl(devSite));
+    },
+});
 
 /**
  * 페이지 셸의 head(src/component/widget/shell/wg-shell.tsx) 검증

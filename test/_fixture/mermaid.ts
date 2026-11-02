@@ -109,9 +109,6 @@ export const test = base.extend<{runtime: BrowserRuntime}, {mermaidSite: string}
         },
         {scope: "worker"},
     ],
-    baseURL: async ({mermaidSite}, use) => {
-        await use(mermaidSite);
-    },
     runtime: async ({page}, use) => {
         const runtime: BrowserRuntime = {requests: [], errors: [], consoleErrors: []};
 

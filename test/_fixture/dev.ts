@@ -109,13 +109,17 @@ export const test = base.extend<DevFixture>({
             await rm(directory, {recursive: true, force: true});
         }
     },
-    baseURL: async ({devSite}, use) => {
-        const address = devSite.server.httpServer?.address();
-
-        if (address === null || address === undefined || typeof address === "string") {
-            throw new Error("개발 서버의 테스트 포트가 없습니다");
-        }
-
-        await use(`http://127.0.0.1:${address.port}`);
-    },
 });
+
+/**
+ * 개발 서버 fixture의 브라우저 접속 주소. 사양 파일이 baseURL로 지정
+ */
+export const toDevUrl = (devSite: DevSite) => {
+    const address = devSite.server.httpServer?.address();
+
+    if (address === null || address === undefined || typeof address === "string") {
+        throw new Error("개발 서버의 테스트 포트가 없습니다");
+    }
+
+    return `http://127.0.0.1:${address.port}`;
+};

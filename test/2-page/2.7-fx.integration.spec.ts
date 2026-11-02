@@ -1,5 +1,12 @@
 import {expect} from "@playwright/test";
-import {test} from "@test/_fixture/fx";
+import {test} from "@test/_fixture/site";
+
+// 이 파일의 페이지 주소 기준은 fxSite
+test.use({
+    baseURL: async ({fxSite}, use) => {
+        await use(fxSite);
+    },
+});
 
 /**
  * 그림 위젯(src/component/widget/fx/wg-fx.tsx) 검증. 갤러리에서 마운트한 위젯

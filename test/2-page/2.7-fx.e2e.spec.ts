@@ -1,5 +1,12 @@
 import {expect} from "@playwright/test";
-import {test} from "@test/_fixture/fx";
+import {test} from "@test/_fixture/site";
+
+// 이 파일의 페이지 주소 기준은 fxSite
+test.use({
+    baseURL: async ({fxSite}, use) => {
+        await use(fxSite);
+    },
+});
 
 /**
  * 인터랙티브 그림(src/component/widget/fx) 검증. 실제 CLI 빌드 결과
