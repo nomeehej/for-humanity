@@ -98,11 +98,16 @@ jobs:
           fi
 
   browser:
-    name: Browser checks / ubuntu-latest / Node 22.12.0
+    name: Browser checks ${{ matrix.shard }}/2 / ubuntu-latest / Node 22.12.0
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [1, 2]
     runs-on: ubuntu-latest
     timeout-minutes: 15
     env:
       FH_TEST_BROWSER_CHANNEL: chrome
+      PLAYWRIGHT_JSON_OUTPUT_NAME: ${{ runner.temp }}/playwright.json
     steps:
       - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
       - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
@@ -114,4 +119,39 @@ jobs:
           cache: false
       - run: pnpm install --frozen-lockfile
       - name: Check browser diagrams, navigation and development
-        run: pnpm test:browser
+        run: pnpm test:browser --shard=${{ matrix.shard }}/2 --reporter=github,json
+      - name: Report worker time and the slowest checks
+        if: ${{ always() }}
+        run: |
+          node --input-type=module - "$PLAYWRIGHT_JSON_OUTPUT_NAME" "${{ matrix.shard }}" <<'NODE'
+          import {existsSync, readFileSync} from 'node:fs';
+          const [file, shard] = process.argv.slice(2);
+          if (!existsSync(file)) process.exit(0);
+          const report = JSON.parse(readFileSync(file, 'utf8'));
+          const rows = [];
+          const walk = (suite, file) => {
+            const current = file ?? suite.file;
+            for (const spec of suite.specs ?? []) for (const test of spec.tests) for (const result of test.results)
+              rows.push({file: current, title: spec.title, worker: result.workerIndex, start: new Date(result.startTime).getTime(), duration: result.duration});
+            for (const child of suite.suites ?? []) walk(child, current);
+          };
+          for (const suite of report.suites) walk(suite);
+          const workers = new Map();
+          for (const row of rows) {
+            const worker = workers.get(row.worker) ?? {first: Infinity, end: 0, busy: 0, tests: 0};
+            worker.first = Math.min(worker.first, row.start);
+            worker.end = Math.max(worker.end, row.start + row.duration);
+            worker.busy += row.duration;
+            worker.tests += 1;
+            workers.set(row.worker, worker);
+          }
+          const seconds = (ms) => `${(ms / 1000).toFixed(1)}s`;
+          const lines = [`shard ${shard}: ${rows.length} results, ${workers.size} workers, ${seconds(report.stats.duration)} wall`];
+          for (const [index, worker] of [...workers.entries()].sort((a, b) => b[1].end - a[1].end))
+            lines.push(`worker ${index}: ${worker.tests} tests, busy ${seconds(worker.busy)}, idle ${seconds(worker.end - worker.first - worker.busy)}`);
+          lines.push('slowest:');
+          for (const row of rows.sort((a, b) => b.duration - a.duration).slice(0, 8)) lines.push(`${seconds(row.duration)} ${row.file} ${row.title}`);
+          const text = lines.join('\n');
+          console.log(text);
+          console.log(`::notice title=Playwright timing (shard ${shard})::${text.replaceAll('%', '%25').replaceAll('\r', '%0D').replaceAll('\n', '%0A')}`);
+          NODE
