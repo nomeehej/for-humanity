@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 0.30.0 — 2026-11-02
 
 **Upgrade:** Existing projects remain compatible. Rebuild and redeploy to apply the figure box, the lighter list bullets and the Details changes. CLI commands, configuration, document syntax and Node.js requirements are unchanged.
 
