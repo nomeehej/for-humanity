@@ -31,11 +31,8 @@ jobs:
           git merge-base --is-ancestor HEAD origin/main
       - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
         with:
-          node-version: '24'
-          registry-url: https://registry.npmjs.org
+          node-version: '22.12.0'
           package-manager-cache: false
-      - name: Install npm with Trusted Publishing support
-        run: npm install --global npm@12.2.0
       - uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
         with:
           cache: false
@@ -77,6 +74,14 @@ jobs:
             await appendFile(process.env.GITHUB_OUTPUT, 'publish=false\n');
           }
           NODE
+      - name: Switch to Node.js 24 for npm Trusted Publishing
+        uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+        with:
+          node-version: '24'
+          registry-url: https://registry.npmjs.org
+          package-manager-cache: false
+      - name: Install npm with Trusted Publishing support
+        run: npm install --global npm@12.2.0
       - name: Publish to npm using OIDC
         if: steps.registry.outputs.publish == 'true'
         env:

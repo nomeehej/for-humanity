@@ -109,7 +109,7 @@ Vite의 Mermaid library 빌드는 ESM 형식과 동적 import 경계를 유지�
 
 `vite.config.ts`는 CLI와 CSS, 동기 브라우저 번들, Mermaid ESM의 세 빌드 모드를 관리합니다. `tsconfig.package.json`으로 공개 타입 선언을 별도 생성합니다. 저장소 도구는 `tsx`로 실행하며 모두 `pnpm typecheck`에 포함합니다. `vitest.config.ts`는 제품 Vite 설정과 분리해 Node 테스트를 실행하며 `playwright.config.ts`는 Chromium 검사를 실행합니다. 제품과 브라우저 fixture는 같은 `to-browser-config.ts`의 Hono DOM 설정을 사용합니다. 직접 esbuild 의존성은 없으며 `tsx` 같은 도구의 전이 의존성은 남을 수 있습니다. `0.13.0`부터 개발과 설치 패키지 모두 Node 22.12.0 이상이 필요합니다.
 
-CI는 Ubuntu의 Node 22.12.0과 24, Windows의 Node 22.12.0에서 단위와 설치 검사를 실행합니다. 브라우저 검사는 Node 버전이 아닌 운영체제의 차이를 보므로 Ubuntu와 Windows의 Node 22.12.0에서만 실행합니다. CI와 Release는 브라우저를 내려받지 않고 러너에 설치된 Chrome을 `FH_TEST_BROWSER_CHANNEL=chrome`으로 사용합니다. Windows의 npm 실행은 Node 배포본의 `npm-cli.js`를 사용하고, 재귀 파일 목록은 URL 경로와 비교하기 전에 구분자를 정규화합니다.
+CI는 Ubuntu의 Node 22.12.0과 24, Windows의 Node 22.12.0에서 단위와 설치 검사를 실행합니다. 브라우저 검사는 Ubuntu Node 22.12.0의 별도 `browser` job이 같은 push에서 병렬로 실행합니다. Windows는 브라우저 검사를 실행하지 않습니다. Windows에서만 다른 것은 경로 구분자, 임시 폴더의 짧은 경로, npm 실행 방식이고 단위 검사와 설치 검사가 이를 봅니다. Windows Chromium에서만 보이던 `[NAV-010]`의 표시 조건 경주는 `[NAV-020]`이 모든 운영체제에서 재현합니다. CI와 Release는 브라우저를 내려받지 않고 러너에 설치된 Chrome을 `FH_TEST_BROWSER_CHANNEL=chrome`으로 사용합니다. Windows의 npm 실행은 Node 배포본의 `npm-cli.js`를 사용하고, 재귀 파일 목록은 URL 경로와 비교하기 전에 구분자를 정규화합니다.
 
 `smoke-package.ts`는 설치한 CLI를 `dev .`와 `preview .`로 실행하고 Chromium에서 갱신 연결, 문서 수정, Mermaid, 이미지를 확인합니다. 설치 번들의 `init`도 네 배포 방식으로 실행해 GitHub 하위 경로와 Cloudflare 404, 사용자 문서 경로의 실제 출력을 확인합니다. 로컬에서는 실행 전에 `pnpm exec playwright install chromium`으로 브라우저를 준비하거나 `FH_TEST_BROWSER_CHANNEL=chrome`으로 설치된 Chrome을 사용합니다.
 
@@ -233,7 +233,7 @@ pnpm pack
 | ----- | ------ |
 | PR과 `main` push | CI: 테스트, 린트, 타입 검사, 사용하지 않는 코드 검사, 공식 사이트 빌드, publint 패키지 검사, 패키지 설치 후 빌드 |
 | `main` push | Cloudflare Workers Builds로 문서 사이트 배포 |
-| `vX.Y.Z` 태그 push | Release: 검증, npm 배포, 같은 `.tgz`를 첨부한 GitHub Release 생성 |
+| `vX.Y.Z` 태그 push | Release: Node 22.12.0에서 검증과 설치 검사, Node 24와 npm 12.2.0으로 npm 배포, 같은 `.tgz`를 첨부한 GitHub Release 생성 |
 
 워크플로는 `.github/workflows/ci.yml`, `.github/workflows/release.yml`.
 Release는 `main`에 포함된 커밋, 태그와 일치하는 `package.json` 버전, 해당 버전의 `CHANGELOG.md` 항목과 README 설치 명령 확인.
@@ -256,7 +256,7 @@ Release는 `main`에 포함된 커밋, 태그와 일치하는 `package.json` 버
 | Allow npm dist-tag | 체크하지 않음 |
 
 GitHub가 발급하는 OIDC 자격 증명 사용. 별도 `NPM_TOKEN`이나 매번의 로그인과 2FA 입력 불필요.
-GitHub-hosted runner, Node.js 24와 npm 12.2.0으로 배포. `0.13.0`부터 패키지 사용자의 Node.js 최소 버전은 22.12.0.
+GitHub-hosted runner에서 검증과 패키지 준비는 지원 최소 버전인 Node.js 22.12.0, `npm publish` 단계만 Node.js 24와 npm 12.2.0으로 실행. npm 12.2.0이 Node.js 22.22.2 이상을 요구하므로 같은 job 안에서 Node를 바꿈. `0.13.0`부터 패키지 사용자의 Node.js 최소 버전은 22.12.0.
 설정 기준은 [npm Trusted Publishing](https://docs.npmjs.com/trusted-publishers/).
 
 ### Daily development
@@ -276,8 +276,8 @@ CI가 실패하면 다른 작업보다 실패 원인 수정 우선. Workers Buil
 2. `package.json` 버전을 올리고 `CHANGELOG.md`의 `Unreleased`를 해당 버전과 공개 날짜 항목으로 옮김. 이번 공개에 포함될 미공개 기록이 남지 않았는지 확인.
 3. 최상위 `README.md`와 `language/README.ko.md`의 설치 버전과 지원 버전 갱신. 공개하는 기능 문서의 미공개 표시 제거.
 4. 검증 명령 실행. `pnpm build`가 `content/README.md`와 `content/public/changelog.md`도 동기화.
-5. 릴리스 준비 변경만 커밋하고 `main`에 push. 해당 커밋의 CI와 Workers Builds 결과 확인.
-6. 검증한 릴리스 준비 커밋에 같은 버전의 태그를 만들고 push. 태그를 만들기 전후에 다른 커밋으로 대상을 바꾸지 않음.
+5. 릴리스 준비 변경만 커밋하고 `main`에 push.
+6. 같은 커밋에 같은 버전의 태그를 만들고 바로 push. CI 완료를 기다리지 않음. Release 워크플로가 지원 최소 Node 버전에서 검증과 설치 검사를 자체 실행하고, CI와 Workers Builds는 같은 커밋에 병렬로 실행됨. 태그를 만들기 전후에 다른 커밋으로 대상을 바꾸지 않음.
 
 다음 공개 버전이 `0.2.2`인 경우:
 
@@ -289,7 +289,7 @@ git push origin v0.2.2
 태그 push 후 Release Actions 실행 결과 확인. npm 배포가 성공한 뒤 GitHub Release 생성.
 완료 보고 전 npm에서 버전과 패키지 공개를 확인하고 GitHub Release 확인. 사이트 갱신 성공만으로 npm 공개 완료를 판정하지 않음.
 이미 npm에 같은 버전이 있다면 패키지의 integrity가 일치할 때만 재배포를 건너뛰고 GitHub Release 작업을 이어감.
-내용이 다르면 실패. 게시한 버전은 수정하거나 덮어쓰지 않고 다음 버전으로 공개.
+내용이 다르면 실패. 게시한 버전은 수정하거나 덮어쓰지 않고 다음 버전으로 공개. 태그 뒤에 끝나는 CI나 브라우저 검사가 실패해도 같음.
 
 `main`의 README 변경은 GitHub와 문서 사이트에 먼저 반영. npm README와 홈페이지 주소는 새 패키지 버전을 배포할 때 반영.
 공개 후 npm에서 패키지를 새 프로젝트에 설치해 같은 명령 확인. 다른 프로젝트의 고정된 의존성 버전은 별도 갱신.
