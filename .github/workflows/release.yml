@@ -37,9 +37,9 @@ jobs:
         with:
           cache: false
       - run: pnpm install --frozen-lockfile
-      - run: pnpm test
-      - run: pnpm check
       - run: pnpm build
+      - run: pnpm exec vitest run
+      - run: pnpm check
       - name: Check generated files
         run: |
           git diff --check

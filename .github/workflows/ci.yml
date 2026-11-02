@@ -27,6 +27,43 @@ jobs:
           - os: windows-latest
             node: '22.12.0'
     runs-on: ${{ matrix.os }}
+    timeout-minutes: 15
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+        with:
+          node-version: ${{ matrix.node }}
+          package-manager-cache: false
+      - uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
+        with:
+          cache: false
+      - run: pnpm install --frozen-lockfile
+      - id: build
+        run: pnpm build:site
+      - run: pnpm exec vitest run
+      - run: pnpm check
+      - name: Check generated files
+        if: ${{ !cancelled() && steps.build.outcome == 'success' }}
+        run: |
+          git diff --check
+          git diff --exit-code
+
+  package:
+    name: Installed package / ${{ matrix.os }} / Node ${{ matrix.node }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            node: '22.12.0'
+          - os: ubuntu-latest
+            node: '24'
+          - os: windows-latest
+            node: '22.12.0'
+    runs-on: ${{ matrix.os }}
     timeout-minutes: 20
     env:
       FH_TEST_BROWSER_CHANNEL: chrome
@@ -43,17 +80,8 @@ jobs:
         with:
           cache: false
       - run: pnpm install --frozen-lockfile
-      - run: pnpm test
-      - run: pnpm check
-      - id: build
-        run: pnpm build:site
-      - name: Check generated files
-        if: ${{ !cancelled() && steps.build.outcome == 'success' }}
-        run: |
-          git diff --check
-          git diff --exit-code
+      - run: pnpm build:kit
       - name: Test the installed package
-        if: ${{ !cancelled() && steps.build.outcome == 'success' }}
         run: |
           release_directory="$RUNNER_TEMP/for-humanity-release"
           mkdir -p "$release_directory"
