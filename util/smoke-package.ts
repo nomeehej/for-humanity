@@ -1,18 +1,25 @@
 import assert from "node:assert/strict";
-import {execFileSync, spawn, spawnSync} from "node:child_process";
+import {execFile, execFileSync, spawn} from "node:child_process";
 import {once} from "node:events";
 import {cp, mkdir, mkdtemp, readdir, readFile, realpath, rename, rm, writeFile} from "node:fs/promises";
 import {createServer} from "node:net";
 import {tmpdir} from "node:os";
 import {dirname, join, resolve} from "node:path";
+import {promisify} from "node:util";
 import {chromium, expect} from "@playwright/test";
 import {packReportSchema} from "@tool/_type/pack-report";
 import {packageMetadataSchema} from "@tool/_type/package-metadata";
+import {z} from "zod";
 
 /*
  * 패키지 설치 검증. 별도 소비 프로젝트에 압축 파일 설치 후 CLI, 브라우저, 공개 타입, 빌드 출력 확인
  */
 const [directory] = process.argv.slice(2);
+
+/**
+ * 독립 폴더의 CLI 실행을 동시에 기다리는 비동기 실행. 실패 시 거부 오류에 stdout, stderr 포함
+ */
+const execFileAsync = promisify(execFile);
 
 if (directory === undefined) {
     throw new Error("Usage: pnpm exec tsx util/smoke-package.ts <artifact directory>");
@@ -95,25 +102,33 @@ try {
 
     execFileSync(process.execPath, [compiler, "--project", "tsconfig.json"], {cwd: consumer, stdio: "inherit"});
 
-    for (const invalid of [
-        {port: "4321"},
-        {host: 9999},
-        {basePath: false},
-        {navigation: [false]},
-        {status: [{phrase: "Reviewed", kind: "unknown"}]},
-        {titel: "Typo"},
-        {content: {root: false}},
-    ]) {
-        await writeFile(configPath, `import type {SiteConfig} from "for-humanity";\nexport default ${JSON.stringify(invalid)} satisfies SiteConfig;\n`);
+    // 잘못된 설정 일곱 개는 폴더별 동시 검사, node_modules는 소비 프로젝트 것 공유
+    await Promise.all(
+        [{port: "4321"}, {host: 9999}, {basePath: false}, {navigation: [false]}, {status: [{phrase: "Reviewed", kind: "unknown"}]}, {titel: "Typo"}, {content: {root: false}}].map(
+            async (invalid, index) => {
+                const invalidRoot = join(consumer, `invalid-${index}`);
 
-        const checked = spawnSync(process.execPath, [compiler, "--project", "tsconfig.json"], {cwd: consumer, encoding: "utf8"});
+                await mkdir(invalidRoot);
+                await writeFile(
+                    join(invalidRoot, "for-humanity.config.ts"),
+                    `import type {SiteConfig} from "for-humanity";\nexport default ${JSON.stringify(invalid)} satisfies SiteConfig;\n`,
+                );
 
-        assert.equal(checked.error, undefined);
-        assert.notEqual(checked.status, 0, `Invalid config must fail type checking: ${JSON.stringify(invalid)}`);
-        assert.match(checked.stdout, /for-humanity\.config\.ts/);
-    }
+                await writeFile(
+                    join(invalidRoot, "tsconfig.json"),
+                    JSON.stringify({compilerOptions: {strict: true, noEmit: true, target: "ESNext", module: "NodeNext", types: []}, files: ["for-humanity.config.ts"]}),
+                );
 
-    await writeFile(configPath, config);
+                const failure = await execFileAsync(process.execPath, [compiler, "--project", "tsconfig.json"], {cwd: invalidRoot}).then(
+                    () => undefined,
+                    (error: unknown) => error,
+                );
+
+                assert.notEqual(failure, undefined, `Invalid config must fail type checking: ${JSON.stringify(invalid)}`);
+                assert.match(z.object({stdout: z.string()}).parse(failure).stdout, /for-humanity\.config\.ts/);
+            },
+        ),
+    );
 
     const packageFiles = await readdir(packageRoot, {recursive: true});
 
@@ -426,55 +441,61 @@ try {
     assert.ok(!(await readdir(join(starter, "knowledge/dist"))).some((file) => file === "private" || file === "internal"));
 
     // 설치 번들의 init 진입점과 패키지 상대 템플릿, 생성 결과의 실제 빌드
-    for (const setup of [
-        {deploy: "none", manager: "npm", content: "content"},
-        {deploy: "github-pages", manager: "pnpm", content: "handbook"},
-        {deploy: "cloudflare-pages", manager: "npm", content: "team notes"},
-        {deploy: "cloudflare-workers", manager: "npm", content: "worker notes"},
-        {deploy: "cloudflare-workers", manager: "pnpm", content: "."},
-    ]) {
-        const initialized = join(consumer, `init-${setup.deploy}-${setup.manager}`);
-        const cli = join(packageRoot, "dist/cli.js");
+    // 배포 방식 다섯은 각자 폴더, 동시 실행
+    await Promise.all(
+        [
+            {deploy: "none", manager: "npm", content: "content"},
+            {deploy: "github-pages", manager: "pnpm", content: "handbook"},
+            {deploy: "cloudflare-pages", manager: "npm", content: "team notes"},
+            {deploy: "cloudflare-workers", manager: "npm", content: "worker notes"},
+            {deploy: "cloudflare-workers", manager: "pnpm", content: "."},
+        ].map(async (setup) => {
+            const initialized = join(consumer, `init-${setup.deploy}-${setup.manager}`);
+            const cli = join(packageRoot, "dist/cli.js");
 
-        execFileSync(
-            process.execPath,
-            [cli, "init", initialized, "--yes", "--manager", setup.manager, "--deploy", setup.deploy, "--content", setup.content, "--repository", "example/package-docs"],
-            {cwd: consumer, stdio: "inherit"},
-        );
+            await execFileAsync(
+                process.execPath,
+                [cli, "init", initialized, "--yes", "--manager", setup.manager, "--deploy", setup.deploy, "--content", setup.content, "--repository", "example/package-docs"],
+                {cwd: consumer},
+            );
 
-        assert.ok((await readFile(join(initialized, "package.json"), "utf8")).includes(JSON.stringify(pack.version)));
-        assert.match(await readFile(join(initialized, "for-humanity.config.ts"), "utf8"), /satisfies SiteConfig/);
-        await writeFile(join(initialized, setup.content, "private/internal.md"), "---\nname: Init private\nlabel: Init private\ngroup: Internal\n---\n\nINIT_PRIVATE_SENTINEL\n");
-        execFileSync(process.execPath, [cli, "build"], {cwd: initialized, stdio: "inherit"});
+            assert.ok((await readFile(join(initialized, "package.json"), "utf8")).includes(JSON.stringify(pack.version)));
+            assert.match(await readFile(join(initialized, "for-humanity.config.ts"), "utf8"), /satisfies SiteConfig/);
+            await writeFile(
+                join(initialized, setup.content, "private/internal.md"),
+                "---\nname: Init private\nlabel: Init private\ngroup: Internal\n---\n\nINIT_PRIVATE_SENTINEL\n",
+            );
+            await execFileAsync(process.execPath, [cli, "build"], {cwd: initialized});
 
-        const initializedOutput = join(initialized, setup.content, "dist");
-        const initializedHome = await readFile(join(initializedOutput, "index.html"), "utf8");
-        const initializedStatus = await readFile(join(initializedOutput, "404.html"), "utf8");
+            const initializedOutput = join(initialized, setup.content, "dist");
+            const initializedHome = await readFile(join(initializedOutput, "index.html"), "utf8");
+            const initializedStatus = await readFile(join(initializedOutput, "404.html"), "utf8");
 
-        assert.match(initializedHome, /Project notes/);
-        assert.match(initializedStatus, /404 Page not found/);
-        assert.doesNotMatch(initializedHome, /INIT_PRIVATE_SENTINEL/);
-        assert.ok(!(await readdir(initializedOutput)).includes("private"));
+            assert.match(initializedHome, /Project notes/);
+            assert.match(initializedStatus, /404 Page not found/);
+            assert.doesNotMatch(initializedHome, /INIT_PRIVATE_SENTINEL/);
+            assert.ok(!(await readdir(initializedOutput)).includes("private"));
 
-        if (setup.deploy === "github-pages") {
-            assert.match(initializedHome, /href="\/package-docs\/getting-started\/"/);
-            assert.match(await readFile(join(initialized, ".github/workflows/docs.yml"), "utf8"), /pnpm install --frozen-lockfile/);
-        } else if (setup.deploy === "cloudflare-pages" || setup.deploy === "cloudflare-workers") {
-            execFileSync(process.execPath, [join(initialized, ".cloudflare/prepare.mjs")], {cwd: consumer, stdio: "inherit"});
-            assert.equal(await readFile(join(initializedOutput, "404.html"), "utf8"), initializedStatus);
+            if (setup.deploy === "github-pages") {
+                assert.match(initializedHome, /href="\/package-docs\/getting-started\/"/);
+                assert.match(await readFile(join(initialized, ".github/workflows/docs.yml"), "utf8"), /pnpm install --frozen-lockfile/);
+            } else if (setup.deploy === "cloudflare-pages" || setup.deploy === "cloudflare-workers") {
+                await execFileAsync(process.execPath, [join(initialized, ".cloudflare/prepare.mjs")], {cwd: consumer});
+                assert.equal(await readFile(join(initializedOutput, "404.html"), "utf8"), initializedStatus);
 
-            if (setup.deploy === "cloudflare-workers") {
-                const config = await readFile(join(initialized, "wrangler.jsonc"), "utf8");
-                assert.ok(config.includes(JSON.stringify(setup.content === "." ? "dist" : `${setup.content}/dist`)));
-                assert.match(config, /"not_found_handling": "404-page"/);
-                assert.doesNotMatch(config, /"main"|"routes"/);
-                const manifest = await readFile(join(initialized, "package.json"), "utf8");
-                assert.match(manifest, /"wrangler": "4\./);
-                assert.ok(manifest.includes(JSON.stringify(`${setup.manager === "npm" ? "npm run" : "pnpm"} docs:build && wrangler deploy`)));
-                assert.match(await readFile(join(initializedOutput, "_headers"), "utf8"), /no-transform/);
+                if (setup.deploy === "cloudflare-workers") {
+                    const config = await readFile(join(initialized, "wrangler.jsonc"), "utf8");
+                    assert.ok(config.includes(JSON.stringify(setup.content === "." ? "dist" : `${setup.content}/dist`)));
+                    assert.match(config, /"not_found_handling": "404-page"/);
+                    assert.doesNotMatch(config, /"main"|"routes"/);
+                    const manifest = await readFile(join(initialized, "package.json"), "utf8");
+                    assert.match(manifest, /"wrangler": "4\./);
+                    assert.ok(manifest.includes(JSON.stringify(`${setup.manager === "npm" ? "npm run" : "pnpm"} docs:build && wrangler deploy`)));
+                    assert.match(await readFile(join(initializedOutput, "_headers"), "utf8"), /no-transform/);
+                }
             }
-        }
-    }
+        }),
+    );
 
     console.log(
         `Installed ${pack.name}@${pack.version} on ${process.version}: dev/preview browsers, config types, TS/ESM settings, assets, navigation, images, Mermaid, README, crawler files, content starters and all init hosting targets passed`,
