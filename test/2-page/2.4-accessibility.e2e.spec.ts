@@ -10,7 +10,9 @@ test.use({
 });
 
 /**
- * 사이트맵의 페이지를 나눠 받는 검사 수. 한 검사가 모든 페이지를 순서대로 돌면 그 검사 하나가 전체 실행 시간을 정함
+ * 레이아웃마다 사이트맵 페이지 분담 검사 수
+ *
+ *   - 검사 하나의 전체 페이지 순회는 그 검사가 실행 시간 결정
  */
 const page_shards = 4;
 
@@ -18,7 +20,7 @@ const page_shards = 4;
  * 공식 문서 공개 페이지의 자동 접근성 검사(content/public, src/component) 검증
  *
  *   - axe 기본 규칙 전체, WCAG와 권장 사례 포함
- *   - 레이아웃마다 페이지를 page_shards개 검사로 나눠 워커가 병렬로 실행
+ *   - 레이아웃마다 page_shards개 검사가 페이지 분담, 워커 병렬 실행
  */
 test.describe("접근성", () => {
     for (const layout of [
@@ -31,7 +33,7 @@ test.describe("접근성", () => {
 
             for (let shard = 0; shard < page_shards; shard += 1) {
                 test(`[${layout.caseId}] 사이트맵의 공개 페이지 ${shard + 1}/${page_shards} 묶음은 axe 위반이 없다`, {tag: "@high"}, async ({page}) => {
-                    // CI 러너에서는 묶음 하나의 열 페이지 검사가 기본 30초를 넘김. 한도 세 배
+                    // CI 러너에서 묶음 하나의 열 페이지 검사는 기본 30초 초과, 한도 세 배
                     test.slow();
 
                     /**
@@ -81,7 +83,7 @@ test.describe("접근성", () => {
 
                             /**
                              * THEN
-                             * 위반 규칙과 대상 요소 없음. 묶음의 모든 페이지 결과를 함께 보고
+                             * 위반 규칙과 대상 요소 없음. 묶음의 모든 페이지 결과 일괄 보고
                              */
                             expect
                                 .soft(result.violations.map((violation) => `${violation.id}: ${violation.nodes.map((node) => node.target.join(" ")).join(", ")}`))
