@@ -31,6 +31,9 @@ test.describe("접근성", () => {
 
             for (let shard = 0; shard < page_shards; shard += 1) {
                 test(`[${layout.caseId}] 사이트맵의 공개 페이지 ${shard + 1}/${page_shards} 묶음은 axe 위반이 없다`, {tag: "@high"}, async ({page}) => {
+                    // CI 러너에서는 묶음 하나의 열 페이지 검사가 기본 30초를 넘김. 한도 세 배
+                    test.slow();
+
                     /**
                      * GIVEN
                      * 공식 문서 사이트맵에 담긴 경로와 이 검사가 맡은 묶음
