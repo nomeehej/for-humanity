@@ -171,6 +171,12 @@
         margin-bottom: 4px;
     }
 
+    /* 글머리 기호. 기본 원은 본문 글꼴보다 굵고 커서 흐린 색, 글자의 70% 크기 */
+    & ul > li::marker {
+        color: var(--app-color-text-muted);
+        font-size: 0.7em;
+    }
+
     & li > ul {
         margin: 4px 0 0;
     }
@@ -454,6 +460,13 @@
 /* 문단에 혼자 있는 그림, 표와 코드 상자와 같은 위아래 간격 */
 .wg_article__figure {
     margin: var(--app-space-block) 0;
+}
+
+/* 래스터 그림(PNG, JPEG 등). 표, SVG 그림과 같은 테두리의 액자로 본문 바탕과 구분 */
+.wg_article__figure--raster {
+    padding: var(--app-space-inline);
+    border: 1px solid var(--app-color-border);
+    border-radius: var(--app-radius-box);
 }
 
 /* SVG 그림, Mermaid 상자(wg-mermaid.css)와 같은 테두리와 안쪽 여백. 좁은 화면에서 넘치면 표처럼 내부 가로 스크롤 */

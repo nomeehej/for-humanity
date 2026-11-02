@@ -220,7 +220,7 @@ describe("문서 자원", () => {
                 /<div class="wg_article__figure wg_article__figure--svg" tabindex="0"><img src="\/_fh\/media\/asset\.[a-f0-9]+\.svg" alt="Diagram"><\/div>/,
             );
             expect(docs[0].html).toContain('<div class="wg_article__figure wg_article__figure--svg" tabindex="0"><img src="https://example.com/chart.svg?v=1" alt="Chart"></div>');
-            expect(docs[0].html).toMatch(/<div class="wg_article__figure"><img src="\/_fh\/media\/asset\.[a-f0-9]+\.png" alt="Shot"><\/div>/);
+            expect(docs[0].html).toMatch(/<div class="wg_article__figure wg_article__figure--raster"><img src="\/_fh\/media\/asset\.[a-f0-9]+\.png" alt="Shot"><\/div>/);
             expect(docs[0].html).toMatch(/<p>See <img src="\/_fh\/media\/asset\.[a-f0-9]+\.png" alt="Inline"> here\.<\/p>/);
             expect(docs[0].html).toMatch(/<p align="center"><img src="\/_fh\/media\/asset\.[a-f0-9]+\.svg" alt="Raw"><\/p>/);
         });

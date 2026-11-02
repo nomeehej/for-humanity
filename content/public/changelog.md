@@ -17,6 +17,13 @@ pnpm add -D --save-exact for-humanity@latest
 
 Package files for each version are available from [GitHub Releases](https://github.com/nomeehej/for-humanity/releases).
 
+## Unreleased
+
+**Upgrade:** Existing projects remain compatible. Rebuild and redeploy to apply the figure box and the lighter list bullets. CLI commands, configuration, document syntax and Node.js requirements are unchanged.
+
+- Put a raster figure, a PNG, JPEG, GIF, WebP or AVIF image alone in its paragraph, in a box with the same border and corner radius as tables and SVG figures and a 6px inner margin, so a screenshot no longer floats on the page background. An image inside a sentence, wrapped in a link or in a raw HTML paragraph with attributes keeps its written layout.
+- Draw unordered list bullets in the muted text color at 70% of the text size. The default disc in the body font looked heavier and larger than the text beside it. Numbered lists keep their numbers.
+
 ## 0.29.1 — 2026-11-02
 
 **Upgrade:** Existing projects remain compatible. Rebuild and redeploy. CLI commands, configuration, document syntax and Node.js requirements are unchanged.

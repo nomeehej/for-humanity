@@ -5,6 +5,7 @@ import {visit} from "unist-util-visit";
  * 문단에 이미지 하나만 있는 그림의 래퍼. SVG 그림은 좁은 화면에서 표처럼 가로 스크롤
  *
  *   - SVG의 width, height는 작성자가 정한 CSS 픽셀. 래스터는 촬영 배율을 알 수 없어 화면 폭에 맞춤
+ *   - 래스터 그림은 액자 수정자. 캡처가 본문 바탕에 떠 보이지 않게 테두리
  *   - 속성을 적은 원시 HTML 문단은 작성자 마크업으로 유지
  */
 export const rehypeFigures = () => (tree: Root) => {
@@ -20,6 +21,6 @@ export const rehypeFigures = () => (tree: Root) => {
         const svg = typeof image.properties.src === "string" && /\.svg(?:[?#]|$)/i.test(image.properties.src);
 
         node.tagName = "div";
-        node.properties = svg ? {className: ["wg_article__figure", "wg_article__figure--svg"], tabIndex: 0} : {className: ["wg_article__figure"]};
+        node.properties = svg ? {className: ["wg_article__figure", "wg_article__figure--svg"], tabIndex: 0} : {className: ["wg_article__figure", "wg_article__figure--raster"]};
     });
 };
