@@ -56,7 +56,9 @@ export const WgMermaid = (props: WgMermaidProps) => {
         };
 
         /**
-         * 보이는 다이어그램만 현재 테마로 차례 렌더. 모듈 수신 실패는 모든 영역에 오류 안내
+         * 접힌 Details 밖의 다이어그램만 현재 테마로 차례 렌더. 모듈 수신 실패는 모든 영역에 오류 안내
+         *
+         *   - 제약: 펼침 판정은 open 속성. toggle 시점의 checkVisibility가 ::details-content 전환 첫 프레임에서 false 반환
          */
         const render = toChangeQueue({
             run: async () => {
@@ -76,7 +78,7 @@ export const WgMermaid = (props: WgMermaidProps) => {
                     return lifetime.signal.aborted || !element.isConnected || theme.matches !== (mode === "dark");
                 };
 
-                const pending = elements.filter((element) => element.checkVisibility({visibilityProperty: true}) && element.dataset.mermaidTheme !== mode);
+                const pending = elements.filter((element) => element.closest("details:not([open])") === null && element.dataset.mermaidTheme !== mode);
 
                 if (pending.length === 0) {
                     return;
