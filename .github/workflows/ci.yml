@@ -107,7 +107,6 @@ jobs:
     timeout-minutes: 15
     env:
       FH_TEST_BROWSER_CHANNEL: chrome
-      PLAYWRIGHT_JSON_OUTPUT_NAME: ${{ runner.temp }}/playwright.json
     steps:
       - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
       - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
@@ -119,11 +118,13 @@ jobs:
           cache: false
       - run: pnpm install --frozen-lockfile
       - name: Check browser diagrams, navigation and development
+        env:
+          PLAYWRIGHT_JSON_OUTPUT_NAME: ${{ runner.temp }}/playwright.json
         run: pnpm test:browser --shard=${{ matrix.shard }}/2 --reporter=github,json
       - name: Report worker time and the slowest checks
         if: ${{ always() }}
         run: |
-          node --input-type=module - "$PLAYWRIGHT_JSON_OUTPUT_NAME" "${{ matrix.shard }}" <<'NODE'
+          node --input-type=module - "$RUNNER_TEMP/playwright.json" "${{ matrix.shard }}" <<'NODE'
           import {existsSync, readFileSync} from 'node:fs';
           const [file, shard] = process.argv.slice(2);
           if (!existsSync(file)) process.exit(0);
