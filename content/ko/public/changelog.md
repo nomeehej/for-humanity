@@ -19,10 +19,14 @@ pnpm add -D --save-exact for-humanity@latest
 
 ## Unreleased
 
-**Upgrade:** Existing projects remain compatible. Rebuild and redeploy to apply the figure box and the lighter list bullets. CLI commands, configuration, document syntax and Node.js requirements are unchanged.
+**Upgrade:** Existing projects remain compatible. Rebuild and redeploy to apply the figure box, the lighter list bullets and the Details changes. CLI commands, configuration, document syntax and Node.js requirements are unchanged.
 
 - Put a raster figure, a PNG, JPEG, GIF, WebP or AVIF image alone in its paragraph, in a box with the same border and corner radius as tables and SVG figures and a 6px inner margin, so a screenshot no longer floats on the page background. An image inside a sentence, wrapped in a link or in a raw HTML paragraph with attributes keeps its written layout.
 - Draw unordered list bullets in the muted text color at 70% of the text size. The default disc in the body font looked heavier and larger than the text beside it. Numbered lists keep their numbers.
+- Move the Details chevron to the right end of the title row. It points down while collapsed and turns to point up over 320ms when opened, and the body text now starts at the box padding instead of after the chevron column.
+- Slide a Details body open and closed over 320ms, together with its padding, in browsers that can animate to an automatic height. Other browsers open and close it at once, and reduced motion turns the slide off.
+- Keep the hover shade on the title row of an open Details, so the open card stands out in a list of Details.
+- Show the first word of a Details title as a reference chip when it is a configured prefix and a number, such as `:::details[Q3 · Which unit?]`. A list of question cards now shows the same chips as the links that point to them.
 
 ## 0.29.1 — 2026-11-02
 

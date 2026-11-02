@@ -129,4 +129,56 @@ describe("참조 칩", () => {
             expect(toFirstChild(tree).properties.className).toStrictEqual(["wg_article__headingText"]);
         });
     });
+
+    describe("Details 제목 맨 앞 낱말", () => {
+        const toSummaryTree = (text: string): Root => {
+            return {
+                type: "root",
+                children: [{type: "element", tagName: "summary", properties: {className: ["wg_article__detailsSummary"]}, children: [{type: "text", value: text}]}],
+            };
+        };
+
+        test("설정 접두와 번호인 맨 앞 낱말은 칩 span 으로 감싸고 나머지 글자는 그대로 둔다", () => {
+            /**
+             * GIVEN
+             * 번호로 시작하는 Details 제목
+             */
+            const tree = toSummaryTree("Q9 · 합계에 타겟 행을 넣나요?");
+
+            /**
+             * WHEN
+             * 참조 칩 표시
+             */
+            rehypeRefs({refs: [...refs]})(tree);
+
+            /**
+             * THEN
+             * 칩 span 과 뒤 글자
+             */
+            expect((tree.children[0] as Element).children).toStrictEqual([
+                {type: "element", tagName: "span", properties: {className: ["wg_article__ref", "wg_article__ref--violet"]}, children: [{type: "text", value: "Q9"}]},
+                {type: "text", value: " · 합계에 타겟 행을 넣나요?"},
+            ]);
+        });
+
+        test.each(["Q9a · 번호 뒤 글자", "D1 · 설정에 없는 접두", "Questions 안내"])("맨 앞 낱말이 설정 번호가 아닌 %s 제목은 그대로 둔다", (text) => {
+            /**
+             * GIVEN
+             * 번호로 시작하지 않는 Details 제목
+             */
+            const tree = toSummaryTree(text);
+
+            /**
+             * WHEN
+             * 참조 칩 표시
+             */
+            rehypeRefs({refs: [...refs]})(tree);
+
+            /**
+             * THEN
+             * 글자 하나 그대로
+             */
+            expect((tree.children[0] as Element).children).toStrictEqual([{type: "text", value: text}]);
+        });
+    });
 });

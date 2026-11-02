@@ -617,14 +617,12 @@
     border: 1px solid var(--app-color-border);
     background: var(--app-color-ground);
 
+    /* 펼침 높이 auto 까지 전환. 지원하지 않는 브라우저는 바로 열고 닫음 */
+    interpolate-size: allow-keywords;
+
     /* 작성한 블록의 종류와 무관하게 마지막 블록의 아래 여백 제거 */
     & > :last-child {
         margin-bottom: 0;
-    }
-
-    /* 펼친 본문 아래 상자 여백 */
-    &[open] {
-        padding-bottom: var(--app-space-block);
     }
 
     /* 이어진 Details는 한 상자 안의 목록. 앞 상자의 아래 선이 사이 선이 됨 */
@@ -637,9 +635,28 @@
         border-top: 0;
     }
 
-    /* 펼친 본문은 제목 글자와 같은 시작선, 양옆은 상자 여백 */
+    /* 본문은 제목 글자와 같은 시작선. 접힌 높이 0에서 320ms 동안 펼침, 여백도 함께 */
+    &::details-content {
+        box-sizing: border-box;
+        block-size: 0;
+        overflow: clip;
+        padding: 0 var(--app-space-block);
+        transition:
+            block-size 320ms var(--app-motion-easing-out),
+            padding 320ms var(--app-motion-easing-out),
+            content-visibility 320ms allow-discrete;
+    }
+
     &[open]::details-content {
-        padding: 0 var(--app-space-block) 0 calc(var(--app-space-block) + 1ch + var(--app-space-inline));
+        block-size: auto;
+        padding: var(--app-space-stack) var(--app-space-block) var(--app-space-block);
+    }
+}
+
+/* 움직임 줄이기. 전역 규칙(base.css)의 선택자 목록에 ::details-content 를 넣으면 모르는 브라우저가 목록 전체를 버림 */
+@media (prefers-reduced-motion: reduce) {
+    .wg_article__details::details-content {
+        transition: none;
     }
 }
 
@@ -658,18 +675,19 @@
         display: none;
     }
 
-    /* 고정폭 한 칸의 셰브런. 닫히면 오른쪽, 열리면 천천히 돌아 아래를 가리킴 */
-    &::before {
+    /* 줄 오른쪽 끝 고정폭 한 칸의 셰브런. 닫히면 아래, 열리면 천천히 돌아 위를 가리킴 */
+    &::after {
         content: "";
         flex: none;
         width: 1ch;
         height: 1ch;
+        margin-left: auto;
         background: currentcolor;
         color: var(--app-color-text-muted);
         mask:
             url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M5.5 3l5 5-5 5' fill='none' stroke='black' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")
             center / contain no-repeat;
-        transform: rotate(0deg);
+        transform: rotate(90deg);
         transition: transform 320ms var(--app-motion-easing-out);
     }
 
@@ -678,7 +696,7 @@
     }
 
     /* 가리키면 셰브런도 글자색으로 */
-    &:hover::before {
+    &:hover::after {
         color: var(--app-color-text-strong);
     }
 
@@ -688,13 +706,13 @@
     }
 }
 
-/* 펼친 Details의 표시와 제목 줄 아래 본문 사이의 옅은 선 */
+/* 펼친 Details의 제목 줄. 가리킬 때와 같은 바탕으로 열린 줄 표시, 본문과 사이에 옅은 선 */
 .wg_article__details[open] > .wg_article__detailsSummary {
-    margin-bottom: var(--app-space-stack);
     border-bottom: 1px solid var(--app-color-border-layout);
+    background: var(--app-color-accent-soft);
 
-    &::before {
+    &::after {
         color: var(--app-color-text-strong);
-        transform: rotate(90deg);
+        transform: rotate(-90deg);
     }
 }
