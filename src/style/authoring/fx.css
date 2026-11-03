@@ -413,14 +413,17 @@ html .fx--ready [data-pos] {
     border-radius: var(--app-radius-box);
 }
 
-/* 표시 상자의 기준. 상자 여백 안쪽의 그림 영역 */
+/* 표시 상자의 기준. 그림 크기에 맞춰 가운데, 본문보다 넓으면 본문 폭까지 줄임. 그림보다 키우지 않음 */
 .fx-shot__frame {
     position: relative;
+    width: fit-content;
+    max-width: 100%;
+    margin-inline: auto;
 }
 
 .fx-shot__frame > img {
     display: block;
-    width: 100%;
+    max-width: 100%;
     height: auto;
 }
 
