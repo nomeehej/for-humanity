@@ -185,6 +185,30 @@ A module script runs before the site sets up the figures, so the listener also r
 For a scene with no steps, such as a map the reader drags, use `data-fx="custom"`. The site leaves it to your own `<script type="module">` in the same document; add the `fx--ready` class when it is set up.
 In every kind of figure, a `button` with `data-icon` gets the same icon as the bar, with its text as the name. Buttons inside a `<div class="fx__bar">` and buttons with the `fx-button` class get the bar's style, and `aria-pressed="true"` marks the pressed one.
 
+## Marked image
+
+Supported since `0.31.0`.
+
+To point at parts of a screenshot, put numbered boxes over the image in a `<figure class="fx-shot">`. The boxes are placed in percent of the image, so they stay on their parts at any width. A switch on the top right border turns them off to show the plain image. The figure needs no JavaScript.
+
+### Source
+
+```html
+<figure class="fx-shot" aria-label="Reading list with two marked parts">
+<div class="fx-shot__frame"><img src="../asset/sample.svg" alt="A fictional reading list" width="560" height="160"><div class="fx-shot__marks" aria-hidden="true"><i style="left:3.6%;top:12.5%;width:37.5%;height:23.8%"><b>1</b></i><i style="left:67.9%;top:41%;width:28.6%;height:47%"><b>2</b></i></div></div>
+<label class="fx-shot__toggle" title="Marks"><input type="checkbox" checked aria-label="Marks"></label>
+</figure>
+```
+
+### Result
+
+<figure class="fx-shot" aria-label="Reading list with two marked parts">
+<div class="fx-shot__frame"><img src="../asset/sample.svg" alt="A fictional reading list" width="560" height="160"><div class="fx-shot__marks" aria-hidden="true"><i style="left:3.6%;top:12.5%;width:37.5%;height:23.8%"><b>1</b></i><i style="left:67.9%;top:41%;width:28.6%;height:47%"><b>2</b></i></div></div>
+<label class="fx-shot__toggle" title="Marks"><input type="checkbox" checked aria-label="Marks"></label>
+</figure>
+
+Describe the parts below the figure, in a table or a list numbered like the boxes. `left`, `top`, `width` and `height` are percentages of the image size. Without the switch the boxes always show. Name the switch with `title`, shown on pointing, and `aria-label`.
+
 ## Reference
 
 ### Attributes
@@ -218,6 +242,7 @@ Layout classes: `fx__stage` (the scene), `fx__captions` (one `li` per step), `fx
 Control and state classes: `fx__range` (the slider row), `fx__bar` (a bar of your own buttons), `fx--ready` (on a figure once it is set up; the site adds it, and your script adds it to a custom figure), `is-on` and `is-hl` (the step states the site toggles on `data-on` and `data-hl` elements; a custom figure's script may toggle them on its own `data-on` and `data-hl` elements).
 Element classes: `fx-box`, `fx-chip` with `fx-chip--mine` and `fx-chip--dash`, `fx-lines` (a list of code lines), `fx-label`, `fx-muted`, `fx-button`. Inside SVG: `fx-strong`, `fx-muted`, `fx-mono` for text and `fx-box`, `fx-mine`, `fx-ground`, `fx-dash`, `fx-ln`, `fx-ln-strong`, `fx-arrow`, `fx-mark` for shapes.
 Variables on the figure, which your own styles can read: `--fx-line`, `--fx-line-strong`, `--fx-ink`, `--fx-ink-strong`, `--fx-ink-muted`, `--fx-fill`, `--fx-ground`, `--fx-mark`, `--fx-ph`, `--fx-ease`. They follow the light and dark theme. A slider figure also carries `--fx-v`.
+Marked image classes: `fx-shot` (the box), `fx-shot__frame` (the image area), `fx-shot__marks` (the layer of boxes, one `i` per box with a `b` number), `fx-shot__toggle` (a `label` around a checkbox).
 
 ### Without JavaScript
 

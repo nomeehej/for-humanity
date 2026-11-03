@@ -19,6 +19,9 @@ Package files for each version are available from [GitHub Releases](https://gith
 
 ## Unreleased
 
+- Add a marked image, `<figure class="fx-shot">`, that puts numbered boxes over a screenshot in percent of its size, with a switch on the top right border that hides them. See [Figures](https://for-humanity.fyi/figures/#marked-image).
+- Make a raw `<a id>` at the start of a table cell a target for its row. Arriving there highlights the row for a few seconds, and the cell stays on one line.
+- Keep a link whose text is a hyphenated identifier, such as `SSD-001`, on one line instead of breaking after the hyphen, and keep a link that starts with an icon image on one line.
 - Place a status badge in a Details title at the right end of the row, before the chevron, wherever the phrase is written. A list of question cards now lines up its statuses along the right edge.
 
 ## 0.30.0 — 2026-11-02

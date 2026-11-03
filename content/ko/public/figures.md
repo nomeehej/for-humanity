@@ -185,6 +185,30 @@ root.addEventListener("fx:step", (event) => {
 지도를 끌어 보는 장면처럼 단계가 없으면 `data-fx="custom"`을 씁니다. 장면은 같은 문서에 쓴 `<script type="module">`이 맡고, 준비를 마치면 `fx--ready` 클래스를 붙입니다.
 어느 종류의 그림이든 `data-icon`을 준 `button`은 띠와 같은 아이콘이 되고 버튼 글자가 이름이 됩니다. `<div class="fx__bar">` 안의 버튼과 `fx-button` 클래스를 준 버튼은 띠의 모양을 따르며 `aria-pressed="true"`가 눌린 버튼을 표시합니다.
 
+## Marked image
+
+`0.31.0`부터 지원합니다.
+
+화면 그림의 부분을 가리킬 때는 `<figure class="fx-shot">` 안에서 그림 위에 번호 상자를 얹습니다. 상자 위치는 그림 크기에 대한 백분율이라 폭이 바뀌어도 제자리에 있습니다. 오른쪽 위 테두리의 스위치로 상자를 끄면 원래 그림이 보입니다. JavaScript가 필요하지 않습니다.
+
+### Source
+
+```html
+<figure class="fx-shot" aria-label="부분 둘을 표시한 읽기 목록">
+<div class="fx-shot__frame"><img src="../../asset/sample.svg" alt="가상의 읽기 목록" width="560" height="160"><div class="fx-shot__marks" aria-hidden="true"><i style="left:3.6%;top:12.5%;width:37.5%;height:23.8%"><b>1</b></i><i style="left:67.9%;top:41%;width:28.6%;height:47%"><b>2</b></i></div></div>
+<label class="fx-shot__toggle" title="표시"><input type="checkbox" checked aria-label="표시"></label>
+</figure>
+```
+
+### Result
+
+<figure class="fx-shot" aria-label="부분 둘을 표시한 읽기 목록">
+<div class="fx-shot__frame"><img src="../../asset/sample.svg" alt="가상의 읽기 목록" width="560" height="160"><div class="fx-shot__marks" aria-hidden="true"><i style="left:3.6%;top:12.5%;width:37.5%;height:23.8%"><b>1</b></i><i style="left:67.9%;top:41%;width:28.6%;height:47%"><b>2</b></i></div></div>
+<label class="fx-shot__toggle" title="표시"><input type="checkbox" checked aria-label="표시"></label>
+</figure>
+
+그림 아래 표나 목록에 상자와 같은 번호로 부분을 적습니다. `left`, `top`, `width`, `height`는 그림 크기에 대한 백분율입니다. 스위치를 빼면 상자가 늘 보입니다. 스위치 이름은 가리키면 보이는 `title`과 `aria-label`로 씁니다.
+
 ## Reference
 
 ### Attributes
@@ -218,6 +242,7 @@ root.addEventListener("fx:step", (event) => {
 조작과 상태 클래스: `fx__range`(슬라이더 줄), `fx__bar`(작성자 버튼을 담는 띠), `fx--ready`(준비를 마친 그림. 사이트가 붙이고 직접 그리는 그림에는 작성자 스크립트가 붙입니다), `is-on`과 `is-hl`(사이트가 `data-on`, `data-hl` 요소에 켜고 끄는 단계 상태. 직접 그리는 그림에서는 작성자 스크립트가 자기 `data-on`, `data-hl` 요소에 켜고 끌 수 있습니다).
 요소 클래스: `fx-box`, `fx-chip`과 `fx-chip--mine`, `fx-chip--dash`, `fx-lines`(코드 줄 목록), `fx-label`, `fx-muted`, `fx-button`. SVG 안의 글자는 `fx-strong`, `fx-muted`, `fx-mono`, 도형은 `fx-box`, `fx-mine`, `fx-ground`, `fx-dash`, `fx-ln`, `fx-ln-strong`, `fx-arrow`, `fx-mark`입니다.
 그림에 선언해 작성자 스타일이 읽을 수 있는 변수: `--fx-line`, `--fx-line-strong`, `--fx-ink`, `--fx-ink-strong`, `--fx-ink-muted`, `--fx-fill`, `--fx-ground`, `--fx-mark`, `--fx-ph`, `--fx-ease`. 밝은 테마와 어두운 테마를 따릅니다. 슬라이더 그림에는 `--fx-v`도 있습니다.
+표시 그림 클래스: `fx-shot`(상자), `fx-shot__frame`(그림 영역), `fx-shot__marks`(상자 층. 상자마다 `i` 하나와 번호 `b`), `fx-shot__toggle`(체크박스를 감싼 `label`).
 
 ### Without JavaScript
 

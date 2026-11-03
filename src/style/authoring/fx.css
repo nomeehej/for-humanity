@@ -404,6 +404,111 @@ html .fx--ready [data-pos] {
     border: 0;
 }
 
+/* 표시한 화면 그림. 본문 그림과 같은 상자, 그림 위 백분율 상자와 번호 꼬리표. 그림 위라 두 테마에서 같은 amber */
+.fx-shot {
+    position: relative;
+    margin: var(--app-space-block) 0;
+    padding: var(--app-space-inline);
+    border: 1px solid var(--app-color-border);
+    border-radius: var(--app-radius-box);
+}
+
+/* 표시 상자의 기준. 상자 여백 안쪽의 그림 영역 */
+.fx-shot__frame {
+    position: relative;
+}
+
+.fx-shot__frame > img {
+    display: block;
+    width: 100%;
+    height: auto;
+}
+
+.fx-shot__marks {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+}
+
+/* 빗금 상자. 위치와 크기는 작성자 style의 그림 대비 백분율 */
+.fx-shot__marks > i {
+    position: absolute;
+    box-sizing: border-box;
+    border: 2px solid #c99400;
+    border-radius: 6px;
+    background: repeating-linear-gradient(135deg, rgb(201 148 0 / 22%) 0 2px, rgb(201 148 0 / 6%) 2px 8px);
+}
+
+/* 번호 꼬리표. 상자 왼쪽 위 바깥 */
+.fx-shot__marks > i > b {
+    position: absolute;
+    bottom: 100%;
+    left: -2px;
+    margin-bottom: -2px;
+    padding: 0 6px;
+    border: 1px solid #a87b00;
+    border-radius: 4px;
+    background: #f3c94b;
+    color: #3d2c00;
+    font: 700 12px / 18px var(--app-font-body);
+}
+
+/* 표시 스위치. 상자 오른쪽 위 테두리에 걸침, 이름은 작성자의 title과 aria-label */
+.fx-shot__toggle {
+    position: absolute;
+    top: 0;
+    right: 12px;
+    display: flex;
+    padding: 3px;
+    border: 1px solid var(--app-color-border);
+    border-radius: 5px;
+    background: var(--app-color-ground);
+    transform: translateY(-50%);
+    cursor: pointer;
+
+    &:hover {
+        border-color: var(--app-color-text-muted);
+    }
+}
+
+/* 네모 스위치. 손잡이는 배경 그림, 켜면 오른쪽으로 가고 amber */
+.fx-shot__toggle > input {
+    appearance: none;
+    flex: none;
+    width: 26px;
+    height: 14px;
+    margin: 0;
+    border-radius: 3px;
+    background-color: var(--app-color-border);
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10'%3E%3Crect width='10' height='10' rx='2' fill='white'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: left 2px center;
+    background-size: 10px 10px;
+    cursor: pointer;
+    transition:
+        background-color 160ms,
+        background-position 160ms;
+
+    &:checked {
+        background-color: #c99400;
+        background-position: right 2px center;
+    }
+
+    &:focus-visible {
+        outline: var(--app-outline-focus);
+        outline-offset: 2px;
+    }
+}
+
+/* 스위치가 있으면 켠 동안만 표시. 스위치 없는 그림은 늘 표시 */
+.fx-shot:has(> .fx-shot__toggle) .fx-shot__marks {
+    display: none;
+}
+
+.fx-shot:has(> .fx-shot__toggle > input:checked) .fx-shot__marks {
+    display: block;
+}
+
 /* 위젯과 작성자 그림이 display를 정한 요소도 hidden이면 숨긴다 */
 .fx [hidden] {
     /* stylelint-disable-next-line declaration-no-important -- 작성자 style 블록이 사이트 CSS보다 뒤라 같거나 높은 특이도의 작성자 display 규칙이 캡션과 장면 요소를 다시 보이게 한다 */

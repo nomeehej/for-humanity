@@ -1,7 +1,7 @@
 import type {Element, Root} from "hast";
 import {toString as toPlainText} from "hast-util-to-string";
 import {visit} from "unist-util-visit";
-import {ref_text_pattern} from "@/constant/ref";
+import {id_link_text_pattern, ref_text_pattern} from "@/constant/ref";
 import type {ResolvedSiteConfig} from "@/type/site-config";
 
 /**
@@ -43,6 +43,7 @@ const summary_lead_pattern = /^(\s*)(\S+)(?=\s|$)/;
  *   - 링크는 글자가 텍스트 하나이고 설정 접두 뒤 숫자일 때만. 주소는 그대로
  *   - 제목은 rehype-heading-ids 가 감싼 안쪽 span 에. 본문 칩과 그 앵커가 같은 모양
  *   - Details 제목은 맨 앞 낱말만 span 으로 감쌈. 제목 줄 전체가 펼침 버튼이라 링크 없음
+ *   - `SSD-001`처럼 하이픈 식별자인 링크는 설정과 무관하게 한 줄 class. 칩 아님
  */
 export const rehypeRefs = (options: RefOptions) => {
     const colorByPrefix = new Map(options.refs.map((ref) => [ref.prefix, ref.color]));
@@ -54,15 +55,17 @@ export const rehypeRefs = (options: RefOptions) => {
     };
 
     return (tree: Root) => {
-        if (colorByPrefix.size === 0) {
-            return;
-        }
-
         visit(tree, "element", (node) => {
             if (node.tagName === "a") {
                 const [child] = node.children;
 
                 if (node.children.length !== 1 || child.type !== "text") {
+                    return;
+                }
+
+                if (id_link_text_pattern.test(child.value.trim())) {
+                    node.properties.className = [...toClassList(node), "wg_article__idLink"];
+
                     return;
                 }
 

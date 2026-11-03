@@ -17,3 +17,8 @@ export const ref_prefix_pattern = /^[A-Z]{1,3}$/;
  * 링크 글자의 접두와 번호. 접두는 설정과 대조
  */
 export const ref_text_pattern = /^([A-Z]{1,3})\d+$/;
+
+/**
+ * 하이픈으로 이은 식별자 링크 글자. 설정 없이 한 줄 유지. 예: SSD-001, PROJ-12
+ */
+export const id_link_text_pattern = /^[A-Z][A-Z0-9]*-\d+$/;

@@ -130,6 +130,48 @@ describe("참조 칩", () => {
         });
     });
 
+    describe("하이픈 식별자 링크", () => {
+        test.each(["SSD-001", "PROJ-12"])("%s 링크는 설정 접두가 없어도 한 줄 class 를 단다", (text) => {
+            /**
+             * GIVEN
+             * 설정에 없는 접두의 하이픈 식별자 링크
+             */
+            const tree = toLinkTree(text);
+
+            /**
+             * WHEN
+             * 참조 칩 표시, 설정 접두 없음
+             */
+            rehypeRefs({refs: []})(tree);
+
+            /**
+             * THEN
+             * 식별자 class 하나
+             */
+            expect(toFirstChild(tree).properties.className).toStrictEqual(["wg_article__idLink"]);
+        });
+
+        test.each(["ssd-001", "SSD-01a", "SSD 001", "Q3"])("%s 링크는 식별자 class 를 달지 않는다", (text) => {
+            /**
+             * GIVEN
+             * 하이픈 식별자가 아닌 링크
+             */
+            const tree = toLinkTree(text);
+
+            /**
+             * WHEN
+             * 참조 칩 표시, 설정 접두 없음
+             */
+            rehypeRefs({refs: []})(tree);
+
+            /**
+             * THEN
+             * class 없음
+             */
+            expect(toFirstChild(tree).properties.className).toBeUndefined();
+        });
+    });
+
     describe("Details 제목 맨 앞 낱말", () => {
         const toSummaryTree = (text: string): Root => {
             return {

@@ -139,6 +139,7 @@ A link to a local file of a type that is not deployed shows the same warning. Fo
 Heading anchors are generated automatically from the headings. If the same heading repeats, `-1` and `-2` are appended.
 A `#hash` that points to a heading that does not exist, in the same document or in another document, shows the same kind of warning with the file and line number. Links to headings on the home page are not checked. Supported since `0.24.0`.
 An id written in raw HTML, such as `<a id="01"></a>` inside a heading, is also a target, so a link can use a stable number instead of the heading text. Since `0.29.1`.
+A raw `<a id="ssd-001"></a>` at the start of a table cell makes that row a target. Arriving there highlights the row for a few seconds, and the cell stays on one line. A link whose text is an identifier with a hyphen and a number, such as `SSD-001` or `PROJ-12`, stays on one line instead of breaking after the hyphen, and so does a link that starts with an image, such as an icon before a label. Since `0.31.0`.
 Navigating to a heading inside Details expands the collapsed content.
 In public documents and the home page, do not link to private files or `/private/` paths.
 A link whose text is a configured prefix and a number, such as `[Q3](questions.md#q3)`, is shown as a chip. See [Reference chips](settings.md#reference-chips).
