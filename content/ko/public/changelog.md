@@ -17,6 +17,12 @@ pnpm add -D --save-exact for-humanity@latest
 
 버전별 패키지 파일은 [GitHub Releases](https://github.com/nomeehej/for-humanity/releases)에서 받을 수 있습니다.
 
+## 0.31.4 — 2026-11-03
+
+**Upgrade:** Existing projects remain compatible. Rebuild and redeploy to get the default favicon back.
+
+- Restore the default favicon, the cream pixel face. Since 0.29.0 the package shipped the brown face of a consumer site because that site's favicon sync wrote into a linked checkout of this repository.
+
 ## 0.31.3 — 2026-11-03
 
 **Upgrade:** Existing projects remain compatible. Rebuild and redeploy to apply the Mermaid fix. A project that pinned a local patch for this (`patches/for-humanity@0.31.1.patch`) can drop it. 0.31.2 was tagged but its release failed on lint before publishing, so this is the first version with the fix.
