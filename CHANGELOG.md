@@ -1,6 +1,8 @@
 # Changelog
 
-## Unreleased
+## 0.31.1 — 2026-11-03
+
+**Upgrade:** Existing projects remain compatible. Rebuild and redeploy to apply the marked image size fix.
 
 - Keep a marked image at its own size, centered in its box, instead of stretching a narrow screenshot to the text width. A wide one still shrinks to fit.
 
