@@ -1,6 +1,8 @@
 # Changelog
 
-## Unreleased
+## 0.31.0 — 2026-11-03
+
+**Upgrade:** Existing projects remain compatible. Rebuild and redeploy to apply the Details status position, marked images, table row targets and one-line identifier links. CLI commands, configuration, document syntax and Node.js requirements are unchanged.
 
 - Add a marked image, `<figure class="fx-shot">`, that puts numbered boxes over a screenshot in percent of its size, with a switch on the top right border that hides them. See [Figures](https://for-humanity.fyi/figures/#marked-image).
 - Make a raw `<a id>` at the start of a table cell a target for its row. Arriving there highlights the row for a few seconds, and the cell stays on one line.
