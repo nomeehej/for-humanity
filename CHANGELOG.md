@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.31.2 — 2026-11-03
+
+**Upgrade:** Existing projects remain compatible. Rebuild and redeploy to apply the Mermaid fix. A project that pinned a local patch for this (`patches/for-humanity@0.31.1.patch`) can drop it.
+
+- Keep the global reduced-motion rule out of the Mermaid measurement container. With `prefers-reduced-motion: reduce` the 0.01ms transition applied to every element made Mermaid measure labels mid-transition, so a flowchart label came out about a fifth of its height and the diagram shrank with it.
+
 ## 0.31.1 — 2026-11-03
 
 **Upgrade:** Existing projects remain compatible. Rebuild and redeploy to apply the marked image size fix.
