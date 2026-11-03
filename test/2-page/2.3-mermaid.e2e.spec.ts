@@ -2,6 +2,9 @@ import {expect} from "@playwright/test";
 import {diagram_cases} from "@test/_constant/diagram";
 import {test} from "@test/_fixture/site";
 
+// 움직임 줄이기 비교에서 허용하는 SVG 크기 차이. 같은 브라우저의 같은 문서라 소수점 반올림만 남는다
+const size_tolerance_px = 2;
+
 // 이 파일의 페이지 주소 기준은 mermaidSite
 test.use({
     baseURL: async ({mermaidSite}, use) => {
@@ -263,10 +266,12 @@ test.describe("다이어그램", () => {
              * THEN
              * 전역 전이 규칙이 라벨 측정에 끼어들지 않아 SVG 높이와 너비가 같다
              */
-            expect(normal).not.toBeNull();
-            expect(box).not.toBeNull();
-            expect(Math.abs((box?.height ?? 0) - (normal?.height ?? 0))).toBeLessThan(2);
-            expect(Math.abs((box?.width ?? 0) - (normal?.width ?? 0))).toBeLessThan(2);
+            if (normal === null || box === null) {
+                throw new Error("The rendered diagram has no bounding box");
+            }
+
+            expect(Math.abs(box.height - normal.height)).toBeLessThan(size_tolerance_px);
+            expect(Math.abs(box.width - normal.width)).toBeLessThan(size_tolerance_px);
         });
     });
 
