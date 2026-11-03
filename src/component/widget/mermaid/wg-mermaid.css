@@ -29,4 +29,11 @@
     left: -100000px;
     visibility: hidden;
     letter-spacing: 0;
+    /* 움직임 줄이기의 전역 규칙(base.css)이 모든 요소에 거는 0.01ms 전이도 측정 중에는 끈다.
+       전이가 걸리면 Mermaid가 라벨 크기를 전이 도중의 값으로 재어 흐름도 라벨이 5분의 1 높이로 나왔다 */
+    transition: none !important;
+}
+
+.wg_mermaid__measurement * {
+    transition: none !important;
 }

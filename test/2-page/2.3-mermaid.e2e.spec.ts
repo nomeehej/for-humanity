@@ -234,6 +234,42 @@ test.describe("다이어그램", () => {
         });
     });
 
+    test.describe("움직임 줄이기", () => {
+        test("[MRM-025] 움직임 줄이기 설정에서도 다이어그램의 크기가 같다", {tag: "@high"}, async ({page, browser, baseURL}) => {
+            /**
+             * GIVEN
+             * 기본 설정으로 연 다이어그램 문서의 SVG 크기
+             */
+            await page.goto("/flowchart/");
+            await expect(page.locator('[data-mermaid-status="rendered"]')).toHaveCount(1);
+
+            const normal = await page.locator(".wg_mermaid__result svg").boundingBox();
+
+            /**
+             * WHEN
+             * 움직임 줄이기를 켠 브라우저 문맥에서 같은 문서 조회
+             */
+            const context = await browser.newContext({baseURL, reducedMotion: "reduce"});
+            const reduced = await context.newPage();
+
+            await reduced.goto("/flowchart/");
+            await expect(reduced.locator('[data-mermaid-status="rendered"]')).toHaveCount(1);
+
+            const box = await reduced.locator(".wg_mermaid__result svg").boundingBox();
+
+            await context.close();
+
+            /**
+             * THEN
+             * 전역 전이 규칙이 라벨 측정에 끼어들지 않아 SVG 높이와 너비가 같다
+             */
+            expect(normal).not.toBeNull();
+            expect(box).not.toBeNull();
+            expect(Math.abs((box?.height ?? 0) - (normal?.height ?? 0))).toBeLessThan(2);
+            expect(Math.abs((box?.width ?? 0) - (normal?.width ?? 0))).toBeLessThan(2);
+        });
+    });
+
     test.describe("스크립트 비활성", () => {
         test.use({javaScriptEnabled: false});
 
