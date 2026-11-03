@@ -22,7 +22,7 @@ order: 40
 | 7     | [Writing skill](#writing-skill)           | Planned | 검토 가능한 문서를 쓰는 에이전트 스킬 |
 | 8     | [Subpath deployment](#subpath-deployment) | Done | 하위 URL 경로의 정적 배포             |
 | 9     | [Vite integration](#vite-integration) | Done | 패키지 빌드, 사용자 dev와 preview 통합 |
-| 10    | [Server features](#server-features) | Planned | API, 인증, 사용자 저장소 연결 |
+| 10    | [Server features](#server-features) | Planned | 편집 링크, GitHub 로그인과 제한 문서, 화면 편집 |
 | 11    | [Locales](#locales) | Done | 기본 언어 루트와 `/<code>/` 번역 문서 |
 
 각 단계의 체크박스는 작업 완료와 검증 후 Markdown 원본에서 갱신.
@@ -93,7 +93,7 @@ Node 22.12.0과 24.3.0에서 설치 패키지의 공개 타입, build, dev, prev
 
 `0.13.0`의 공개 검증은 Ubuntu와 Windows CI, 패키지 설치 검사로 수행합니다. 결과는 [CI 실행 기록](https://github.com/nomeehej/for-humanity/actions/workflows/ci.yml)과 [GitHub Release](https://github.com/nomeehej/for-humanity/releases/tag/v0.13.0)에서 확인합니다. Node 지원 범위, 버전, 태그의 일치 기준은 [Releases](release-policy.md), 공개 절차는 [Maintenance](https://github.com/nomeehej/for-humanity/blob/main/content/private/maintenance.md#packaging-and-release)를 따릅니다.
 
-검색, 로그인, DB 연결은 아래 후속 단계에서 별도로 설계합니다.
+검색, 로그인, 제한 문서는 아래 [Search](#search)와 [Server features](#server-features)에서 진행합니다.
 
 각 단계는 `pnpm test`, `pnpm check`, `pnpm build`, `git diff --check` 통과 후 별도 커밋으로 남깁니다. 번들, 브라우저, 개발 서버 변경 단계에서는 관련 Playwright 검사와 설치 패키지 검사도 실행합니다.
 완료 기준: 기존 정적 출력 계약을 유지하면서 저장소와 설치 패키지의 개발과 정적 미리보기가 Vite로 실행되고, 별도 파일 감시, SSE, esbuild 실행 코드와 Hono 정적 미리보기 서버가 제거된 상태.
@@ -163,31 +163,40 @@ prototype의 첫 버전 `0.1.0`은 `dev`, `build`, `preview`를 지원. `init`�
 
 ## Server features
 
-검색, 로그인, 사용자별 데이터가 필요한 프로젝트를 위한 선택적 확장. 현재 패키지는 공개 정적 문서 도구이며 운영 API, 인증, DB 어댑터는 아직 제공하지 않습니다. 구조와 단계는 [Server design](server-design.md)에 둡니다.
+정적 출력을 그대로 두고 필요한 프로젝트만 켜는 확장. 문서 원본은 Git 저장소의 Markdown, 신원과 권한은 문서 저장소의 GitHub 권한, 편집의 저장은 커밋. 이 단계들에는 DB가 없습니다. 구조와 결정은 [Server design](server-design.md).
+검색은 서버가 필요 없어 [Search](#search) 단계에서 따로 진행합니다.
 
-- [ ] 공개 검색과 권한별 검색의 데이터와 응답 계약 구분
-- [ ] 로그인, 세션, 권한의 요구사항과 인증 서비스 연결 방식 결정
-- [ ] 첫 지원 저장소 선정과 연결 설정, 어댑터 타입, 스키마, 마이그레이션 계약 제공
-- [ ] 기존 사내 API를 쓰는 경우의 서버 어댑터 범위 결정
-- [ ] 문서 URL과 충돌하지 않는 API 경로, 요청, 응답, 오류 명세 제공
-- [ ] 공통 Hono 앱의 운영 진입점과 배포 플랫폼 검증
-- [ ] 개발 명령 하나로 문서와 API를 같은 포트에서 실행, API 변경 반영과 종료 시 연결 정리 검증
-- [ ] 개발용 DB 연결과 로컬 실행 안내, 플랫폼 전용 기능의 개발 환경 검증
-- [ ] 비공개 문서, 첨부, 검색 인덱스의 권한 검사와 정적 출력 제외 검증
+1. 편집 링크: `repository` 설정과 문서 아래 GitHub 웹 편집기 링크. 서버 없음
+2. 제한 문서와 로그인: `content/restricted`를 `dist-restricted`로 분리하고, GitHub App 로그인 뒤 저장소 읽기 권한이 있는 사용자에게만 제공. 비공개 저장소 전용
+3. 화면 편집: Markdown 소스 편집기와 서버 미리보기, 저장은 그 사용자의 커밋. 편집 링크와 브랜치 미리보기 배포로 부족할 때 시작
 
-사용자가 DB, 인증 서비스, 배포 환경을 소유하고 운영합니다. 패키지의 HTTP API 명세와 서버 내부의 저장소 연결 계약은 별개입니다. 공개 정적 문서 사용자는 DB를 설치하지 않아도 됩니다.
-개발, 미리보기, 운영의 실행 방식과 플랫폼별 책임은 [Development, preview and production](https://github.com/nomeehej/for-humanity/blob/main/content/private/architecture.md#development-preview-and-production). 운영 배포에는 `dev`나 `preview` 대신 지원 플랫폼의 Hono 실행 진입점을 사용합니다.
-완료 기준: 지원하는 환경에 패키지를 설치하고 사용자 소유 서비스에 연결한 뒤, 인증, 권한, 저장, 검색을 실제 요청으로 검증할 수 있음.
+- [ ] `repository` 설정(저장소, 브랜치, 저장소 안 프로젝트 경로)과 문서별 원본 경로
+- [ ] 문서 아래 편집 링크와 문서별, 사이트별 숨김
+- [ ] 제한 폴더 수집, `/restricted/` URL, `dist-restricted` 출력, `/restricted/_fh/media/` 자원, 참조 방향 검사
+- [ ] 공개 출력의 HTML, 그림, 첨부, 탐색, 사이트맵, 검색 인덱스에서 제한 문서 제외 검증
+- [ ] GitHub App 로그인, 저장소 권한과 공개 여부 확인, 서명 쿠키 세션과 만료
+- [ ] 공통 Hono 서버 앱과 `for-humanity serve`, 가짜 GitHub 서버로 로그인, 권한, 캐시 규칙 검사
+- [ ] Cloudflare Workers 진입점과 제한 출력 제공, `init`의 서버 설정
+- [ ] GitHub App 만들기 명령과 저장소 설치 안내
+- [ ] 편집 링크와 브랜치 미리보기 배포를 쓰는 기본 편집 흐름 안내
+- [ ] 3단계: 편집 화면, 서버 미리보기, 커밋 저장과 sha 충돌 검사
+
+사용자가 GitHub App, 배포 환경, 비밀값을 소유하고 운영합니다. 비밀값은 서버 환경 변수에서만 읽고 HTML, 브라우저 번들, 설정 출력에 넣지 않습니다. 정적 전용 사용자는 서버 진입점을 가져오지 않습니다.
+댓글, 조회수 같은 런타임 상태는 미계획입니다. 요청이 생기면 문서 경로를 키로 쓰는 별도 저장소로 설계합니다.
+개발, 미리보기, 운영의 실행 방식과 플랫폼별 책임은 [Development, preview and production](https://github.com/nomeehej/for-humanity/blob/main/content/private/architecture.md#development-preview-and-production). 운영 배포에는 `dev`나 `preview` 대신 `serve` 또는 Workers 진입점을 사용합니다.
+완료 기준: 비공개 저장소의 문서 프로젝트를 Node와 Cloudflare Workers에 배포하고, 로그인하지 않은 요청, 권한 없는 사용자, 읽기 권한 사용자의 응답과 공개 출력의 제외를 실제 요청으로 검증할 수 있음.
 
 ## Search
 
 문서가 늘어났을 때 제목, section, 본문에서 필요한 내용을 찾는 기능.
-정적 배포 환경에서 사용하는 검색 인덱스와 브라우저 동작 검토.
+서버 없이 정적 출력에 추가하며 구조는 [Server design](server-design.md#검색)의 1단계.
 
-후보: [Pagefind](https://pagefind.app/). 빌드 결과 HTML로 정적 인덱스를 만들고 결과를 제목 앵커 단위(sub results)로 반환해 완료 기준의 hash 일치와 맞음. 인덱스를 조각으로 나눠 필요한 만큼만 받으므로 문서가 늘어도 첫 요청이 가벼움. `<html lang>`별로 인덱스를 나누므로 사이트 설정 `lang`과 연결. 기본 UI 대신 JS API로 현재 화면 구성 유지. 플랫폼별 바이너리 의존성 확인 필요. 문서가 적으면 인덱스 JSON 하나를 받는 MiniSearch와 비교.
+엔진: [Pagefind](https://pagefind.app/). 2026-11-03 실제 문서 모음 두 개로 MiniSearch와 비교해 선정. 한국어 질의 48개 중 Pagefind와 질의 조사 처리가 40개, MiniSearch가 35개를 상위 3개 안에 찾았고, 51문서 사이트의 첫 검색 전 전송량은 145KB와 266KB. 비교 표는 [검색 엔진 비교](server-design.md#검색-엔진-비교).
+store의 문서 본문으로 만든 색인용 HTML을 Node API에 넘겨 dev와 build가 같은 방식으로 인덱스를 만들고, 출력은 내용 지문 폴더 `/_fh/search/<지문>/`. 결과는 제목 앵커 단위(sub results)라 완료 기준의 hash 일치와 맞음. 인덱스는 `<html lang>`별. 기본 UI 대신 JS API로 현재 화면 구성 유지.
 
-- [ ] 검색 대상, 결과 항목, 한국어와 코드 식별자의 검색 기준 정의
-- [ ] 빌드 시 인덱스 생성과 브라우저 검색 구현
+- [x] 검색 엔진 비교와 선정
+- [ ] 검색 대상, 결과 항목, 한국어 조사와 코드 식별자의 검색 기준 정의
+- [ ] 빌드와 dev의 인덱스 생성, 첫 입력 때 불러오는 브라우저 검색
 - [ ] 검색 결과의 문서와 section 링크 연결
 - [ ] 키보드 이동, 빈 결과, 좁은 화면 확인
 - [ ] 문서 규모별 인덱스 크기와 응답 시간 측정
