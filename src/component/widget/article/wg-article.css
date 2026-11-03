@@ -704,6 +704,22 @@
         outline: var(--app-outline-focus);
         outline-offset: calc(-1 * var(--app-outline-focus-offset));
     }
+
+    /* 제목 속 상태 표지는 적은 자리와 무관하게 셰브런 앞 오른쪽 끝. 첫 표지만 남은 폭을 밀어냄 */
+    & > .wg_article__pill {
+        flex: none;
+        order: 1;
+        margin-left: auto;
+    }
+
+    & > .wg_article__pill ~ .wg_article__pill {
+        margin-left: 0;
+    }
+
+    &:has(> .wg_article__pill)::after {
+        order: 2;
+        margin-left: 0;
+    }
 }
 
 /* 펼친 Details의 제목 줄. 가리킬 때와 같은 바탕으로 열린 줄 표시, 본문과 사이에 옅은 선 */

@@ -17,6 +17,10 @@ pnpm add -D --save-exact for-humanity@latest
 
 버전별 패키지 파일은 [GitHub Releases](https://github.com/nomeehej/for-humanity/releases)에서 받을 수 있습니다.
 
+## Unreleased
+
+- Place a status badge in a Details title at the right end of the row, before the chevron, wherever the phrase is written. A list of question cards now lines up its statuses along the right edge.
+
 ## 0.30.0 — 2026-11-02
 
 **Upgrade:** Existing projects remain compatible. Rebuild and redeploy to apply the figure box, the lighter list bullets and the Details changes. CLI commands, configuration, document syntax and Node.js requirements are unchanged.

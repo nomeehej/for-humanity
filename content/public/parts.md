@@ -54,7 +54,7 @@ Check the following before you build the public documents.
 
 The title of Details is always visible, and the body is collapsed by default. A title and a body are required.
 A chevron at the right end of the title row points down while the body is collapsed and up while it is open. An open title row keeps the hover shade, and the body slides open and closed over 320ms where the browser can animate it.
-A title that starts with a configured prefix and a number, such as `Q3 · Which unit?`, shows that word as a [reference chip](settings.md#reference-chips), so a list of question cards can be scanned by number.
+A title that starts with a configured prefix and a number, such as `Q3 Which unit?`, shows that word as a [reference chip](settings.md#reference-chips), so a list of question cards can be scanned by number. A [status badge](settings.md#status-badges) in the title sits at the right end of the row, before the chevron, wherever it is written.
 Add `{open}` to expand it from the start. `open=true` and `open=false` are not allowed.
 `open=""`, which attaches a value, and a duplicate `open` are also errors. `{open}` is a single attribute without a value.
 
