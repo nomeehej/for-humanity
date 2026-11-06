@@ -672,7 +672,10 @@
     }
 
     /* 본문은 제목 글자와 같은 시작선. 접힌 높이 0에서 320ms 동안 펼침, 여백도 함께 */
+
+    /* 독립 서식 맥락. overflow clip은 여백 겹침을 막지 않아 padding이 0에 닿는 마지막 프레임에 마지막 자식의 아래 여백이 상자 밖으로 새고 접힘 끝이 덜컥거림 */
     &::details-content {
+        display: flow-root;
         box-sizing: border-box;
         block-size: 0;
         overflow: clip;
