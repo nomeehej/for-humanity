@@ -48,7 +48,7 @@ describe("공개와 내부 문서", () => {
              * THEN
              * 공개 출력 전체에서 내부 자료 제외, 로컬 전용 경로 제공
              */
-            expect(html).toContain('<a href="/guide/">Guide</a>');
+            expect(html).toContain('<a href="/guide/" target="_blank" rel="noopener">Guide</a>');
             expect(entries.map((entry) => entry.replaceAll("\\", "/"))).toContain("guide/index.html");
             expect(entries.some((entry) => /private|secret|mermaid|scratch/.test(entry))).toBe(false);
             expect(html).not.toContain("INTERNAL_");
@@ -144,8 +144,8 @@ describe("공개와 내부 문서", () => {
              * 내부 폴더 없이도 빌드 성공, 공개 폴더 이름 없는 문서 링크
              */
             expect(result.status, result.stderr).toBe(0);
-            expect(await readFile(join(root, "knowledge/dist/index.html"), "utf8")).toContain('<a href="/guide/setup/">Guide</a>');
-            expect(await readFile(join(root, "knowledge/dist/guide/setup/index.html"), "utf8")).toContain('<a href="/">Home</a>');
+            expect(await readFile(join(root, "knowledge/dist/index.html"), "utf8")).toContain('<a href="/guide/setup/" target="_blank" rel="noopener">Guide</a>');
+            expect(await readFile(join(root, "knowledge/dist/guide/setup/index.html"), "utf8")).toContain('<a href="/" target="_blank" rel="noopener">Home</a>');
         });
 
         test("[CNT-010] 공개 폴더가 없으면 루트 전체를 대신 게시하지 않는다", async ({root}) => {
@@ -191,7 +191,7 @@ describe("공개와 내부 문서", () => {
              * 공개 부모의 URL과 내부 페이지 유지
              */
             expect(response.status).toBe(200);
-            expect(await response.text()).toContain('<a href="/guide/">Guide</a>');
+            expect(await response.text()).toContain('<a href="/guide/" target="_blank" rel="noopener">Guide</a>');
         });
     });
 

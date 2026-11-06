@@ -49,8 +49,11 @@ export default {title: "Project notes"};
 | `port` | dev와 preview 포트, 1부터 65535까지 정수 | `4321` |
 | `host` | dev와 preview 수신 주소. `0.21.0`부터 지원 | `localhost` |
 | `cursorFace` | 데스크톱에서 마우스를 따라다니는 픽셀 얼굴 | `false` |
+| `linkTarget` | 본문 링크가 열리는 자리, `new-tab` 또는 `same-tab`. 같은 페이지의 `#hash` 링크는 현재 탭에 남음. `0.32.0`부터 지원 | `new-tab` |
 
 사이트 홈의 제목과 본문은 `content/README.md`에 작성합니다. 문서 페이지의 설명에는 각 문서의 `label`을 사용합니다. `url`을 지정하면 검색 엔진용 파일, 대표 주소, 링크 미리보기 태그를 생성합니다. `image`는 `url`과 함께 사용하며 PNG, JPEG, GIF, WebP 파일을 지정합니다. URL 형식과 출력은 [Crawling](crawling.md)을 참고합니다.
+
+본문의 링크는 기본으로 새 탭에서 열려 읽던 페이지가 그대로 남습니다. 현재 탭에서 이동하려면 `linkTarget`을 `same-tab`으로 지정합니다. 같은 페이지의 제목을 가리키는 `#hash` 링크는 항상 현재 탭에 남고, 원시 HTML에 `target`을 직접 쓴 링크는 그 값을 유지합니다.
 
 ## Local server
 

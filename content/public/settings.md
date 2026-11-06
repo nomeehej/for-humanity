@@ -49,8 +49,11 @@ Keep only one of `.ts` and `.mjs` in a project.
 | `port` | Port for dev and preview, an integer from 1 to 65535 | `4321` |
 | `host` | Listening address for dev and preview. Supported since `0.21.0` | `localhost` |
 | `cursorFace` | Pixel face that follows the mouse on desktop | `false` |
+| `linkTarget` | Where a link in the body opens, `new-tab` or `same-tab`. A `#hash` link to the same page stays in the current tab. Supported since `0.32.0` | `new-tab` |
 
 Write the title and body of the site home in `content/README.md`. The description of a document page uses the `label` of each document. If you set `url`, crawler files, canonical URLs and link preview tags are generated. Use `image` together with `url` and point it to a PNG, JPEG, GIF or WebP file. For the URL format and the output, see [Crawling](crawling.md).
+
+Links in the body open in a new tab by default, so the page being read stays where it is. Set `linkTarget` to `same-tab` to navigate in the current tab. A `#hash` link to a heading on the same page always stays in the current tab, and a raw HTML link with its own `target` keeps it.
 
 ## Local server
 

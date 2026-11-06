@@ -143,6 +143,7 @@ part는 본문과 목차에서 절의 묶음을 표시합니다. 제목에 자�
 Details 안의 제목으로 이동하면 접힌 내용이 펼쳐집니다.
 공개 문서와 홈에서는 private 파일이나 `/private/` 경로를 링크하지 않습니다.
 `[Q3](questions.md#q3)`처럼 글자가 설정한 접두와 번호인 링크는 칩으로 표시합니다. [Reference chips](settings.md#reference-chips)를 참고합니다.
+본문의 링크는 같은 페이지의 `#hash` 링크를 빼고 새 탭에서 열립니다. [Site](settings.md#site)의 `linkTarget` 설정으로 바꿉니다. `0.32.0`부터 지원합니다.
 
 ## Flowcharts
 

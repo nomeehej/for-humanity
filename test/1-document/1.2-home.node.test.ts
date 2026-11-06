@@ -59,7 +59,7 @@ describe("홈", () => {
             expect(html).toMatch(/Welcome home\./);
             expect(html).toMatch(/<div align="center">/);
             expect(html).toMatch(/src="\/favicon\.svg" width="96" height="96"/);
-            expect(html).toContain('<a href="/guide/setup/">Guide</a>');
+            expect(html).toContain('<a href="/guide/setup/" target="_blank" rel="noopener">Guide</a>');
             expect(html).toMatch(/href="#start" data-toc-link/);
             expect(html).toMatch(/class="shiki/);
             expect(html).toMatch(/wg_sidebar__brand" href="\/" aria-current="page"/);
@@ -126,7 +126,7 @@ describe("홈", () => {
             expect(home).toMatch(/Welcome\./);
             expect(korean).toContain('<html lang="ko"');
             expect(korean).toContain('name="description" content="한국어 안내"');
-            expect(korean).toContain('<a href="/">English</a>');
+            expect(korean).toContain('<a href="/" target="_blank" rel="noopener">English</a>');
             expect(korean).toMatch(/wg_sidebar__brand" href="\/ko\/" aria-current="page"/);
             expect(japanese).toContain('<html lang="ja"');
             expect(japanese).not.toContain('name="description"');

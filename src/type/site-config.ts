@@ -8,6 +8,7 @@ import {
     copy_error_site_host,
     copy_error_site_image,
     copy_error_site_lang,
+    copy_error_site_link_target,
     copy_error_site_locale,
     copy_error_site_url,
     copy_error_status_image,
@@ -22,6 +23,8 @@ import {
     site_image_pattern,
     site_lang_default,
     site_lang_pattern,
+    site_link_target,
+    site_link_target_default,
     site_locale_pattern,
     site_locales_default,
     site_navigation_default,
@@ -118,6 +121,11 @@ export const siteConfigSchema = z.object({
      * 데스크톱 커서 옆 픽셀 얼굴, 기본 꺼짐. favicon은 설정과 무관
      */
     cursorFace: z.boolean().default(site_cursor_face_default),
+
+    /**
+     * 본문 링크가 열리는 자리. 같은 문서의 hash 링크는 늘 현재 탭
+     */
+    linkTarget: z.enum(site_link_target, {error: copy_error_site_link_target}).default(site_link_target_default),
 
     /**
      * 탐색 묶음 경로의 읽는 순서. 미지정 형제 묶음은 뒤에서 이름순
@@ -243,6 +251,11 @@ export interface SiteConfig {
      * 데스크톱 커서 얼굴 표시, 기본값 false
      */
     cursorFace?: z.input<typeof siteConfigSchema>["cursorFace"];
+
+    /**
+     * 본문 링크가 열리는 자리, new-tab 또는 same-tab. 기본값 new-tab, 같은 문서의 hash 링크는 늘 현재 탭
+     */
+    linkTarget?: z.input<typeof siteConfigSchema>["linkTarget"];
 
     /**
      * 탐색 묶음의 표시 순서, 문자열 또는 중첩 이름 경로

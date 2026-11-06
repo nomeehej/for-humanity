@@ -118,6 +118,11 @@ export const copy_error_ref_duplicate = "refs[].prefix must be unique";
 export const copy_error_site_locale = "locales keys must be lowercase language tags such as ko or zh-hans";
 
 /**
+ * 본문 링크 자리 설정의 값 오류
+ */
+export const copy_error_site_link_target = "linkTarget must be new-tab or same-tab";
+
+/**
  * 기본 언어 공개 문서 id가 번역 언어 접두사로 시작하는 오류
  */
 export const copy_error_locale_id = "The locale URL prefix is reserved for translated documents";

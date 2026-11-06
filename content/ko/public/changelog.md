@@ -17,6 +17,13 @@ pnpm add -D --save-exact for-humanity@latest
 
 버전별 패키지 파일은 [GitHub Releases](https://github.com/nomeehej/for-humanity/releases)에서 받을 수 있습니다.
 
+## Unreleased
+
+**Upgrade:** Links in the body now open in a new tab by default. Set `linkTarget: "same-tab"` in `for-humanity.config.ts` to keep the previous behavior. Rebuild and redeploy to apply the Details fix.
+
+- Open links in the body in a new tab, except a `#hash` link to the same page, so the page being read stays where it is. The new `linkTarget` setting (`new-tab`, `same-tab`) chooses the behavior. See [Settings](https://for-humanity.fyi/settings/#site).
+- Keep the Details content box steady at the end of the collapse. `overflow: clip` does not stop margin collapsing, so when the animated padding reached zero the last child's bottom margin escaped the box and the box grew for one frame before `content-visibility` hid it.
+
 ## 0.31.4 — 2026-11-03
 
 **Upgrade:** Existing projects remain compatible. Rebuild and redeploy to get the default favicon back.

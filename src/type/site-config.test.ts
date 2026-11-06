@@ -107,6 +107,7 @@ describe("사이트 설정", () => {
                 port: 4321,
                 host: "localhost",
                 cursorFace: false,
+                linkTarget: "new-tab",
                 navigation: [],
                 status: [
                     {phrase: "확인됨", kind: "verified", date: true},
@@ -164,6 +165,7 @@ describe("사이트 설정", () => {
                 port: 4322,
                 host: "localhost",
                 cursorFace: true,
+                linkTarget: "new-tab",
                 navigation: [["Guide"], ["Projects", "Research"]],
                 status: [],
                 refs: [],
@@ -194,6 +196,7 @@ describe("사이트 설정", () => {
             {name: "소수 포트", input: {port: 4321.5}},
             {name: "문자열 포트", input: {port: "4321"}},
             {name: "문자열 커서 설정", input: {cursorFace: "true"}},
+            {name: "지원하지 않는 링크 자리", input: {linkTarget: "popup"}},
             ...[
                 "",
                 "/",

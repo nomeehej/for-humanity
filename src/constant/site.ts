@@ -77,3 +77,13 @@ export const site_locales_default = {};
  * 번역 언어 코드 구문. 문서 폴더 이름과 URL 접두에 쓰는 소문자 BCP 47 태그
  */
 export const site_locale_pattern = /^[a-z]{2,3}(?:-[a-z0-9]{2,8})*$/;
+
+/**
+ * 본문 링크가 열리는 자리의 선택지. 같은 문서의 hash 링크는 제외
+ */
+export const site_link_target = ["new-tab", "same-tab"] as const;
+
+/**
+ * 본문 링크의 기본값. 읽던 페이지를 떠나지 않도록 새 탭
+ */
+export const site_link_target_default = "new-tab";

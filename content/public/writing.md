@@ -143,6 +143,7 @@ A raw `<a id="ssd-001"></a>` at the start of a table cell makes that row a targe
 Navigating to a heading inside Details expands the collapsed content.
 In public documents and the home page, do not link to private files or `/private/` paths.
 A link whose text is a configured prefix and a number, such as `[Q3](questions.md#q3)`, is shown as a chip. See [Reference chips](settings.md#reference-chips).
+A link in the body opens in a new tab, except a `#hash` link to the same page. The `linkTarget` setting in [Site](settings.md#site) changes this. Since `0.32.0`.
 
 ## Flowcharts
 
