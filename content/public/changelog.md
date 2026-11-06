@@ -17,7 +17,7 @@ pnpm add -D --save-exact for-humanity@latest
 
 Package files for each version are available from [GitHub Releases](https://github.com/nomeehej/for-humanity/releases).
 
-## Unreleased
+## 0.32.0 — 2026-11-06
 
 **Upgrade:** Links in the body now open in a new tab by default. Set `linkTarget: "same-tab"` in `for-humanity.config.ts` to keep the previous behavior. Rebuild and redeploy to apply the Details fix.
 
