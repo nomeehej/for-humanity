@@ -4,19 +4,18 @@ import {asset_srcset_candidate_pattern} from "@/app/_constant/asset";
 import type {ResolvedSiteConfig} from "@/type/site-config";
 import {toSitePath} from "@/util/url/to-site-path";
 
-/**
- * 본문 URL의 배포 경로 입력
- */
+// ----------------------------------------------------------------------------------------
+// 본문 URL의 배포 경로 입력
+//
+// basePath: 끝 슬래시를 포함한 검증된 배포 경로
+// ----------------------------------------------------------------------------------------
 interface BasePathOptions {
-    /**
-     * 끝 슬래시를 포함한 검증된 배포 경로
-     */
     basePath: ResolvedSiteConfig["basePath"];
 }
 
-/**
- * 문서와 자원 수집 이후의 URL 변환, 원시 HTML과 Mermaid 포함
- */
+// ----------------------------------------------------------------------------------------
+// 문서와 자원 수집 이후의 URL 변환, 원시 HTML과 Mermaid 포함
+// ----------------------------------------------------------------------------------------
 export const rehypeBasePath = (options: BasePathOptions) => (tree: Root) => {
     visit(tree, "element", (node) => {
         for (const property of ["href", "src", "poster", "data", "action", "formAction", "cite", "dataMermaidModule", "srcSet"]) {

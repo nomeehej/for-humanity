@@ -8,27 +8,22 @@ import type {InitOptions} from "@/entry/init/_type/init";
 import {type InitInput, initBranchSchema, initContentSchema, initRepositorySchema, initTitleSchema, initUrlSchema, initWorkerNameSchema} from "@/entry/init/_type/init-input";
 import {siteConfigSchema} from "@/type/site-config";
 
-/**
- * 명시적 인자와 로컬 후보를 대화형 입력으로 보완하는 경계
- */
+// ----------------------------------------------------------------------------------------
+// 명시적 인자와 로컬 후보를 대화형 입력으로 보완하는 경계
+//
+// args: 검증한 초기화 인자
+// project: 기존 프로젝트와 Git 후보
+// interactive: 터미널 질문 사용 여부
+// ----------------------------------------------------------------------------------------
 interface InitOptionsParams {
-    /**
-     * 검증한 초기화 인자
-     */
     args: InitInput;
-    /**
-     * 기존 프로젝트와 Git 후보
-     */
     project: InitProject;
-    /**
-     * 터미널 질문 사용 여부
-     */
     interactive: boolean;
 }
 
-/**
- * 공통 질문과 호스팅별 필수 입력 수집
- */
+// ----------------------------------------------------------------------------------------
+// 공통 질문과 호스팅별 필수 입력 수집
+// ----------------------------------------------------------------------------------------
 export const toInitOptions = async (params: InitOptionsParams): Promise<InitOptions> => {
     if (params.interactive && (params.args.title === undefined || params.args.content === undefined || params.args.lang === undefined)) {
         printInitPanel({title: init_copy.siteStep, message: init_copy.siteHint});

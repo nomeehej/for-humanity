@@ -4,23 +4,20 @@ import {dirname, join} from "node:path";
 import {readInitFile} from "@/entry/init/_function/read-init-file";
 import type {InitChange} from "@/entry/init/_type/init";
 
-/**
- * 적용할 파일과 프로젝트 경계
- */
+// ----------------------------------------------------------------------------------------
+// 적용할 파일과 프로젝트 경계
+//
+// root: 프로젝트의 절대 경로
+// change: 기대하는 원본과 완성한 파일 내용
+// ----------------------------------------------------------------------------------------
 interface InitWriteParams {
-    /**
-     * 프로젝트의 절대 경로
-     */
     root: string;
-    /**
-     * 기대하는 원본과 완성한 파일 내용
-     */
     change: InitChange;
 }
 
-/**
- * 임시 파일 완성 후 새 파일은 배타적 생성, 기존 파일은 원본 재확인 후 교체
- */
+// ----------------------------------------------------------------------------------------
+// 임시 파일 완성 후 새 파일은 배타적 생성, 기존 파일은 원본 재확인 후 교체
+// ----------------------------------------------------------------------------------------
 export const writeInitChange = async (params: InitWriteParams) => {
     const path = join(params.root, params.change.path);
     const temporary = join(dirname(path), `.for-humanity-${randomUUID()}.tmp`);

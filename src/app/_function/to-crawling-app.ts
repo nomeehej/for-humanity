@@ -7,31 +7,25 @@ import {toAlternates} from "@/util/locale/to-alternates";
 import {toPagePath} from "@/util/url/to-page-path";
 import {toSitePath} from "@/util/url/to-site-path";
 
-/**
- * URL을 명시한 공개 프로젝트의 크롤러 응답 입력
- */
+// ----------------------------------------------------------------------------------------
+// URL을 명시한 공개 프로젝트의 크롤러 응답 입력
+//
+// url: 설정 검증에서 루트 origin으로 정규화한 공개 HTTP(S) URL
+// site: 배포 경로와 언어 설정
+// store: dev 파일 변경 시 교체되는 현재 문서 목록, 본문은 사이트맵에 포함하지 않음
+// ----------------------------------------------------------------------------------------
 interface CrawlingParams {
-    /**
-     * 설정 검증에서 루트 origin으로 정규화한 공개 HTTP(S) URL
-     */
     url: NonNullable<ResolvedSiteConfig["url"]>;
-
-    /**
-     * 배포 경로와 언어 설정
-     */
     site: ResolvedSiteConfig;
-
-    /**
-     * dev 파일 변경 시 교체되는 현재 문서 목록. 본문은 사이트맵에 포함하지 않음
-     */
     store: PageParams["store"];
 }
 
-/**
- * dev와 정적 빌드에서 같은 크롤러 파일 생성. 정책, 수정 시각은 추정하지 않고 frontmatter 날짜만 사용
- *
- *   - 번역이 둘 이상인 페이지만 hreflang 대체 링크, 기본 언어판은 x-default 겸함
- */
+// ----------------------------------------------------------------------------------------
+// dev와 정적 빌드에서 같은 크롤러 파일 생성
+//
+// 정책, 수정 시각은 추정하지 않고 frontmatter 날짜만 사용
+// 번역이 둘 이상인 페이지만 hreflang 대체 링크, 기본 언어판은 x-default 겸함
+// ----------------------------------------------------------------------------------------
 export const toCrawlingApp = (params: CrawlingParams) => {
     const app = new Hono();
 

@@ -8,32 +8,25 @@ import type {DocContent} from "@/type/doc-content";
 import type {DocFileData} from "@/type/doc-file-data";
 import {assertContentPath} from "@/util/file/assert-content-path";
 
-/**
- * 홈 문서 조회 입력
- */
+// ----------------------------------------------------------------------------------------
+// 홈 문서 조회 입력
+//
+// dir: README를 찾을 폴더, 문서 루트 또는 번역 언어 폴더
+// scope: 홈 참조의 공개 범위
+// processor: 홈 본문에 적용할 Markdown 처리기
+// ----------------------------------------------------------------------------------------
 interface ReadHomeParams {
-    /**
-     * README를 찾을 폴더. 문서 루트 또는 번역 언어 폴더
-     */
     dir: string;
-
-    /**
-     * 홈 참조의 공개 범위
-     */
     scope: ContentScope;
-
-    /**
-     * 홈 본문에 적용할 Markdown 처리기
-     */
     processor: Processor;
 }
 
-/**
- * 폴더의 README 홈 변환
- *
- *   - 대소문자 무시, frontmatter 불필요
- *   - 파일 부재 시 생성 안내 표시, 이름만 다른 README 중복은 오류
- */
+// ----------------------------------------------------------------------------------------
+// 폴더의 README 홈 변환
+//
+// 대소문자 무시, frontmatter 불필요
+// 파일 부재 시 생성 안내 표시, 이름만 다른 README 중복은 오류
+// ----------------------------------------------------------------------------------------
 export const readHome = async (params: ReadHomeParams): Promise<DocContent | undefined> => {
     const paths = (await readdir(params.dir)).filter((path) => path.toLowerCase() === "readme.md");
 

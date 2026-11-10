@@ -27,9 +27,11 @@ interface PreviewParams {
     basePath: ResolvedSiteConfig["basePath"];
 }
 
-/**
- * 빌드된 사이트 전용 Vite 설정. 소비 프로젝트의 설정과 환경 파일 자동 로드 제외
- */
+// ----------------------------------------------------------------------------------------
+// 빌드된 사이트 전용 Vite 설정
+//
+// 소비 프로젝트의 설정과 환경 파일 자동 로드 제외
+// ----------------------------------------------------------------------------------------
 export const toPreviewConfig = (params: PreviewParams): InlineConfig => {
     if (!existsSync(join(params.outDir, "index.html"))) {
         throw new Error(`${copy_error_missing_build}: ${params.outDir}`);

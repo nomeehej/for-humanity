@@ -6,9 +6,9 @@ import wrapAnsi from "wrap-ansi";
 import {init_defaults, init_panel_color, init_panel_layout} from "@/entry/init/_constant/init";
 import type {InitPanelParams} from "@/entry/init/_type/init-panel";
 
-/**
- * Clack 박스 출력을 안내와 입력 렌더러에서 공유하는 경계
- */
+// ----------------------------------------------------------------------------------------
+// Clack 박스 출력을 안내와 입력 렌더러에서 공유하는 경계
+// ----------------------------------------------------------------------------------------
 export const toInitPanel = (params: InitPanelParams): string => {
     const width = Math.max(1, Math.min(params.columns ?? init_panel_layout.width, init_panel_layout.width));
     const output = Object.assign(new PassThrough(), {columns: width});

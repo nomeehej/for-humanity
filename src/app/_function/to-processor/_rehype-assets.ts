@@ -15,30 +15,28 @@ import {assertContentPath} from "@/util/file/assert-content-path";
 import {toAssetPath} from "@/util/file/to-asset-path";
 import {toDecodedPath} from "@/util/file/to-decoded-path";
 
-/**
- * 명시적으로 참조한 로컬 이미지, 영상, 소리, 첨부의 수집 계약
- */
+// ----------------------------------------------------------------------------------------
+// 명시적으로 참조한 로컬 이미지, 영상, 소리, 첨부의 수집 계약
+//
+// scope: 자원 경로를 해석하고 공개 범위를 검사할 문서 범위
+// files: dev 응답과 정적 복사가 공유하는 자원 URL별 파일 경로
+// ----------------------------------------------------------------------------------------
 interface AssetOptions {
-    /**
-     * 자원 경로를 해석하고 공개 범위를 검사할 문서 범위
-     */
     scope: ContentScope;
-
-    /**
-     * dev 응답과 정적 복사가 공유하는 자원 URL별 파일 경로
-     */
     files: Map<string, string>;
 }
 
-/**
- * 문서 상대 경로의 이미지, 영상, 소리, 첨부 수집
- *
- *   - 원시 HTML의 srcset, poster, video, audio, source, track, embed, object에도 같은 내용 지문 URL 적용
- *   - 없는 파일, 폴더 밖 경로와 symlink, 삽입 자원의 미지원 형식은 빌드 실패
- *   - 배포 형식이 아닌 로컬 파일 링크와 로컬 iframe은 파일 경고
- *   - 절대 URL, 외부 URL은 작성자가 제공하며 수집하지 않음
- *   - 로컬 래스터 img에 원본 width, height 추가. 로드 전 자리 확보, 작성자가 적은 크기 유지
- */
+// ----------------------------------------------------------------------------------------
+// 문서 상대 경로의 이미지, 영상, 소리, 첨부 수집
+//
+// 원시 HTML의 srcset, poster, video, audio, source, track, embed, object에도 같은 내용
+//   지문 URL 적용
+// 없는 파일, 폴더 밖 경로와 symlink, 삽입 자원의 미지원 형식은 빌드 실패
+// 배포 형식이 아닌 로컬 파일 링크와 로컬 iframe은 파일 경고
+// 절대 URL, 외부 URL은 작성자가 제공하며 수집하지 않음
+// 로컬 래스터 img에 원본 width, height 추가
+// 로드 전 자리 확보, 작성자가 적은 크기 유지
+// ----------------------------------------------------------------------------------------
 export const rehypeAssets = (options: AssetOptions) => (tree: Root, file: VFile) => {
     visit(tree, "element", (node) => {
         const references = asset_references.get(node.tagName);
@@ -47,9 +45,11 @@ export const rehypeAssets = (options: AssetOptions) => (tree: Root, file: VFile)
             return;
         }
 
-        /**
-         * 로컬 참조 하나의 내용 지문 URL. 외부, 절대 URL과 수집하지 않는 링크는 원문 유지
-         */
+        // ----------------------------------------------------------------------------------------
+        // 로컬 참조 하나의 내용 지문 URL
+        //
+        // 외부, 절대 URL과 수집하지 않는 링크는 원문 유지
+        // ----------------------------------------------------------------------------------------
         const toAssetUrl = (url: string, reference: AssetReference) => {
             const match = /^([^?#]+)([?#].*|)$/.exec(url);
 

@@ -5,9 +5,9 @@ import {printInitPanel} from "@/entry/init/_function/print-init-panel";
 import {toInitSite} from "@/entry/init/_function/to-init-site";
 import type {InitPlan} from "@/entry/init/_type/init";
 
-/**
- * 생성 결과와 설치, 실행, 배포의 다음 단계
- */
+// ----------------------------------------------------------------------------------------
+// 생성 결과와 설치, 실행, 배포의 다음 단계
+// ----------------------------------------------------------------------------------------
 export const printInitResult = (plan: InitPlan) => {
     printInitPanel({title: init_copy.ready, message: colors.green(init_copy.done), color: "green"});
 

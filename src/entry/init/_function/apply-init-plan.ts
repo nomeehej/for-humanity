@@ -6,9 +6,9 @@ import {writeInitChange} from "@/entry/init/_function/write-init-change";
 import type {InitChange, InitPlan} from "@/entry/init/_type/init";
 import {logger} from "@/util/logger/logger";
 
-/**
- * 전체 재검사 뒤 파일 생성, 실패 시 이 실행의 변경만 복구
- */
+// ----------------------------------------------------------------------------------------
+// 전체 재검사 뒤 파일 생성, 실패 시 이 실행의 변경만 복구
+// ----------------------------------------------------------------------------------------
 export const applyInitPlan = async (plan: InitPlan) => {
     // 적용 완료 파일과 이번 실행이 생성한 폴더의 복구 기록
     const completed: InitChange[] = [];

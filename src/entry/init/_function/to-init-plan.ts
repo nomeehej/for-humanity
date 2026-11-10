@@ -10,23 +10,20 @@ import {toDeployFiles} from "@/entry/init/_function/to-deploy-files";
 import {toInitSite} from "@/entry/init/_function/to-init-site";
 import type {InitOptions, InitPlan} from "@/entry/init/_type/init";
 
-/**
- * 기존 프로젝트와 검증한 초기화 선택값
- */
+// ----------------------------------------------------------------------------------------
+// 기존 프로젝트와 검증한 초기화 선택값
+//
+// project: 설치와 저장소 정보를 읽은 프로젝트
+// options: 사용자 선택과 기본값
+// ----------------------------------------------------------------------------------------
 interface InitPlanParams {
-    /**
-     * 설치와 저장소 정보를 읽은 프로젝트
-     */
     project: InitProject;
-    /**
-     * 사용자 선택과 기본값
-     */
     options: InitOptions;
 }
 
-/**
- * 덮어쓰기 없는 파일 목록과 JSON과 gitignore 병합 계획
- */
+// ----------------------------------------------------------------------------------------
+// 덮어쓰기 없는 파일 목록과 JSON과 gitignore 병합 계획
+// ----------------------------------------------------------------------------------------
 export const toInitPlan = async (params: InitPlanParams): Promise<InitPlan> => {
     for (const path of [
         "for-humanity.config.ts",

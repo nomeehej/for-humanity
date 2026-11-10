@@ -8,9 +8,9 @@ import {initTitleSchema, initUrlSchema} from "@/entry/init/_type/init-input";
 
 const controllers: AbortController[] = [];
 
-/**
- * 실제 readline 입력과 렌더링을 받는 독립 터미널
- */
+// ----------------------------------------------------------------------------------------
+// 실제 readline 입력과 렌더링을 받는 독립 터미널
+// ----------------------------------------------------------------------------------------
 const createTerminal = () => {
     const input = new PassThrough();
     const output = Object.assign(new PassThrough(), {columns: 64, rows: 40});

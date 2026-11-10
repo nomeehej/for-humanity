@@ -12,9 +12,9 @@ import {
 import {init_defaults} from "@/entry/init/_constant/init";
 import type {InitFile, InitOptions} from "@/entry/init/_type/init";
 
-/**
- * 계정 연동 없이 생성하는 호스팅별 배포 파일
- */
+// ----------------------------------------------------------------------------------------
+// 계정 연동 없이 생성하는 호스팅별 배포 파일
+// ----------------------------------------------------------------------------------------
 export const toDeployFiles = async (params: InitOptions): Promise<InitFile[]> => {
     if (params.deploy === "none") {
         return [];

@@ -4,9 +4,9 @@ import {copy_error_mermaid_entry} from "@/app/_constant/copy";
 import {asset_mermaid_dir} from "@/constant/asset";
 import type {MermaidAssets} from "@/type/mermaid-assets";
 
-/**
- * 패키지에 포함한 Mermaid 진입 모듈과 지연 청크 등록 목록
- */
+// ----------------------------------------------------------------------------------------
+// 패키지에 포함한 Mermaid 진입 모듈과 지연 청크 등록 목록
+// ----------------------------------------------------------------------------------------
 export const loadMermaidAssets = (kitRoot: string): MermaidAssets => {
     const directory = join(kitRoot, "dist/mermaid");
 

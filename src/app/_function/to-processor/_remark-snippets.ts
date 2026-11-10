@@ -10,23 +10,22 @@ import type {ContentScope} from "@/type/content-scope";
 import {toErrorMessage} from "@/util/error/to-error-message";
 import {assertContentPath} from "@/util/file/assert-content-path";
 
-/**
- * 코드 스니펫 삽입 입력
- */
+// ----------------------------------------------------------------------------------------
+// 코드 스니펫 삽입 입력
+//
+// scope: 스니펫 경로를 해석하고 공개 범위를 검사할 문서 범위
+// ----------------------------------------------------------------------------------------
 interface SnippetOptions {
-    /**
-     * 스니펫 경로를 해석하고 공개 범위를 검사할 문서 범위
-     */
     scope: ContentScope;
 }
 
-/**
- * 문서 상대 경로의 코드 스니펫 삽입
- *
- *   - 선택 region과 메타를 코드 펜스에 반영
- *   - region 표시는 파일 확장자의 주석 형식만 인정
- *   - 문서 폴더 밖 경로, 없는 파일, 없거나 닫히지 않은 region은 빌드 실패
- */
+// ----------------------------------------------------------------------------------------
+// 문서 상대 경로의 코드 스니펫 삽입
+//
+// 선택 region과 메타를 코드 펜스에 반영
+// region 표시는 파일 확장자의 주석 형식만 인정
+// 문서 폴더 밖 경로, 없는 파일, 없거나 닫히지 않은 region은 빌드 실패
+// ----------------------------------------------------------------------------------------
 export const remarkSnippets = (options: SnippetOptions) => (tree: Root, file: VFile) => {
     visit(tree, "paragraph", (node, index, parent) => {
         const [child] = node.children;

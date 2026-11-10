@@ -53,12 +53,12 @@ export interface SiteParams {
     stylePaths?: SiteAssets["stylePaths"];
 }
 
-/**
- * 문서, 등록 자원과 Hono 앱의 일관된 스냅샷
- *
- *   - 준비 실패 시 결과 미반환, 이전 스냅샷 유지
- *   - 파일 조회와 Markdown 변환은 준비 시에만 실행, 페이지 요청에서는 재사용
- */
+// ----------------------------------------------------------------------------------------
+// 문서, 등록 자원과 Hono 앱의 일관된 스냅샷
+//
+// 준비 실패 시 결과 미반환, 이전 스냅샷 유지
+// 파일 조회와 Markdown 변환은 준비 시에만 실행, 페이지 요청에서는 재사용
+// ----------------------------------------------------------------------------------------
 export const loadSite = async (params: SiteParams) => {
     const mono = toFontCss({css: join(params.kitRoot, font_mono_css), fontDir: asset_font_dir, basePath: params.site.basePath});
     const body = toFontCss({css: join(params.kitRoot, font_body_css), fontDir: asset_font_dir, basePath: params.site.basePath});

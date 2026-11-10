@@ -7,9 +7,9 @@ import {toPageApp} from "@/app/_function/to-page-app/to-page-app";
 import {asset_style_path} from "@/constant/asset";
 import {siteConfigSchema} from "@/type/site-config";
 
-/**
- * 파일 하나만 자원 목록에 등록한 응답 앱
- */
+// ----------------------------------------------------------------------------------------
+// 파일 하나만 자원 목록에 등록한 응답 앱
+// ----------------------------------------------------------------------------------------
 const toAssetApp = (url: string, path: string) => {
     return toHttpApp({
         pages: toPageApp({

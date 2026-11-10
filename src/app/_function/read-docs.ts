@@ -27,32 +27,25 @@ import {hasReservedFolder} from "@/util/file/has-reserved-folder";
 import {toContentId} from "@/util/file/to-content-id";
 import {logger} from "@/util/logger/logger";
 
-/**
- * 문서 폴더를 읽고 명령별 출력 경로와 함께 검증하는 입력
- */
+// ----------------------------------------------------------------------------------------
+// 문서 폴더를 읽고 명령별 출력 경로와 함께 검증하는 입력
+//
+// scope: 공개, 내부, 번역 문서 폴더와 참조 범위
+// processor: 설정, 자원 목록을 연결한 Markdown 처리기
+// reserved: 명령이 생성할 파일과 충돌하는 첫 경로 조각, 생략 시 추가 예약 없음
+// ----------------------------------------------------------------------------------------
 interface ReadDocsParams {
-    /**
-     * 공개, 내부, 번역 문서 폴더와 참조 범위
-     */
     scope: ContentScope;
-
-    /**
-     * 설정, 자원 목록을 연결한 Markdown 처리기
-     */
     processor: Processor;
-
-    /**
-     * 명령이 생성할 파일과 충돌하는 첫 경로 조각. 생략 시 추가 예약 없음
-     */
     reserved?: readonly string[];
 }
 
-/**
- * 공개 범위의 Markdown 수집과 렌더링
- *
- *   - 공개 문서, 있는 번역 폴더의 문서, 개발 실행의 내부 문서만 수집
- *   - 머리말, 문서 식별자 중복, 플러그인 오류 시 실패
- */
+// ----------------------------------------------------------------------------------------
+// 공개 범위의 Markdown 수집과 렌더링
+//
+// 공개 문서, 있는 번역 폴더의 문서, 개발 실행의 내부 문서만 수집
+// 머리말, 문서 식별자 중복, 플러그인 오류 시 실패
+// ----------------------------------------------------------------------------------------
 export const readDocs = async (params: ReadDocsParams): Promise<Doc[]> => {
     const roots = [
         {dir: params.scope.publicRoot, locale: undefined},

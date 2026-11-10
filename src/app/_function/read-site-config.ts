@@ -9,12 +9,12 @@ import {site_config_absent} from "@/constant/site";
 import {siteConfigSchema} from "@/type/site-config";
 import {toIssueText} from "@/util/error/to-issue-text";
 
-/**
- * 프로젝트 루트의 설정 조회, TypeScript 실행과 스키마 검증
- *
- *   - 중복 파일 거부, 실제 적용되는 설정의 모호성 방지
- *   - Node의 기본 TypeScript 지원 여부와 무관하게 같은 설정 실행
- */
+// ----------------------------------------------------------------------------------------
+// 프로젝트 루트의 설정 조회, TypeScript 실행과 스키마 검증
+//
+// 중복 파일 거부, 실제 적용되는 설정의 모호성 방지
+// Node의 기본 TypeScript 지원 여부와 무관하게 같은 설정 실행
+// ----------------------------------------------------------------------------------------
 export const readSiteConfig = async (root: string) => {
     const files = config_file_names.map((name) => join(root, name)).filter((file) => existsSync(file));
 

@@ -14,23 +14,22 @@ import {toChangeQueue} from "@/util/async/to-change-queue";
 import {toErrorMessage} from "@/util/error/to-error-message";
 import {isOutsideRoot} from "@/util/file/is-outside-root";
 
-/**
- * 같은 문서 앱을 소스 또는 설치 번들로 실행하는 개발 입력
- */
+// ----------------------------------------------------------------------------------------
+// 같은 문서 앱을 소스 또는 설치 번들로 실행하는 개발 입력
+//
+// source: 저장소 소스의 JSX 변환과 CSS HMR 활성화
+// ----------------------------------------------------------------------------------------
 export interface DevParams extends SiteParams {
-    /**
-     * 저장소 소스의 JSX 변환과 CSS HMR 활성화
-     */
     source: boolean;
 }
 
-/**
- * 단일 Vite 서버의 Hono 연결과 문서 갱신 설정
- *
- *   - 소비 프로젝트의 Vite 설정과 환경 파일은 자동 실행하지 않음
- *   - 마지막 정상 스냅샷 유지, 서버 종료 이후 결과 제외
- *   - 준비 중 새 변경이 생긴 결과는 기존 스냅샷이 있을 때만 제외
- */
+// ----------------------------------------------------------------------------------------
+// 단일 Vite 서버의 Hono 연결과 문서 갱신 설정
+//
+// 소비 프로젝트의 Vite 설정과 환경 파일은 자동 실행하지 않음
+// 마지막 정상 스냅샷 유지, 서버 종료 이후 결과 제외
+// 준비 중 새 변경이 생긴 결과는 기존 스냅샷이 있을 때만 제외
+// ----------------------------------------------------------------------------------------
 export const toDevConfig = (params: DevParams): InlineConfig => {
     const root = realpathSync(params.root);
     const kitRoot = realpathSync(params.kitRoot);
@@ -91,9 +90,11 @@ export const toDevConfig = (params: DevParams): InlineConfig => {
                 configureServer: (server) => {
                     const state = {generation: 0, closed: false};
 
-                    /**
-                     * 문서 스냅샷 재준비. 실행 중 요청은 다음 1회로 병합
-                     */
+                    // ----------------------------------------------------------------------------------------
+                    // 문서 스냅샷 재준비
+                    //
+                    // 실행 중 요청은 다음 1회로 병합
+                    // ----------------------------------------------------------------------------------------
                     const refresh = toChangeQueue({
                         run: async () => {
                             if (state.closed) {
@@ -132,14 +133,14 @@ export const toDevConfig = (params: DevParams): InlineConfig => {
                         },
                     });
 
-                    /**
-                     * 연속 저장을 한 번의 재준비로 병합
-                     */
+                    // ----------------------------------------------------------------------------------------
+                    // 연속 저장을 한 번의 재준비로 병합
+                    // ----------------------------------------------------------------------------------------
                     const reload = debounce(refresh, watch_reload_delay_ms);
 
-                    /**
-                     * 문서와 소스 변경 시 스냅샷 갱신, 기존 CSS 수정은 Vite HMR 사용
-                     */
+                    // ----------------------------------------------------------------------------------------
+                    // 문서와 소스 변경 시 스냅샷 갱신, 기존 CSS 수정은 Vite HMR 사용
+                    // ----------------------------------------------------------------------------------------
                     const handleChange = (event: string, file: string) => {
                         const documentPath = relative(root, file);
 

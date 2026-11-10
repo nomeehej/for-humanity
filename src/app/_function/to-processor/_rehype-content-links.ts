@@ -13,21 +13,20 @@ import {assertContentPath} from "@/util/file/assert-content-path";
 import {toContentId} from "@/util/file/to-content-id";
 import {toDecodedPath} from "@/util/file/to-decoded-path";
 
-/**
- * 원시 HTML을 포함한 문서 참조 검사 입력
- */
+// ----------------------------------------------------------------------------------------
+// 원시 HTML을 포함한 문서 참조 검사 입력
+//
+// scope: 원시 HTML 참조를 해석하고 공개 범위를 검사할 문서 범위
+// ----------------------------------------------------------------------------------------
 interface ContentLinkOptions {
-    /**
-     * 원시 HTML 참조를 해석하고 공개 범위를 검사할 문서 범위
-     */
     scope: ContentScope;
 }
 
-/**
- * 원시 HTML의 내부 참조 차단과 Markdown 파일 링크의 사이트 URL 변환
- *
- *   - 없는 Markdown 파일 링크는 remark-links와 같은 파일 경고
- */
+// ----------------------------------------------------------------------------------------
+// 원시 HTML의 내부 참조 차단과 Markdown 파일 링크의 사이트 URL 변환
+//
+// 없는 Markdown 파일 링크는 remark-links와 같은 파일 경고
+// ----------------------------------------------------------------------------------------
 export const rehypeContentLinks = (options: ContentLinkOptions) => (tree: Root, file: VFile) => {
     visit(tree, "element", (node) => {
         for (const property of ["href", "src", "poster", "data", "srcSet"]) {

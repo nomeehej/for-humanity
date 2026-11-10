@@ -9,9 +9,9 @@ import {init_args, init_copy} from "@/entry/init/_constant/init";
 import {logger} from "@/util/logger/logger";
 
 const main = defineCommand({
-    /**
-     * 설치한 패키지의 명령 이름과 버전
-     */
+    // ----------------------------------------------------------------------------------------
+    // 설치한 패키지의 명령 이름과 버전
+    // ----------------------------------------------------------------------------------------
     meta: async () => {
         const content: unknown = JSON.parse(await readFile(new URL("../package.json", import.meta.url), "utf8"));
 
@@ -19,9 +19,9 @@ const main = defineCommand({
     },
     default: command_default,
 
-    /**
-     * Citty의 미지정 옵션 허용을 제한하는 CLI 입력 경계
-     */
+    // ----------------------------------------------------------------------------------------
+    // Citty의 미지정 옵션 허용을 제한하는 CLI 입력 경계
+    // ----------------------------------------------------------------------------------------
     setup: (context) => {
         if (context.rawArgs[0] === "init") {
             return;
@@ -44,9 +44,9 @@ const main = defineCommand({
             meta: {name: "init", description: init_copy.description},
             args: init_args,
 
-            /**
-             * 도움말 조회와 분리한 초기화 실행
-             */
+            // ----------------------------------------------------------------------------------------
+            // 도움말 조회와 분리한 초기화 실행
+            // ----------------------------------------------------------------------------------------
             run: async (context) => {
                 const command = await import("@/entry/init/run-init");
 
@@ -66,9 +66,9 @@ const main = defineCommand({
                     meta: {name, description},
                     args,
 
-                    /**
-                     * 도움말 조회와 분리한 사이트 실행
-                     */
+                    // ----------------------------------------------------------------------------------------
+                    // 도움말 조회와 분리한 사이트 실행
+                    // ----------------------------------------------------------------------------------------
                     run: async (context) => {
                         const command = await import("@/entry/cli/_function/run-site-command");
 
