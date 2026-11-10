@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 0.33.0 — 2026-11-10
 
 **Upgrade:** Class names in the generated HTML dropped the `wg_`, `pg_` and `ui_` prefixes, so `wg_article__root` is now `article__root` and `pg_status__root` is `statusPage__root`. The inline custom properties `--wg-article-*` and `--wg-cursor-face-*` lost the `wg-` part too. Styles or scripts in your documents that selected those names need the new ones. Otherwise existing projects remain compatible unless a folder is named `dist-private`. That name is now reserved for the private site output, like `dist`. A document folder with that name is skipped, and a `content` path with that name is rejected. Rename the folder to keep using it.
 
