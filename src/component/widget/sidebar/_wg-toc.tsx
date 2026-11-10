@@ -53,7 +53,7 @@ export const WgToc = (props: WgTocProps) => {
         // ----------------------------------------------------------------------------------------
         // 연속 스크롤의 프레임당 1회 현재 제목 갱신
         //
-        // 접힌 본문 제목 제외, 읽는 선을 통과한 마지막 제목 선택
+        // 접힌 본문 제목 제외, 읽는 선 통과 마지막 제목 선택
         // 링크, 해시로 이동한 제목은 사용자 스크롤 전까지 유지
         // ----------------------------------------------------------------------------------------
         const handleReadingPositionChange = () => {
@@ -76,8 +76,8 @@ export const WgToc = (props: WgTocProps) => {
         // 문서 크기, 화면 높이 변경
         //
         // 끝 구간 제목의 도착 위치와 목차 전환 위치 일치 후 현재 제목 재계산
-        // 마지막 한 화면 구간의 도착 위치를 문서 끝까지 비례 압축, 읽는 선에 닿지 못하는 끝 절이
-        //   있을 때만
+        // 마지막 한 화면 구간의 도착 위치, 문서 끝까지 비례 압축
+        // 압축 조건은 읽는 선에 닿지 못하는 끝 절 존재
         // 압축한 거리만큼 제목 위 여백 추가, 앵커 이동과 목차 판정이 같은 위치 사용
         // ----------------------------------------------------------------------------------------
         const handleLayoutChange = () => {
@@ -133,7 +133,7 @@ export const WgToc = (props: WgTocProps) => {
         // 사용자 스크롤 시작
         //
         // 도착 제목 고정 해제
-        // 재계산은 실제 스크롤에서 실행, 링크를 누르는 동안 다른 제목 표시 방지
+        // 재계산은 실제 스크롤에서 실행, 링크 누르는 동안 다른 제목 표시 방지
         // ----------------------------------------------------------------------------------------
         const handleUserScroll = () => {
             lock.slug = undefined;
@@ -170,13 +170,18 @@ export const WgToc = (props: WgTocProps) => {
         };
     }, [props.groups]);
 
+    // ----------------------------------------------------------------------------------------
+    // 화면 구성
+    //
+    // wg_toc__groupSection: 가름별 제목 이동,
+    //   하위 제목이 현재 위치여도 부모 글씨는 강조하지 않음
+    // wg_toc__link: 절 제목, 읽는 위치면 현재 위치로 표시
+    // wg_toc__sub: 하위 제목, 활성 링크는 한 제목에 한정
+    // ----------------------------------------------------------------------------------------
     return (
         <nav className={clsx("wg_toc__root")} aria-label={copy_nav_toc_label}>
             <div className={clsx("wg_toc__label")}>{copy_nav_toc_label}</div>
 
-            {/**
-             * 가름별 제목 이동. 하위 제목이 현재 위치여도 부모 글씨는 강조하지 않음
-             */}
             {props.groups.map((group) => {
                 return (
                     <div className={clsx("wg_toc__groupSection")} key={group.sections[0].heading.slug}>
@@ -185,9 +190,6 @@ export const WgToc = (props: WgTocProps) => {
                             {group.sections.map((section) => {
                                 return (
                                     <li className={clsx("wg_toc__item")} key={section.heading.slug}>
-                                        {/**
-                                         * 절 제목. 읽는 위치면 현재 위치로 표시
-                                         */}
                                         <a
                                             className={clsx("wg_toc__link", section.heading.slug === currentSlug && "wg_toc__link--active")}
                                             href={`#${section.heading.slug}`}
@@ -197,9 +199,6 @@ export const WgToc = (props: WgTocProps) => {
                                             {section.heading.text}
                                         </a>
 
-                                        {/**
-                                         * 하위 제목. 활성 링크는 한 제목에 한정
-                                         */}
                                         {section.subs.length > 0 && (
                                             <ul className={clsx("wg_toc__sub")}>
                                                 {section.subs.map((sub) => {

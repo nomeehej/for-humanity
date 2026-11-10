@@ -14,7 +14,7 @@ import {toSitePath} from "@/util/url/to-site-path";
 import "./wg-sidebar.css";
 
 // ----------------------------------------------------------------------------------------
-// Hono가 배치 변경에서 이전 DOM의 자식을 분리하기 전에 기억하는 키보드 위치
+// 배치 변경에서 Hono가 이전 DOM 자식 분리 전에 기억하는 키보드 위치
 //
 // navigation: 문서 탐색 안에서 새 배치로 옮길 위치인지 구분
 // drawer: 메뉴 진입, 닫기 버튼에서 데스크톱 브랜드로 돌아갈 위치인지 구분
@@ -27,7 +27,10 @@ interface NavigationFocusSnapshot {
 }
 
 // ----------------------------------------------------------------------------------------
-// 같은 Hono 탐색을 서버에서는 기본 링크로, 브라우저에서는 사용자 저장 상태로 렌더
+// 서버, 브라우저 공통 Hono 탐색 렌더
+//
+// 서버는 기본 링크로 렌더
+// 브라우저는 사용자 저장 상태로 렌더
 //
 // data: 서버가 정리한 문서 목록과 현재 페이지 목차
 // stores: 브라우저 진입점만 제공, 없으면 저장소와 전역 DOM 미조회
@@ -81,7 +84,7 @@ export const WgSidebar = (props: WgSidebarProps) => {
     };
 
     // ----------------------------------------------------------------------------------------
-    // 배치별 DOM은 분리, 좌표 저장과 복원은 현재 표시되는 한 영역 사용
+    // 배치별 DOM 분리, 좌표 저장과 복원은 현재 표시되는 한 영역 사용
     // ----------------------------------------------------------------------------------------
     const getDocumentsPort = () => {
         return layoutRef.current === "drawer" ? drawerDocumentsRef.current : documentsRef.current;
@@ -129,7 +132,8 @@ export const WgSidebar = (props: WgSidebarProps) => {
     // ----------------------------------------------------------------------------------------
     // 연결된 영역에서 첫 페인트 전 복원
     //
-    // 문서 목록은 페이지 간 공유, 목차는 같은 경로에서만 재사용
+    // 문서 목록은 페이지 간 공유
+    // 목차는 같은 경로에서만 재사용
     // ----------------------------------------------------------------------------------------
     const restoreScroll = () => {
         const documents = getDocumentsPort();
@@ -183,7 +187,7 @@ export const WgSidebar = (props: WgSidebarProps) => {
     };
 
     // ----------------------------------------------------------------------------------------
-    // 모바일에서만 네이티브 모달 열기, 독립된 드로어 좌표 즉시 복원
+    // 모바일에서만 네이티브 모달 열림, 독립된 드로어 좌표 즉시 복원
     // ----------------------------------------------------------------------------------------
     const handleOpenButtonClick: DOMAttributes["onClick"] = (_event) => {
         if (getNavigationLayout() !== "drawer" || dialogRef.current === null || dialogRef.current.open) {
@@ -209,7 +213,7 @@ export const WgSidebar = (props: WgSidebarProps) => {
     };
 
     // ----------------------------------------------------------------------------------------
-    // 경계 밖 배경 클릭만 닫기, 대화상자 내부 빈 공간은 유지
+    // 경계 밖 배경 클릭만 닫힘, 대화상자 내부 빈 공간은 유지
     // ----------------------------------------------------------------------------------------
     const handleDrawerClick: DOMAttributes["onClick"] = (event) => {
         if (dialogRef.current === null || event.target !== dialogRef.current) {
@@ -280,7 +284,7 @@ export const WgSidebar = (props: WgSidebarProps) => {
     };
 
     // ----------------------------------------------------------------------------------------
-    // Hono 탐색이 전역 구독의 설치, 정리를 소유
+    // 전역 구독의 설치, 정리는 Hono 탐색이 소유
     //
     // 서버 렌더에서는 실행하지 않음
     // ----------------------------------------------------------------------------------------
@@ -362,19 +366,31 @@ export const WgSidebar = (props: WgSidebarProps) => {
         };
     }, [layout, props.stores]);
 
+    // ----------------------------------------------------------------------------------------
+    // 화면 구성
+    //
+    // wg_sidebar__docsColumn: 데스크톱 문서 사이드바,
+    //   모바일에서는 고정 브랜드와 연결된 메뉴 버튼
+    // wg_sidebar__brandRow: 배너 랜드마크, 어느 문서에서도 홈으로 이동,
+    //   모달 진입은 브라우저 동작이 연결된 뒤 표시
+    // wg_sidebar__brand: 사이트 이름, 현재 언어의 홈으로 이동,
+    //   홈 문서에서는 현재 페이지로 표시
+    // wg_sidebar__menuToggle: 네이티브 모달의 열림 상태와 접근 가능한 진입 이름
+    // wg_sidebar__docsPanel: JavaScript 없이도 전체 문서 링크 표시,
+    //   브라우저 모바일에서는 드로어가 같은 목록 소유
+    // wg_sidebar__tocColumn: 와이드 화면 전용 목차, 드로어에는 문서 목록만 표시
+    // wg_sidebar__drawer: 브라우저 최상위 레이어의 포커스, Escape,
+    //   배경 클릭 동작과 모바일 문서 목록
+    // wg_sidebar__drawerHeader: 목록 스크롤과 독립된 대화상자 이름, 닫기 동작
+    // wg_sidebar__drawerTitle: 모달의 접근 가능한 이름
+    // wg_sidebar__drawerClose: 네이티브 close로 열기 버튼에 포커스 복원
+    // wg_sidebar__drawerContent: 모바일에만 한 번 렌더하는 문서 탐색,
+    //   다른 배치와 저장 좌표 분리
+    // ----------------------------------------------------------------------------------------
     return (
         <Fragment>
-            {/**
-             * 데스크톱 문서 사이드바. 모바일에서는 고정 브랜드와 연결된 메뉴 버튼
-             */}
             <div className={clsx("wg_sidebar__docsColumn", props.stores !== undefined && "wg_sidebar__docsColumn--ready")}>
-                {/**
-                 * 배너 랜드마크. 어느 문서에서도 홈으로 이동, 모달 진입은 브라우저 동작이 연결된 뒤 표시
-                 */}
                 <header className={clsx("wg_sidebar__brandRow")}>
-                    {/**
-                     * 사이트 이름. 현재 언어의 홈으로 이동, 홈 문서에서는 현재 페이지로 표시
-                     */}
                     <a
                         ref={props.stores === undefined ? undefined : brandRef}
                         className={clsx("wg_sidebar__brand")}
@@ -384,9 +400,6 @@ export const WgSidebar = (props: WgSidebarProps) => {
                         {props.data.title}
                     </a>
 
-                    {/**
-                     * 네이티브 모달의 열림 상태와 접근 가능한 진입 이름
-                     */}
                     <button
                         ref={props.stores === undefined ? undefined : openButtonRef}
                         className={clsx("wg_sidebar__menuToggle", props.stores !== undefined && layout === "drawer" && "wg_sidebar__menuToggle--visible")}
@@ -402,9 +415,6 @@ export const WgSidebar = (props: WgSidebarProps) => {
                     </button>
                 </header>
 
-                {/**
-                 * JavaScript 없이도 전체 문서 링크 표시. 브라우저 모바일에서는 드로어가 같은 목록 소유
-                 */}
                 {layout !== "drawer" && (
                     <div className={clsx("wg_sidebar__docsPanel")} data-sidebar-docs="" data-sidebar-layout={layout}>
                         <WgSidebarScroll portRef={documentsRef} kind="documents" ready={props.stores !== undefined} onScroll={handleScrollSave} onClick={handleNavigationClick}>
@@ -414,21 +424,13 @@ export const WgSidebar = (props: WgSidebarProps) => {
                 )}
             </div>
 
-            {/**
-             * 와이드 화면 전용 목차. 드로어에는 문서 목록만 표시
-             */}
             <aside className={clsx("wg_sidebar__tocColumn", props.data.outline.length === 0 && "wg_sidebar__tocColumn--empty")} data-sidebar-toc="">
                 <WgSidebarScroll portRef={outlineRef} kind="outline" ready={props.stores !== undefined} onScroll={handleScrollSave} onClick={handleNavigationClick}>
                     {props.data.outline.length > 0 && <WgToc groups={props.data.outline} />}
                 </WgSidebarScroll>
             </aside>
 
-            {/**
-             * 브라우저 최상위 레이어의 포커스, Escape, 배경 클릭 동작과 모바일 문서 목록
-             */}
-            {/**
-             * biome-ignore lint/a11y/useKeyWithClickEvents: 배경 클릭의 키보드 대안은 네이티브 dialog의 cancel과 닫기 버튼
-             */}
+            {/* biome-ignore lint/a11y/useKeyWithClickEvents: 배경 클릭의 키보드 대안은 네이티브 dialog의 cancel과 닫기 버튼 */}
             <dialog
                 ref={props.stores === undefined ? undefined : dialogRef}
                 className={clsx("wg_sidebar__drawer")}
@@ -439,20 +441,11 @@ export const WgSidebar = (props: WgSidebarProps) => {
                 onCancel={handleDrawerCancel}
                 onClick={handleDrawerClick}
             >
-                {/**
-                 * 목록 스크롤과 독립된 대화상자 이름, 닫기 동작
-                 */}
                 <div className={clsx("wg_sidebar__drawerHeader")}>
-                    {/**
-                     * 모달의 접근 가능한 이름
-                     */}
                     <h2 className={clsx("wg_sidebar__drawerTitle")} id="fh-navigation-title">
                         {copy_nav_title}
                     </h2>
 
-                    {/**
-                     * 네이티브 close로 열기 버튼에 포커스 복원
-                     */}
                     <button className={clsx("wg_sidebar__drawerClose")} type="button" aria-label={copy_nav_close} onClick={handleCloseButtonClick}>
                         <svg className={clsx("wg_sidebar__menuIcon")} viewBox="0 0 24 24" aria-hidden="true" focusable="false">
                             <path d="m6 6 12 12M18 6 6 18" />
@@ -460,9 +453,6 @@ export const WgSidebar = (props: WgSidebarProps) => {
                     </button>
                 </div>
 
-                {/**
-                 * 모바일에만 한 번 렌더하는 문서 탐색. 다른 배치와 저장 좌표 분리
-                 */}
                 <div className={clsx("wg_sidebar__drawerContent")}>
                     {layout === "drawer" && (
                         <div className={clsx("wg_sidebar__docsPanel")} data-sidebar-docs="" data-sidebar-layout={layout}>

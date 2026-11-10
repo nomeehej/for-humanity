@@ -2,7 +2,7 @@ import {array, boolean, custom, lazy, minLength, number, object, optional, strin
 import type {NavigationData, NavigationDoc, NavigationGroup} from "@/component/widget/sidebar/_type/navigation-data";
 
 // ----------------------------------------------------------------------------------------
-// 본문과 파일 경로를 제외한 탐색 문서의 브라우저 입력 검증
+// 본문과 파일 경로 제외 탐색 문서의 브라우저 입력 검증
 //
 // id: 링크에 사용할 문서 ID
 // name: 링크 표시 이름
@@ -47,7 +47,7 @@ const headingSchema = object({
 });
 
 // ----------------------------------------------------------------------------------------
-// HTML에 포함된 JSON을 읽는 브라우저 경계
+// HTML에 포함된 JSON의 브라우저 조회 경계
 //
 // 손상된 자료에는 서버 HTML 유지
 //

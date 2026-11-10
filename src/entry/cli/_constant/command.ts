@@ -6,7 +6,9 @@ import {copy_dir_description, copy_host_description, copy_preview_private_descri
 export const command_default = "dev";
 
 // ----------------------------------------------------------------------------------------
-// 프로젝트 폴더 생략 시 현재 폴더
+// 프로젝트 폴더 인자
+//
+// 생략 시 현재 폴더
 // ----------------------------------------------------------------------------------------
 export const command_args = {
     dir: {type: "positional", description: copy_dir_description, default: "."},

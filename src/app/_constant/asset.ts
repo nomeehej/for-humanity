@@ -2,45 +2,31 @@ import {copy_error_embed_format, copy_error_image_format, copy_error_media_forma
 import type {AssetReference} from "@/app/_type/asset-reference";
 
 // ----------------------------------------------------------------------------------------
-// 원본 크기를 width, height로 넣는 래스터 이미지 형식
+// 래스터 이미지 형식
 //
-// viewBox만 있는 SVG는 표시 크기가 달라져 제외
+// width, height에 원본 크기 삽입
+// viewBox만 있는 SVG 제외, 표시 크기 변동
 // ----------------------------------------------------------------------------------------
 export const asset_raster_image_extensions: ReadonlySet<string> = new Set([".png", ".jpg", ".jpeg", ".gif", ".webp", ".avif"]);
 
 // ----------------------------------------------------------------------------------------
-// 가로세로가 바뀌는 EXIF 방향 값의 하한
+// 가로세로 전환 EXIF 방향 값의 하한
 //
 // 5부터 8까지 90도 회전
 // ----------------------------------------------------------------------------------------
 export const asset_exif_rotated_orientation = 5;
 
 // ----------------------------------------------------------------------------------------
-// 이미지 자원 형식
+// 자원 종류별 확장자
 //
-// img, srcset, poster와 Markdown 이미지
+// asset_image_extensions: img, srcset, poster와 Markdown 이미지
+// asset_video_audio_extensions: video, audio, source의 src
+// asset_track_extensions: track의 src
+// asset_embed_extensions: embed의 src와 object의 data
 // ----------------------------------------------------------------------------------------
 const asset_image_extensions: ReadonlySet<string> = new Set([...asset_raster_image_extensions, ".svg"]);
-
-// ----------------------------------------------------------------------------------------
-// 영상, 소리 자원 형식
-//
-// video, audio, source의 src
-// ----------------------------------------------------------------------------------------
 const asset_video_audio_extensions: ReadonlySet<string> = new Set([".mp4", ".webm", ".mp3"]);
-
-// ----------------------------------------------------------------------------------------
-// 자막 트랙 형식
-//
-// track의 src
-// ----------------------------------------------------------------------------------------
 const asset_track_extensions: ReadonlySet<string> = new Set([".vtt"]);
-
-// ----------------------------------------------------------------------------------------
-// 삽입 문서 형식
-//
-// embed의 src와 object의 data
-// ----------------------------------------------------------------------------------------
 const asset_embed_extensions: ReadonlySet<string> = new Set([...asset_image_extensions, ".pdf"]);
 
 // ----------------------------------------------------------------------------------------
@@ -59,18 +45,14 @@ const asset_media_extensions: ReadonlySet<string> = new Set([
 ]);
 
 // ----------------------------------------------------------------------------------------
-// 이미지를 삽입하는 속성의 수집 규칙
+// 속성 종류별 수집 규칙
+//
+// asset_image_reference: 이미지를 삽입하는 속성
+// asset_video_audio_reference: 영상, 소리를 삽입하는 속성
+// asset_embed_reference: 문서와 이미지를 삽입하는 embed, object
 // ----------------------------------------------------------------------------------------
 const asset_image_reference: AssetReference = {formats: asset_image_extensions, unsupported: copy_error_image_format};
-
-// ----------------------------------------------------------------------------------------
-// 영상, 소리를 삽입하는 속성의 수집 규칙
-// ----------------------------------------------------------------------------------------
 const asset_video_audio_reference: AssetReference = {formats: asset_video_audio_extensions, unsupported: copy_error_media_format};
-
-// ----------------------------------------------------------------------------------------
-// 문서와 이미지를 삽입하는 embed, object의 수집 규칙
-// ----------------------------------------------------------------------------------------
 const asset_embed_reference: AssetReference = {formats: asset_embed_extensions, unsupported: copy_error_embed_format};
 
 // ----------------------------------------------------------------------------------------
@@ -97,9 +79,11 @@ export const asset_references: ReadonlyMap<string, Readonly<Record<string, Asset
 // ----------------------------------------------------------------------------------------
 // srcset 후보 하나의 구문
 //
-// 첫째 캡처 그룹은 앞 구분 문자, 둘째는 URL
+// 첫째 캡처 그룹은 앞 구분 문자
+// 둘째 캡처 그룹은 URL
 // 서술자와 뒤 쉼표는 캡처 제외
-// URL 끝 쉼표와 서술자 뒤 쉼표만 구분자, URL 안 쉼표 유지
+// URL 끝 쉼표와 서술자 뒤 쉼표만 구분자
+// URL 안 쉼표 유지
 //
 // 제약: HTML 명세의 후보 구분
 // ----------------------------------------------------------------------------------------

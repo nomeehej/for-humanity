@@ -117,8 +117,9 @@ export const WgShellControls = (props: WgShellControlsProps) => {
     //
     // 해제된 인스턴스와 사용자 이동에 개입하지 않음
     // 새로고침, 뒤로가기는 브라우저의 이전 위치 복원 사용
-    // 사용자 입력 이후의 렌더 완료는 접은 Details를 다시 열지 않음
-    // 부드러운 절 이동은 보정 후 활성화, 복원 진입은 첫 사용자 입력까지 즉시 스크롤 유지
+    // 사용자 입력 이후의 렌더 완료는 접은 Details 다시 열지 않음
+    // 부드러운 절 이동은 보정 후 활성화
+    // 복원 진입은 첫 사용자 입력까지 즉시 스크롤 유지
     // ----------------------------------------------------------------------------------------
     const handlePageLoad = async () => {
         if (isRestoringNavigation() || userScrolledRef.current) {
@@ -189,10 +190,10 @@ export const WgShellControls = (props: WgShellControlsProps) => {
 
     return (
         <Fragment>
-            {/**
-             * 별도 DOM 경계, 탐색 갱신 시 커서 형제 사이의 dialog 재삽입 방지
-             */}
-            <div className={clsx("wg_shellControls__sidebar")}>
+            <div
+                // 별도 DOM 경계, 탐색 갱신 시 커서 형제 사이의 dialog 재삽입 방지
+                className={clsx("wg_shellControls__sidebar")}
+            >
                 <WgSidebar data={props.data} stores={props.stores} />
             </div>
             {props.data.cursorFace && <WgCursorFace ready={props.stores !== undefined} basePath={props.data.basePath} />}

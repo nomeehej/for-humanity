@@ -23,11 +23,14 @@ export interface PgStatusProps {
 }
 
 export const PgStatus = (props: PgStatusProps) => {
+    // ----------------------------------------------------------------------------------------
+    // 화면 구성
+    //
+    // head: 검색 제외, JavaScript 없는 테마와 글꼴 적용
+    // pg_status__root: 전체 화면 중앙의 상태 안내와 복귀 경로
+    // ----------------------------------------------------------------------------------------
     return (
         <html className={clsx("pg_status__document")} lang={props.site.lang}>
-            {/**
-             * 검색 제외와 JavaScript 없는 테마, 글꼴 적용
-             */}
             <head>
                 <meta charset="utf-8" />
                 <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -40,9 +43,6 @@ export const PgStatus = (props: PgStatusProps) => {
                 ))}
             </head>
 
-            {/**
-             * 전체 화면 중앙의 상태 안내와 복귀 경로
-             */}
             <body className={clsx("pg_status__root")}>
                 <main className={clsx("pg_status__main")}>
                     <UiStatus {...props.status} />

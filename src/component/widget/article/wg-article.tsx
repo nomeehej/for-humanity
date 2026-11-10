@@ -1,7 +1,7 @@
 import clsx from "clsx";
 import {Fragment} from "hono/jsx";
 import "./wg-article.css";
-// 본문 CSS 뒤. .fx__captions > li가 같은 특이도의 본문 li 여백을 이김
+// 본문 CSS 뒤 배치, .fx__captions > li가 같은 특이도의 본문 li 여백보다 우선
 import "@/style/authoring/fx.css";
 
 // ----------------------------------------------------------------------------------------
@@ -9,7 +9,7 @@ import "@/style/authoring/fx.css";
 //
 // remark, rehype 플러그인은 _function 소유
 //
-// html: 머리를 포함한 렌더링 완료 HTML
+// html: 머리 포함 렌더 완료 HTML
 // head: README가 없을 때의 안내 머리
 // head.title: 문서 h1 제목
 // head.lead: 제목 아래 소개, 선택

@@ -53,13 +53,16 @@ export const WgShell = (props: WgShellProps) => {
     // 요청별 head 격리, 언어와 문서 구조는 Hono 셸 소유
     const head = createHead({disableDefaults: true});
 
-    // 문서는 label, 홈은 언어별 사이트 설명을 페이지가 전달. Unhead 속성 직렬화는 따옴표만 이스케이프, 입력의 HTML 엔티티도 텍스트로 보존
+    // 설명은 페이지가 전달, 문서 label과 홈의 언어별 사이트 설명
+    // Unhead 속성 직렬화는 따옴표만 이스케이프, 입력의 HTML 엔티티도 텍스트로 보존
     const descriptionContent = props.description === undefined ? undefined : escapeHtml(props.description);
 
-    // 공개 주소를 지정한 사이트만 대표 주소와 링크 미리보기 출력. 사이트맵과 같은 주소, 번역 홈은 언어 코드가 경로
+    // 공개 주소 지정 사이트만 대표 주소와 링크 미리보기 출력
+    // 사이트맵과 같은 주소, 번역 홈은 언어 코드가 경로
     const pageUrl = props.site.url === undefined ? undefined : `${props.site.url}${toSitePath({basePath: props.site.basePath, path: toPagePath(props.current ?? props.locale)})}`;
 
-    // 공개 주소가 있고 언어판이 둘 이상인 페이지만 hreflang 링크. 기본 언어판은 x-default 겸함
+    // 공개 주소가 있고 언어판이 둘 이상인 페이지만 hreflang 링크
+    // 기본 언어판은 x-default 겸용
     const alternateLinks =
         pageUrl === undefined || alternates.length < 2
             ? []
@@ -98,7 +101,8 @@ export const WgShell = (props: WgShellProps) => {
         ],
         style: [{textContent: props.assets.fontCss}],
         link: [
-            // 인라인 번들 실행 전 첫 페인트 보류. body의 스크립트는 렌더를 막지 못하므로 Chromium의 expect 링크가 번들 뒤 마커까지 대기
+            // 인라인 번들 실행 전 첫 페인트 보류
+            // body 스크립트는 렌더 차단 불가, Chromium의 expect 링크가 번들 뒤 마커까지 대기
             ...(props.assets.browser.kind === "inline" ? [{rel: "expect", href: "#fh-browser-ready", blocking: "render"} satisfies Link] : []),
             {rel: "icon", href: toSitePath({basePath: props.site.basePath, path: asset_favicon_path}), type: "image/svg+xml"},
             ...(pageUrl === undefined ? [] : [{rel: "canonical", href: pageUrl} satisfies Link]),
@@ -113,48 +117,44 @@ export const WgShell = (props: WgShellProps) => {
             ...props.assets.stylePaths.map<Link>((href) => ({rel: "stylesheet", href: toSitePath({basePath: props.site.basePath, path: href})})),
         ],
 
-        // 저장소 소스 개발의 모듈 진입점. 탐색 마운트 전 첫 페인트 차단, Chromium의 render-blocking
+        // 저장소 소스 개발의 모듈 진입점
+        // 탐색 마운트 전 첫 페인트 차단, Chromium의 render-blocking
         script:
             props.assets.browser.kind === "module" ? [{type: "module", src: toSitePath({basePath: props.site.basePath, path: props.assets.browser.path}), blocking: "render"}] : [],
     });
 
+    // ----------------------------------------------------------------------------------------
+    // 화면 구성
+    //
+    // head: Unhead의 서버 직렬화 결과, 글꼴과 CSS는 JavaScript 수신 전에 로드
+    // wg_shell__root: 문서 탐색, 현재 목차, 본문, 브라우저 동작 연결
+    // wg_shell__browserRoot: 서버, 브라우저의 공통 셸 조립, 본문 HTML은 마운트 범위에서 제외
+    // fh-navigation-data: 서버 탐색 자료와 브라우저 진입점 연결
+    // fh-browser-ready: 인라인 번들 실행 완료 지점,
+    //   head의 expect 링크가 이 요소까지 첫 페인트 보류
+    // wg_shell__languages: 이 페이지가 있는 언어판, 현재 언어는 링크 없이 표시,
+    //   한 언어뿐이면 줄 생략
+    // ----------------------------------------------------------------------------------------
     return (
         <html lang={props.locale ?? props.site.lang} className={clsx("wg_shell__document")}>
-            {/**
-             * Unhead의 서버 직렬화 결과. 글꼴과 CSS는 JavaScript 수신 전에 로드
-             */}
             <head>{raw(head.render().headTags)}</head>
 
-            {/**
-             * 문서 탐색, 현재 목차, 본문. 브라우저 동작 연결
-             */}
             <body className={clsx("wg_shell__root")}>
-                {/**
-                 * 서버, 브라우저의 공통 셸 조립. 본문 HTML은 마운트 범위에서 제외
-                 */}
                 <div className={clsx("wg_shell__browserRoot")} data-shell-browser-root="">
                     <WgShellControls data={navigationData} />
                 </div>
 
-                {/**
-                 * 서버 탐색 자료와 브라우저 진입점 연결
-                 */}
                 {/* biome-ignore lint/security/noDangerouslySetInnerHtml: toScriptJson이 script 종료 태그와 줄 구분자를 이스케이프한 JSON */}
                 <script type="application/json" id="fh-navigation-data" dangerouslySetInnerHTML={{__html: toScriptJson(navigationData)}} />
                 {/* biome-ignore lint/security/noDangerouslySetInnerHtml: 패키지에 포함한 브라우저 번들. 문서 입력 미포함 */}
                 {props.assets.browser.kind === "inline" && <script dangerouslySetInnerHTML={{__html: props.assets.browser.code}} />}
-                {/**
-                 * 인라인 번들 실행 완료 지점. head의 expect 링크가 이 요소까지 첫 페인트 보류
-                 */}
                 {props.assets.browser.kind === "inline" && <div id="fh-browser-ready" hidden />}
                 <main className={clsx("wg_shell__main")}>
-                    {/**
-                     * 이 페이지가 있는 언어판. 현재 언어는 링크 없이 표시, 한 언어뿐이면 줄 생략
-                     */}
                     {alternates.length > 1 && (
                         <nav className={clsx("wg_shell__languages")} aria-label={copy_languages_label}>
                             {alternates.map((alternate, index) => {
-                                // 언어 이름은 그 언어의 자기 표기. Intl이 모르는 태그는 코드 그대로
+                                // 언어 이름은 그 언어의 자기 표기
+                                // Intl 미지원 태그는 코드 그대로 사용
                                 const name = new Intl.DisplayNames([alternate.lang], {type: "language"}).of(alternate.lang) ?? alternate.lang;
 
                                 return (

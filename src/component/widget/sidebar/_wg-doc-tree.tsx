@@ -7,7 +7,7 @@ import "./_wg-doc-tree.css";
 // ----------------------------------------------------------------------------------------
 // 서버, 브라우저가 공유하는 문서 트리
 //
-// groups: 본문을 제외한 읽는 순서의 문서 묶음
+// groups: 본문 제외, 읽는 순서의 문서 묶음
 // basePath: 트리 전체에 적용할 배포 경로
 // ----------------------------------------------------------------------------------------
 export interface WgDocTreeProps {
@@ -16,11 +16,13 @@ export interface WgDocTreeProps {
 }
 
 export const WgDocTree = (props: WgDocTreeProps) => {
+    // ----------------------------------------------------------------------------------------
+    // 화면 구성
+    //
+    // wg_docTree__docGroup: 문서 이동, 클릭하지 않는 묶음과 독립 문서
+    // ----------------------------------------------------------------------------------------
     return (
         <nav className={clsx("wg_docTree__root")} aria-label={copy_nav_aria_label}>
-            {/**
-             * 문서 이동. 클릭하지 않는 묶음과 독립 문서
-             */}
             {props.groups.map((group) => {
                 return (
                     <section className={clsx("wg_docTree__docGroup")} key={JSON.stringify(group.path)} aria-label={group.name}>

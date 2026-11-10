@@ -18,11 +18,16 @@ export interface WgDocListProps {
 }
 
 export const WgDocList = (props: WgDocListProps) => {
+    // ----------------------------------------------------------------------------------------
+    // 화면 구성
+    //
+    // wg_docList__link: 문서 링크, 부모도 원래 파일 URL의 독립 페이지,
+    //   현재 한 문서에만 페이지 상태 부여
+    // WgDocList: 하위 문서, 부모 아래에서도 기존 목록의 들여쓰기와 키보드 이동 유지
+    // wg_docList__branch: 하위 묶음, 같은 목록의 재귀 렌더, 깊이별 들여쓰기
+    // ----------------------------------------------------------------------------------------
     return (
         <ul className={clsx("wg_docList__root")} aria-label={props.group.name}>
-            {/**
-             * 문서 링크. 부모도 원래 파일 URL의 독립 페이지, 현재 한 문서에만 페이지 상태 부여
-             */}
             {props.group.docs.map((doc) => {
                 return (
                     <li className={clsx("wg_docList__item")} key={`doc:${doc.id}`}>
@@ -35,17 +40,11 @@ export const WgDocList = (props: WgDocListProps) => {
                             {doc.name}
                         </a>
 
-                        {/**
-                         * 하위 문서. 부모 아래에서도 기존 목록의 들여쓰기와 키보드 이동 유지
-                         */}
                         {doc.children.length > 0 && <WgDocList group={{name: doc.name, path: props.group.path, docs: doc.children, groups: []}} basePath={props.basePath} />}
                     </li>
                 );
             })}
 
-            {/**
-             * 하위 묶음. 같은 목록의 재귀 렌더, 깊이별 들여쓰기
-             */}
             {props.group.groups.map((group) => {
                 return (
                     <li className={clsx("wg_docList__item")} key={`group:${JSON.stringify(group.path)}`}>

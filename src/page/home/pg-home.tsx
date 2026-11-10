@@ -14,7 +14,7 @@ import type {ResolvedSiteConfig} from "@/type/site-config";
 // site: 검증된 사이트 설정
 // docs: 사이드바의 전체 문서
 // assets: HTML 머리의 공통 자원
-// home: README 렌더링 결과, 파일이 없으면 작성 안내
+// home: README 렌더 결과, 파일이 없으면 작성 안내
 // locale: 번역 홈의 언어 설정, 기본 언어 홈은 생략
 // ----------------------------------------------------------------------------------------
 export interface PgHomeProps {
@@ -26,6 +26,12 @@ export interface PgHomeProps {
 }
 
 export const PgHome = (props: PgHomeProps) => {
+    // ----------------------------------------------------------------------------------------
+    // 화면 구성
+    //
+    // WgArticle: 작성한 README 본문
+    // WgArticle: README 부재 시 파일 작성 안내
+    // ----------------------------------------------------------------------------------------
     return (
         <WgShell
             site={props.site}
@@ -35,14 +41,8 @@ export const PgHome = (props: PgHomeProps) => {
             locale={props.locale?.code}
             outline={props.home?.outline}
         >
-            {/**
-             * 작성한 README 본문
-             */}
             {props.home !== undefined && <WgArticle html={props.home.html} />}
 
-            {/**
-             * README 부재 시 파일 작성 안내
-             */}
             {props.home === undefined && <WgArticle head={{title: props.site.title, lead: copy_readme_missing}} />}
         </WgShell>
     );
