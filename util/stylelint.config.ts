@@ -8,35 +8,31 @@ import type {Config} from "stylelint";
 // ----------------------------------------------------------------------------------------
 
 // ----------------------------------------------------------------------------------------
-// 소유 클래스의 명명 계약
+// 클래스 이름 검사
 //
-// 외부 접두사 제외
-// ----------------------------------------------------------------------------------------
-const toOwnClassPattern = (scope: "pg" | "wg" | "ui") => {
-    return [
-        "^(?:",
-
-        // 외부 클래스 제외
-        `(?!${scope}_).*`,
-        "|",
-
-        // 소유 클래스의 scope_slug__element--modifier 문법
-        `${scope}_[a-z][a-zA-Z0-9]*__[a-z][a-zA-Z0-9]*(?:--[a-z][a-zA-Z0-9]*)?`,
-        ")$",
-    ].join("");
-};
-
-// ----------------------------------------------------------------------------------------
-// 이름 지정 없는 라이브러리 클래스
+// 목록에 없는 라이브러리 클래스는 소유 클래스 문법 검사 대상
 //
-// 소유 root 아래에서만 선택
-// Shiki의 코드 줄 표기, Mermaid의 공유 툴팁
+// library_class_prefixes: 이름을 정하지 않는 라이브러리 클래스의 접두사, Shiki의 코드 줄 표기
+// own_class_pattern: 라이브러리 클래스와 그림 작성 어휘 통과, 나머지는
+//   block__element--modifier 문법만 통과
+// own_markup_patterns: 직접 작성한 마크업의 금지 선택자
 // ----------------------------------------------------------------------------------------
-const library_prefixes = [/^\.(shiki|line|highlighted|diff|has-)/, /^\.mermaid/];
+const library_class_prefixes = ["shiki", "line", "highlighted", "diff", "has-", "error", "warning", "add", "remove"];
 
-// ----------------------------------------------------------------------------------------
-// 직접 작성한 마크업의 금지 선택자
-// ----------------------------------------------------------------------------------------
+const own_class_pattern = [
+    "^(?:",
+    `(?:${library_class_prefixes.join("|")}).*`,
+    "|",
+
+    // 작성자가 쓰는 공개 이름 fx, fx__요소, fx--상태, fx-종류
+    "fx(?:[-_].*)?",
+    "|",
+
+    // 레이어 이름 없는 block__element 또는 block__element--modifier
+    "[a-z][a-zA-Z0-9]*__[a-z][a-zA-Z0-9]*(?:--[a-z][a-zA-Z0-9]*)?",
+    ")$",
+].join("");
+
 const own_markup_patterns = [
     // 최상위 상태 선택자 금지
     /^\.[\w-]+:(hover|focus|focus-visible|focus-within|active|enabled|disabled|checked|visited)/,
@@ -47,11 +43,11 @@ const own_markup_patterns = [
 ];
 
 // ----------------------------------------------------------------------------------------
-// 외부 소유 영역, 라이브러리, 직접 작성한 마크업의 금지 선택자 결합
+// 라이브러리 클래스의 최상위 선택과 직접 작성한 마크업의 금지 선택자
+//
+// 라이브러리 클래스는 소유 root 아래에서만 선택
 // ----------------------------------------------------------------------------------------
-const toDisallowedSelectors = (foreignScopes: RegExp[]): [RegExp[], {splitList: true}] => {
-    return [[...foreignScopes, ...library_prefixes, ...own_markup_patterns], {splitList: true}];
-};
+const disallowed_selectors: [RegExp[], {splitList: true}] = [[...library_class_prefixes.map((prefix) => new RegExp(`^\\.${prefix}`)), ...own_markup_patterns], {splitList: true}];
 
 export default {
     extends: ["stylelint-config-standard"],
@@ -69,8 +65,8 @@ export default {
         // 상태 중첩 1단계 허용
         "max-nesting-depth": [1, {ignoreAtRules: ["media", "supports", "container"]}],
 
-        // 전역 keyframes 이름에 소유자 명시, 수정자 구분자와 혼동 방지
-        "keyframes-name-pattern": "^(pg|wg|ui)_[a-z][a-zA-Z0-9]*__[a-z][a-zA-Z0-9]*$",
+        // 전역 keyframes 이름에 소유자 블록 이름 명시, 수정자 구분자와 혼동 방지
+        "keyframes-name-pattern": "^[a-z][a-zA-Z0-9]*__[a-z][a-zA-Z0-9]*$",
 
         // 쉼표 목록 이후의 단독 중복 선언 포함
         "no-duplicate-selectors": [true, {disallowInList: true}],
@@ -83,34 +79,15 @@ export default {
         "property-disallowed-list": ["/^--/"],
 
         // 소유 마크업의 상태는 수정자 클래스
-        "selector-attribute-name-disallowed-list": [/^aria-/, /^data-(pg|wg|ui)-/],
+        "selector-attribute-name-disallowed-list": [/^aria-/],
+        "selector-class-pattern": own_class_pattern,
+        "selector-disallowed-list": disallowed_selectors,
         "selector-max-id": 0,
 
         // 부정 선택자 대신 기본 블록
         "selector-pseudo-class-disallowed-list": ["not"],
     },
     overrides: [
-        {
-            files: ["src/page/**/*.css"],
-            rules: {
-                "selector-class-pattern": toOwnClassPattern("pg"),
-                "selector-disallowed-list": toDisallowedSelectors([/^\.(wg|ui)_/]),
-            },
-        },
-        {
-            files: ["src/component/widget/**/*.css"],
-            rules: {
-                "selector-class-pattern": toOwnClassPattern("wg"),
-                "selector-disallowed-list": toDisallowedSelectors([/^\.(pg|ui)_/]),
-            },
-        },
-        {
-            files: ["src/component/ui/**/*.css"],
-            rules: {
-                "selector-class-pattern": toOwnClassPattern("ui"),
-                "selector-disallowed-list": toDisallowedSelectors([/^\.(pg|wg)_/]),
-            },
-        },
         {
             // 전역 스타일과 그림 작성 어휘는 소유 클래스 문법 제외
             // 작성 어휘의 --fx-* 공개 변수 선언 허용
@@ -130,7 +107,6 @@ export default {
             files: ["src/style/authoring/**/*.css"],
             rules: {
                 "declaration-no-important": true,
-                "selector-disallowed-list": toDisallowedSelectors([/\.(pg|wg|ui)_/]),
             },
         },
         {
@@ -141,7 +117,7 @@ export default {
                 "property-disallowed-list": null,
 
                 // 컴포넌트 클래스의 선언은 소유 CSS에 한정
-                "selector-disallowed-list": [/\.(pg|wg|ui)_/],
+                "selector-disallowed-list": [/\.[a-z][a-zA-Z0-9]*__/],
 
                 // var() 소비까지 검사
                 // 외부 변수 소비 파일 제외

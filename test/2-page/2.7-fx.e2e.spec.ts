@@ -9,7 +9,7 @@ test.use({
 });
 
 // ----------------------------------------------------------------------------------------
-// 인터랙티브 그림(src/component/widget/fx) 검증
+// 인터랙티브 그림(src/component/widget/fx-controls) 검증
 //
 // 실제 CLI 빌드 결과
 // ----------------------------------------------------------------------------------------
@@ -21,7 +21,7 @@ test.describe("그림", () => {
             const bar = figure.locator(".fx__bar");
             const next = bar.getByRole("button", {name: "Next step", exact: true});
             const previous = bar.getByRole("button", {name: "Previous step", exact: true});
-            const counter = bar.locator(".wg_fx__count");
+            const counter = bar.locator(".fxControls__count");
             const captions = figure.locator(".fx__captions > li");
 
             await test.step("문서를 열면 1단계의 요소와 첫 캡션만 보이고 이전 단계는 비활성이다", async () => {
@@ -31,7 +31,7 @@ test.describe("그림", () => {
                 await expect(figure).toHaveAttribute("data-step", "1");
                 await expect(counter).toHaveText("1 / 3");
                 await expect(previous).toHaveAttribute("aria-disabled", "true");
-                await expect(previous).toHaveClass(/wg_fx__icon--off/);
+                await expect(previous).toHaveClass(/fxControls__icon--off/);
                 await expect(next).toHaveAttribute("aria-disabled", "false");
                 await expect(captions.nth(0)).toBeVisible();
                 await expect(captions.nth(1)).toBeHidden();
@@ -49,7 +49,7 @@ test.describe("그림", () => {
                 await expect(figure).toHaveAttribute("data-step", "3");
                 await expect(counter).toHaveText("3 / 3");
                 await expect(next).toHaveAttribute("aria-disabled", "true");
-                await expect(next).toHaveClass(/wg_fx__icon--off/);
+                await expect(next).toHaveClass(/fxControls__icon--off/);
                 await expect(page.locator("#only-one")).not.toHaveClass(/is-on/);
                 await expect(page.locator("#from-two")).toHaveClass(/is-on/);
                 await expect(page.locator("#up-to-two")).not.toHaveClass(/is-on/);
@@ -62,7 +62,7 @@ test.describe("그림", () => {
                 await previous.click();
 
                 await expect(figure).toHaveAttribute("data-step", "2");
-                await expect(previous).not.toHaveClass(/wg_fx__icon--off/);
+                await expect(previous).not.toHaveClass(/fxControls__icon--off/);
                 await expect(page.locator("#marked")).toHaveClass(/is-hl/);
                 await expect(captions.nth(1)).toBeVisible();
             });
@@ -137,7 +137,7 @@ test.describe("그림", () => {
             const after = figure.getByRole("button", {name: "After", exact: true});
 
             await expect(figure.locator(".fx__bar button")).toHaveCount(2);
-            await expect(figure.locator(".wg_fx__scrub")).toHaveCount(0);
+            await expect(figure.locator(".fxControls__scrub")).toHaveCount(0);
             await expect(before).toHaveAttribute("aria-pressed", "true");
 
             // WHEN After 탭 클릭
@@ -243,7 +243,7 @@ test.describe("그림", () => {
             await page.goto("/figures/");
 
             const figure = page.locator("#run");
-            const output = figure.locator(".wg_fx__out");
+            const output = figure.locator(".fxControls__out");
             const frame = page.locator('iframe[sandbox="allow-scripts"]');
             const code = figure.getByRole("textbox", {name: "Code to run"});
 
@@ -287,11 +287,11 @@ test.describe("그림", () => {
             await page.goto("/figures/");
 
             // THEN 아이콘 SVG, aria-label, data-tip, 조작부 하나
-            await expect(button).toHaveClass(/wg_fx__icon/);
+            await expect(button).toHaveClass(/fxControls__icon/);
             await expect(button.locator("svg")).toHaveCount(1);
             await expect(button).toHaveAttribute("data-tip", "Replay");
             await expect(figure.locator(".fx__bar")).toHaveCount(1);
-            await expect(figure.locator(".wg_fx__scrub")).toHaveCount(0);
+            await expect(figure.locator(".fxControls__scrub")).toHaveCount(0);
         });
     });
 

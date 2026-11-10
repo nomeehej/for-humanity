@@ -9,7 +9,7 @@ test.use({
 });
 
 // ----------------------------------------------------------------------------------------
-// 표 정렬 위젯(src/component/widget/table-sort/wg-table-sort.tsx) 검증
+// 표 정렬 위젯(src/component/widget/table-sort/table-sort.tsx) 검증
 //
 // 갤러리에서 마운트한 위젯
 // ----------------------------------------------------------------------------------------
@@ -20,7 +20,7 @@ test.describe("표 정렬", () => {
             await page.goto("/lifecycle/");
             await page.evaluate(() => window.tableSortFixture.mount());
 
-            const table = page.locator(".wg_article__table table").first();
+            const table = page.locator(".article__table table").first();
             const names = table.locator("tbody td:nth-child(2)");
 
             await table.getByRole("button", {name: "Name"}).click();
@@ -31,7 +31,7 @@ test.describe("표 정렬", () => {
 
             // THEN 버튼, 화살표, 정렬 상태 없이 쓴 순서, 재마운트 뒤 버튼 추가
             await expect(table.getByRole("button")).toHaveCount(0);
-            await expect(table.locator(".wg_tableSort__arrow")).toHaveCount(0);
+            await expect(table.locator(".tableSort__arrow")).toHaveCount(0);
             await expect(table.locator("[aria-sort]")).toHaveCount(0);
             await expect(table.locator("th")).toHaveText(["Order", "Name", "Years", "Deadline"]);
             await expect(names).toHaveText(["Cherry", "Apple", "Banana", "Apple"]);

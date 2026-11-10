@@ -23,7 +23,7 @@ import {toProcessor} from "@/app/_function/to-processor/to-processor";
 import {toSiteImagePath} from "@/app/_function/to-site-image-path";
 import {asset_favicon_path, asset_font_dir, asset_status_image_path, asset_style_path} from "@/constant/asset";
 import {font_body_css, font_brand_css, font_mono_css} from "@/constant/font";
-import {PgStatus} from "@/page/status/pg-status";
+import {StatusPage} from "@/page/status/status-page";
 import type {ContentScope} from "@/type/content-scope";
 import type {SiteAssets} from "@/type/site-assets";
 import type {ResolvedSiteConfig} from "@/type/site-config";
@@ -140,7 +140,7 @@ export const loadSite = async (params: SiteParams) => {
 
     const notFound = String(
         await toHtml(
-            jsx(PgStatus, {
+            jsx(StatusPage, {
                 site: params.site,
                 assets,
                 status: {

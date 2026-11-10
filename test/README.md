@@ -54,7 +54,7 @@ test/
     2.5-status.e2e.spec.ts
     2.6-table-sort.e2e.spec.ts   ↔ src/component/widget/table-sort                      TBL
     2.6-table-sort.integration.spec.ts
-    2.7-fx.e2e.spec.ts           ↔ src/component/widget/fx                              FIG
+    2.7-fx.e2e.spec.ts           ↔ src/component/widget/fx-controls                              FIG
     2.7-fx.integration.spec.ts
   3-server/
     3.1-dev.e2e.spec.ts          ↔ src/entry/dev                                        DEV
@@ -63,7 +63,7 @@ test/
 
 - 영역 하나는 한 폴더 안에서 한 이름으로 묶습니다. 층과 실행기 프로젝트는 접미사(`.node.test.ts`, `.integration.spec.ts`, `.e2e.spec.ts`)로 구분합니다. 프로젝트는 접미사로 파일을 고르므로 접미사가 없는 파일은 어느 프로젝트에도 들어가지 않습니다.
 - 폴더와 파일 번호는 사용자 흐름을 따릅니다. 0은 명령과 설정, 1은 문서 조립, 2는 페이지, 3은 서버입니다. 폴더는 정수(`1-document`), 파일은 폴더 번호를 이어 붙인 점 번호(`1.3-link`)를 씁니다. 번호가 9를 넘는 폴더는 모든 번호를 `1.01`처럼 두 자리로 씁니다.
-- 파일 이름은 영역 이름이며 케이스 코드와 1:1로 대응합니다. 컴포넌트 접두사(`wg-`, `pg-`)는 붙이지 않습니다. 대응하는 `src` 경로는 파일 머리 주석에 적습니다.
+- 파일 이름은 영역 이름이며 케이스 코드와 1:1로 대응합니다. 대응하는 `src` 경로는 파일 머리 주석에 적습니다.
 - 새 영역은 그 흐름의 끝 번호로 붙입니다. 흐름상 중간에 끼워야 할 때만 번호를 밉니다. 케이스 번호는 파일 번호와 무관합니다.
 - `_` 폴더는 지원 코드입니다. `src`의 `_constant`처럼 그 자체는 검증 대상이 아닙니다. 테스트 파일이 없으므로 테스트 목록에 나타나지 않습니다.
 - 가져오기는 `@test/` 별칭을 씁니다. 상대 경로를 쓰지 않습니다. Vitest는 `vitest.config.ts`, Playwright는 `tsconfig.json`의 같은 별칭을 읽습니다.
@@ -181,12 +181,12 @@ test("[MRM-010] 접힌 다이어그램을 열면 모듈을 요청하고 표시�
 ```ts
 test("[DEV-009] CSS 파일 추가와 삭제는 HTML의 스타일 목록에 반영된다", {tag: "@high"}, async ({page, devSite}) => {
     // GIVEN 소스 스타일 목록을 사용하는 개발 페이지
-    const path = join(devSite.kitRoot, "src/component/widget/shell/_wg-shell-test.css");
+    const path = join(devSite.kitRoot, "src/component/widget/shell/_shell-test.css");
 
     await page.goto("/");
 
     await test.step("새 CSS 파일은 등록 설정 없이 적용한다", async () => {
-        await writeFile(path, ".wg_shell__main { outline: 2px solid rgb(4, 5, 6); }\n");
+        await writeFile(path, ".shell__main { outline: 2px solid rgb(4, 5, 6); }\n");
 
         await expect(page.getByRole("main")).toHaveCSS("outline-style", "solid");
     });

@@ -19,10 +19,10 @@ test.describe("표 정렬", () => {
             // GIVEN 숫자와 글자가 섞인 열이 있는 빌드한 표
             await page.goto("/table/");
 
-            const table = page.locator(".wg_article__table table").first();
+            const table = page.locator(".article__table table").first();
             const header = table.locator("th").nth(2);
             const button = table.getByRole("button", {name: "Years"});
-            const arrow = header.locator(".wg_tableSort__arrow");
+            const arrow = header.locator(".tableSort__arrow");
             const column = table.locator("tbody td:nth-child(3)");
 
             await expect(header).toHaveAttribute("aria-sort", "none");
@@ -55,7 +55,7 @@ test.describe("표 정렬", () => {
             // GIVEN -가 든 날짜 열과 같은 이름이 둘인 글자 열
             await page.goto("/table/");
 
-            const table = page.locator(".wg_article__table table").first();
+            const table = page.locator(".article__table table").first();
             const deadline = table.locator("th").nth(3);
             const name = table.locator("th").nth(1);
             const orders = table.locator("tbody td:nth-child(1)");
@@ -77,14 +77,14 @@ test.describe("표 정렬", () => {
             await expect(names).toHaveText(["Apple", "Apple", "Banana", "Cherry"]);
             await expect(orders).toHaveText(["2", "4", "3", "1"]);
             await expect(table.locator('[aria-sort="ascending"]')).toHaveCount(1);
-            await expect(table.locator(".wg_tableSort__button--descending")).toHaveCount(0);
+            await expect(table.locator(".tableSort__button--descending")).toHaveCount(0);
         });
 
         test("[TBL-003] 키보드로 머리글에 들어가 Enter로 정렬하고 포커스를 유지한다", {tag: "@high"}, async ({page}) => {
             // GIVEN 순번 열의 머리글 버튼에 포커스
             await page.goto("/table/");
 
-            const table = page.locator(".wg_article__table table").first();
+            const table = page.locator(".article__table table").first();
             const button = table.getByRole("button", {name: "Order"});
             const column = table.locator("tbody td:nth-child(1)");
 
@@ -107,14 +107,14 @@ test.describe("표 정렬", () => {
             await page.goto("/table/");
 
             // WHEN 머리글 버튼 조회
-            await expect(page.locator(".wg_article__table")).toHaveCount(5);
+            await expect(page.locator(".article__table")).toHaveCount(5);
 
             // THEN 첫 표의 열 수만큼만 버튼과 화살표, 머리글 링크는 링크 유지
-            await expect(page.locator(".wg_article__table").getByRole("button")).toHaveCount(4);
-            await expect(page.locator(".wg_article__table").first().getByRole("button")).toHaveCount(4);
-            await expect(page.locator(".wg_article__table th a")).toHaveCount(1);
+            await expect(page.locator(".article__table").getByRole("button")).toHaveCount(4);
+            await expect(page.locator(".article__table").first().getByRole("button")).toHaveCount(4);
+            await expect(page.locator(".article__table th a")).toHaveCount(1);
             await expect(page.locator("[aria-sort]")).toHaveCount(4);
-            await expect(page.locator(".wg_tableSort__arrow")).toHaveCount(4);
+            await expect(page.locator(".tableSort__arrow")).toHaveCount(4);
         });
     });
 
@@ -125,7 +125,7 @@ test.describe("표 정렬", () => {
             // GIVEN 스크립트를 끈 브라우저
             await page.goto("/table/");
 
-            const table = page.locator(".wg_article__table table").first();
+            const table = page.locator(".article__table table").first();
 
             // WHEN 표 조회
             await expect(table).toBeVisible();

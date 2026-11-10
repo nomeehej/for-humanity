@@ -32,11 +32,11 @@ test.describe("다이어그램", () => {
 
                 // THEN 격리된 공식 SVG와 숨겨진 원문
                 await expect(page.locator('[data-mermaid-status="rendered"]')).toHaveCount(1);
-                await expect(page.locator(".wg_mermaid__result svg")).toContainText(diagram.label);
-                await expect(page.locator(".wg_mermaid__result svg")).toHaveAttribute("role", /document/);
+                await expect(page.locator(".mermaid__result svg")).toContainText(diagram.label);
+                await expect(page.locator(".mermaid__result svg")).toHaveAttribute("role", /document/);
                 await expect(page.locator("[data-mermaid-source]")).toHaveText(diagram.source);
-                await expect(page.locator(".wg_mermaid__source")).toBeHidden();
-                await expect(page.locator(".wg_mermaid__result")).toHaveJSProperty("textContent", "");
+                await expect(page.locator(".mermaid__source")).toBeHidden();
+                await expect(page.locator(".mermaid__result")).toHaveJSProperty("textContent", "");
                 await expect(page.locator('[data-mermaid-status="error"]')).toHaveCount(0);
             });
         }
@@ -65,7 +65,7 @@ test.describe("다이어그램", () => {
 
             // THEN 모듈 수신과 정상 크기의 SVG 표시
             await expect(page.locator('[data-mermaid-status="rendered"]')).toHaveCount(1);
-            await expect(page.locator(".wg_mermaid__result svg")).toBeVisible();
+            await expect(page.locator(".mermaid__result svg")).toBeVisible();
             expect(runtime.requests.some((url) => url.includes("/_fh/mermaid/"))).toBe(true);
         });
 
@@ -90,16 +90,16 @@ test.describe("다이어그램", () => {
             // GIVEN 주소의 해시로 공개한 접힌 제목과 렌더를 마친 다이어그램
             await page.goto("/folded/#folded-heading");
             await expect(page.locator('[data-mermaid-status="rendered"]')).toHaveCount(1);
-            await expect(page.locator(".wg_article__details")).toHaveAttribute("open");
+            await expect(page.locator(".article__details")).toHaveAttribute("open");
 
             // WHEN 사용자가 접은 뒤 테마 변경으로 다이어그램 재렌더
             await page.getByText("Folded context", {exact: true}).click();
-            await expect(page.locator(".wg_article__details")).not.toHaveAttribute("open");
+            await expect(page.locator(".article__details")).not.toHaveAttribute("open");
             await page.emulateMedia({colorScheme: "dark"});
             await expect(page.locator('[data-mermaid-theme="dark"]')).toHaveCount(1);
 
             // THEN 사용자가 접은 상태 유지
-            await expect(page.locator(".wg_article__details")).not.toHaveAttribute("open");
+            await expect(page.locator(".article__details")).not.toHaveAttribute("open");
         });
 
         test("[MRM-012] 모바일 문서에 가로 스크롤이 생기지 않는다", {tag: "@mid"}, async ({page}) => {
@@ -137,10 +137,10 @@ test.describe("다이어그램", () => {
             await page.goto("/flowchart/");
 
             // THEN 원문 유지와 수신 실패 안내
-            await expect(page.locator(".wg_mermaid__error")).toBeVisible();
-            await expect(page.locator(".wg_mermaid__source")).toBeVisible();
+            await expect(page.locator(".mermaid__error")).toBeVisible();
+            await expect(page.locator(".mermaid__source")).toBeVisible();
             await expect(page.locator("[data-mermaid-source]")).toHaveText(diagram_cases[0].source);
-            await expect(page.locator(".wg_mermaid__result svg")).toHaveCount(0);
+            await expect(page.locator(".mermaid__result svg")).toHaveCount(0);
         });
 
         test("[MRM-015] 잘못된 문법과 길이 초과는 다른 다이어그램의 표시를 막지 않는다", {tag: ["@high", "@negative"]}, async ({page, runtime}) => {
@@ -152,10 +152,10 @@ test.describe("다이어그램", () => {
             // THEN 개별 실패 안내와 정상 다이어그램 유지
             await expect(page.locator('[data-mermaid-status="error"]')).toHaveCount(2);
             await expect(page.locator('[data-mermaid-status="rendered"]')).toHaveCount(1);
-            await expect(page.locator(".wg_mermaid__error").first()).toContainText("Check the source");
-            await expect(page.locator(".wg_mermaid__source").first()).toBeVisible();
-            await expect(page.locator(".wg_mermaid__source").nth(2)).toBeVisible();
-            await expect(page.locator(".wg_mermaid__measurement")).toHaveCount(0);
+            await expect(page.locator(".mermaid__error").first()).toContainText("Check the source");
+            await expect(page.locator(".mermaid__source").first()).toBeVisible();
+            await expect(page.locator(".mermaid__source").nth(2)).toBeVisible();
+            await expect(page.locator(".mermaid__measurement")).toHaveCount(0);
             expect(await page.evaluate(() => window.mermaidInjected)).toBeUndefined();
             expect(runtime.errors).toStrictEqual([]);
             expect(runtime.consoleErrors.filter((message) => message.includes("for-humanity Mermaid rendering failed"))).toHaveLength(2);
@@ -168,7 +168,7 @@ test.describe("다이어그램", () => {
             await page.goto("/flowchart/");
             await expect(page.locator('[data-mermaid-status="rendered"]')).toHaveCount(1);
 
-            const normal = await page.locator(".wg_mermaid__result svg").boundingBox();
+            const normal = await page.locator(".mermaid__result svg").boundingBox();
 
             // WHEN 움직임 줄이기를 켠 브라우저 문맥에서 같은 문서 조회
             const context = await browser.newContext({baseURL, reducedMotion: "reduce"});
@@ -177,7 +177,7 @@ test.describe("다이어그램", () => {
             await reduced.goto("/flowchart/");
             await expect(reduced.locator('[data-mermaid-status="rendered"]')).toHaveCount(1);
 
-            const box = await reduced.locator(".wg_mermaid__result svg").boundingBox();
+            const box = await reduced.locator(".mermaid__result svg").boundingBox();
 
             await context.close();
 
@@ -202,8 +202,8 @@ test.describe("다이어그램", () => {
 
             // THEN 서버가 작성한 원문 표시
             await expect(page.locator("[data-mermaid-source]")).toHaveText(diagram_cases[0].source);
-            await expect(page.locator(".wg_mermaid__source")).toBeVisible();
-            await expect(page.locator(".wg_mermaid__result")).toBeHidden();
+            await expect(page.locator(".mermaid__source")).toBeVisible();
+            await expect(page.locator(".mermaid__result")).toBeHidden();
         });
     });
 });

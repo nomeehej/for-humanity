@@ -10,7 +10,7 @@ test.use({
 
 // ----------------------------------------------------------------------------------------
 // 그림 상자의 화면 폭별 크기(src/component/widget/article/_function/rehype-figures.ts,
-//   wg-article.css) 검증
+//   article.css) 검증
 //
 // 공식 문서 Images의 너비 560 예시 SVG
 // ----------------------------------------------------------------------------------------
@@ -27,7 +27,7 @@ test.describe("문서 자원", () => {
                 await page.goto("/images/");
 
                 // WHEN 그림과 그림 상자의 폭 조회
-                const figure = page.locator(".wg_article__figure--svg").filter({has: page.getByRole("img", {name: "Selected state in a fictional book list", exact: true})});
+                const figure = page.locator(".article__figure--svg").filter({has: page.getByRole("img", {name: "Selected state in a fictional book list", exact: true})});
 
                 await expect(figure).toBeVisible();
 

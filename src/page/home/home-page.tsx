@@ -1,0 +1,49 @@
+import {Article} from "@/component/widget/article/article";
+import {Shell} from "@/component/widget/shell/shell";
+import {copy_readme_missing} from "@/page/home/_constant/copy";
+import type {Doc} from "@/type/doc";
+import type {DocContent} from "@/type/doc-content";
+import type {SiteAssets} from "@/type/site-assets";
+import type {ResolvedSiteConfig} from "@/type/site-config";
+
+// ----------------------------------------------------------------------------------------
+// / 첫 화면과 /<code>/ 번역 홈 입력
+//
+// 문서 폴더 README의 본문과 목차
+//
+// site: 검증된 사이트 설정
+// docs: 사이드바의 전체 문서
+// assets: HTML 머리의 공통 자원
+// home: README 렌더 결과, 파일이 없으면 작성 안내
+// locale: 번역 홈의 언어 설정, 기본 언어 홈은 생략
+// ----------------------------------------------------------------------------------------
+export interface HomePageProps {
+    site: ResolvedSiteConfig;
+    docs: Doc[];
+    assets: SiteAssets;
+    home?: DocContent;
+    locale?: ResolvedSiteConfig["locales"][number];
+}
+
+export const HomePage = (props: HomePageProps) => {
+    // ----------------------------------------------------------------------------------------
+    // 화면 구성
+    //
+    // Article: 작성한 README 본문
+    // Article: README 부재 시 파일 작성 안내
+    // ----------------------------------------------------------------------------------------
+    return (
+        <Shell
+            site={props.site}
+            docs={props.docs}
+            assets={props.assets}
+            description={props.locale === undefined ? props.site.description : props.locale.description}
+            locale={props.locale?.code}
+            outline={props.home?.outline}
+        >
+            {props.home !== undefined && <Article html={props.home.html} />}
+
+            {props.home === undefined && <Article head={{title: props.site.title, lead: copy_readme_missing}} />}
+        </Shell>
+    );
+};

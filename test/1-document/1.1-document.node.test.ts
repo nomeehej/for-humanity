@@ -119,7 +119,7 @@ describe("문서", () => {
             expect(empty?.html).toMatch(/<h1[^>]*><span[^>]*>Empty<\/span><\/h1>/);
 
             for (const doc of docs) {
-                expect(doc.html).not.toContain("wg_article__eyebrow");
+                expect(doc.html).not.toContain("article__eyebrow");
             }
         });
 
@@ -277,13 +277,13 @@ describe("문서", () => {
 
             // THEN 제목과 소개 사이의 날짜 줄, 영어와 한국어 라벨, 적은 그대로의 time 값, 날짜가 없으면 줄 생략
             expect(html.post).toContain(
-                '</h1><p class="wg_article__dates">Created <time datetime="2022-12">2022-12</time>, Revised <time datetime="2026-10-05">2026-10-05</time></p><p>Lead.</p>',
+                '</h1><p class="article__dates">Created <time datetime="2022-12">2022-12</time>, Revised <time datetime="2026-10-05">2026-10-05</time></p><p>Lead.</p>',
             );
             expect(html["ko/post"]).toContain(
-                '</h1><p class="wg_article__lead">글</p><p class="wg_article__dates">작성일 <time datetime="2022-12">2022-12</time>, 수정일 <time datetime="2026-10-05">2026-10-05</time></p>',
+                '</h1><p class="article__lead">글</p><p class="article__dates">작성일 <time datetime="2022-12">2022-12</time>, 수정일 <time datetime="2026-10-05">2026-10-05</time></p>',
             );
-            expect(html.note).toContain('<p class="wg_article__dates">Created <time datetime="2026-10">2026-10</time></p>');
-            expect(html.plain).not.toContain("wg_article__dates");
+            expect(html.note).toContain('<p class="article__dates">Created <time datetime="2026-10">2026-10</time></p>');
+            expect(html.plain).not.toContain("article__dates");
         });
 
         test("[DOC-019] 형식이 다른 날짜는 문서 경로와 항목 이름과 함께 거부한다", async ({scope}) => {

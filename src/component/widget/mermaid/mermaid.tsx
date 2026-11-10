@@ -1,0 +1,276 @@
+import {useLayoutEffect} from "hono/jsx";
+import {copy_error_load, copy_error_render} from "@/component/widget/mermaid/_constant/copy";
+import {render_config, render_dark_config, render_id_words, render_source_max_chars} from "@/component/widget/mermaid/_constant/render";
+import {toOpenArrows} from "@/component/widget/mermaid/_function/open-arrows";
+import {toChangeQueue} from "@/util/async/to-change-queue";
+import "./mermaid.css";
+
+// ----------------------------------------------------------------------------------------
+// Mermaid 영역 렌더 속성
+//
+// onRendered: 렌더에 따른 본문 높이 변경 후 초기 앵커 위치 보정
+// ----------------------------------------------------------------------------------------
+export interface MermaidProps {
+    onRendered?: () => void;
+}
+
+// ----------------------------------------------------------------------------------------
+// 서버 본문의 Mermaid 영역 렌더 수명
+//
+// 셸과 본문 DOM 교체 미포함
+// 렌더 완료 알림으로 문서 배치와 연결
+// ----------------------------------------------------------------------------------------
+export const Mermaid = (props: MermaidProps) => {
+    // ----------------------------------------------------------------------------------------
+    // 본문 파싱 후 모듈 수신, 테마 변경과 Details 공개의 직렬 렌더
+    // ----------------------------------------------------------------------------------------
+    useLayoutEffect(() => {
+        const lifetime = new AbortController();
+        const theme = matchMedia("(prefers-color-scheme: dark)");
+        const measurements = new Set<HTMLElement>();
+        const owned = new Set<HTMLElement>();
+        const tooltips = new Set<HTMLElement>();
+
+        // ----------------------------------------------------------------------------------------
+        // 호버 시 공유 툴팁 재표시
+        //
+        // 툴팁 요소 재사용
+        // 테마나 Details 열림 변경에서 숨긴 안내는 다음 호버에 복원
+        // ----------------------------------------------------------------------------------------
+        const handleTooltipShow = (event: MouseEvent) => {
+            if (!(event.target instanceof Element) || event.target.closest("[title]") === null) {
+                return;
+            }
+
+            for (const tooltip of tooltips) {
+                tooltip.hidden = false;
+
+                // 표시 후 측정한 폭으로 화면 오른쪽 넘침 방지
+                const bounds = tooltip.getBoundingClientRect();
+
+                tooltip.style.left = `${scrollX + Math.max(0, Math.min(bounds.left, document.documentElement.clientWidth - bounds.width))}px`;
+            }
+        };
+
+        // ----------------------------------------------------------------------------------------
+        // SVG 이탈과 배치 변경 시 툴팁 비표시
+        //
+        // 툴팁의 이전 절대 좌표와 스크롤 넘침 제외
+        // ----------------------------------------------------------------------------------------
+        const handleTooltipHide = () => {
+            for (const tooltip of tooltips) {
+                tooltip.hidden = true;
+            }
+        };
+
+        // ----------------------------------------------------------------------------------------
+        // 접힌 Details 밖의 다이어그램만 현재 테마로 차례 렌더
+        //
+        // 모듈 수신 실패는 모든 영역에 오류 안내
+        // toggle 시점의 checkVisibility가 ::details-content 전환 첫 프레임에서 false 반환
+        //
+        // 제약: 열림 판정은 open 속성
+        // ----------------------------------------------------------------------------------------
+        const render = toChangeQueue({
+            run: async () => {
+                const elements = [...document.querySelectorAll<HTMLElement>(".mermaid__root[data-mermaid]")];
+                const path = elements[0]?.dataset.mermaidModule;
+
+                if (path === undefined || lifetime.signal.aborted) {
+                    return;
+                }
+
+                const mode = theme.matches ? "dark" : "light";
+
+                // ----------------------------------------------------------------------------------------
+                // 이번 회차 결과 적용 제외 영역
+                //
+                // 해제, 문서 교체, 테마 전환이 원인
+                // ----------------------------------------------------------------------------------------
+                const isStale = (element: HTMLElement) => {
+                    return lifetime.signal.aborted || !element.isConnected || theme.matches !== (mode === "dark");
+                };
+
+                const pending = elements.filter((element) => element.closest("details:not([open])") === null && element.dataset.mermaidTheme !== mode);
+
+                if (pending.length === 0) {
+                    return;
+                }
+
+                // 미리 빌드한 자체 호스팅 ESM의 런타임 URL, Vite의 번들 대상 분석 제외
+                const library: typeof import("mermaid") = await import(/* @vite-ignore */ path);
+
+                await document.fonts.ready;
+
+                if (lifetime.signal.aborted) {
+                    return;
+                }
+
+                for (const element of pending) {
+                    if (isStale(element)) {
+                        return;
+                    }
+
+                    const source = element.querySelector<HTMLElement>(".mermaid__source");
+                    const result = element.querySelector<HTMLElement>(".mermaid__result");
+                    const error = element.querySelector<HTMLElement>(".mermaid__error");
+
+                    if (source === null || result === null || error === null) {
+                        continue;
+                    }
+
+                    const measurement = document.createElement("div");
+
+                    measurement.className = "mermaid__measurement";
+                    measurements.add(measurement);
+                    document.body.append(measurement);
+
+                    try {
+                        if (source.textContent.length > render_source_max_chars) {
+                            throw new Error(`Mermaid source exceeds ${render_source_max_chars} characters`);
+                        }
+
+                        // Mermaid 설정은 렌더마다 초기화, 앞 다이어그램의 frontmatter 전파 제외
+                        const config = mode === "dark" ? render_dark_config : render_config;
+
+                        library.default.initialize(config);
+
+                        const rendered = await library.default.render(
+                            `fh-mermaid-${crypto.getRandomValues(new Uint32Array(render_id_words)).join("-")}`,
+                            source.textContent,
+                            measurement,
+                        );
+
+                        if (isStale(element)) {
+                            return;
+                        }
+
+                        const canvas = document.createElement("div");
+
+                        canvas.innerHTML = rendered.svg;
+                        toOpenArrows(canvas, config.themeVariables?.lineColor);
+
+                        // 생성 SVG의 공식 스타일 격리
+                        // 본문 p, code, a 선택자의 내부 라벨 개입 제외
+                        (result.shadowRoot ?? result.attachShadow({mode: "open"})).replaceChildren(canvas);
+
+                        // Mermaid bindFunctions는 SVG 자식이 있는 Element 요구
+                        rendered.bindFunctions?.(canvas);
+                        canvas.addEventListener("mouseover", handleTooltipShow, {signal: lifetime.signal});
+                        canvas.addEventListener("mouseout", handleTooltipHide, {signal: lifetime.signal});
+
+                        const tooltip = document.querySelector<HTMLElement>(".mermaidTooltip");
+
+                        if (tooltip !== null) {
+                            tooltip.classList.add("mermaid__tooltip");
+                            tooltips.add(tooltip);
+                        }
+
+                        result.hidden = false;
+                        source.hidden = true;
+                        error.hidden = true;
+                        element.dataset.mermaidStatus = "rendered";
+                    } catch (cause) {
+                        if (lifetime.signal.aborted) {
+                            return;
+                        }
+
+                        result.hidden = true;
+                        source.hidden = false;
+                        error.textContent = copy_error_render;
+                        error.hidden = false;
+                        element.dataset.mermaidStatus = "error";
+                        console.error("for-humanity Mermaid rendering failed", cause);
+                    } finally {
+                        measurement.remove();
+                        measurements.delete(measurement);
+                    }
+
+                    element.dataset.mermaidTheme = mode;
+                    owned.add(element);
+                }
+
+                props.onRendered?.();
+            },
+            onError: (cause) => {
+                if (lifetime.signal.aborted) {
+                    return;
+                }
+
+                for (const element of document.querySelectorAll<HTMLElement>(".mermaid__root[data-mermaid]")) {
+                    const error = element.querySelector<HTMLElement>(".mermaid__error");
+
+                    if (error !== null) {
+                        owned.add(element);
+                        error.textContent = copy_error_load;
+                        error.hidden = false;
+                    }
+                }
+
+                console.error("for-humanity Mermaid loading failed", cause);
+            },
+        });
+
+        // ----------------------------------------------------------------------------------------
+        // 연속 이벤트의 렌더 집약
+        //
+        // 직전 렌더 완료 후 최신 테마 반영
+        // ----------------------------------------------------------------------------------------
+        const handleRender = () => {
+            handleTooltipHide();
+            void render();
+        };
+
+        theme.addEventListener("change", handleRender, {signal: lifetime.signal});
+        addEventListener("resize", handleTooltipHide, {signal: lifetime.signal});
+        document.addEventListener("toggle", handleRender, {capture: true, signal: lifetime.signal});
+
+        if (document.readyState === "loading") {
+            document.addEventListener("DOMContentLoaded", handleRender, {once: true, signal: lifetime.signal});
+        } else {
+            handleRender();
+        }
+
+        return () => {
+            lifetime.abort();
+
+            for (const measurement of measurements) {
+                measurement.remove();
+            }
+
+            measurements.clear();
+
+            for (const tooltip of tooltips) {
+                tooltip.remove();
+            }
+
+            tooltips.clear();
+
+            for (const element of owned) {
+                const source = element.querySelector<HTMLElement>(".mermaid__source");
+                const result = element.querySelector<HTMLElement>(".mermaid__result");
+                const error = element.querySelector<HTMLElement>(".mermaid__error");
+
+                if (result !== null) {
+                    result.shadowRoot?.replaceChildren();
+                    result.hidden = true;
+                }
+
+                if (source !== null) {
+                    source.hidden = false;
+                }
+
+                if (error !== null) {
+                    error.hidden = true;
+                }
+
+                delete element.dataset.mermaidTheme;
+                delete element.dataset.mermaidStatus;
+            }
+
+            owned.clear();
+        };
+    }, [props.onRendered]);
+
+    return null;
+};

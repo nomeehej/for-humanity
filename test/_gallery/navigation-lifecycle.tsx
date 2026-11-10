@@ -1,6 +1,6 @@
 import {flushSync} from "hono/jsx/dom";
 import {createRoot} from "hono/jsx/dom/client";
-import {WgShellControls} from "@/component/widget/shell-controls/wg-shell-controls";
+import {ShellControls} from "@/component/widget/shell-controls/shell-controls";
 import {navigationDataSchema} from "@/component/widget/sidebar/_constant/navigation-data-schema";
 import {toNavigationStores} from "@/store/navigation/to-navigation-stores";
 
@@ -26,7 +26,7 @@ window.shellFixture = {
     mount: () => {
         const shell = createRoot(root);
 
-        shell.render(<WgShellControls data={navigation} stores={stores} />);
+        shell.render(<ShellControls data={navigation} stores={stores} />);
 
         window.shellFixture.unmount = () => {
             flushSync(() => shell.unmount());

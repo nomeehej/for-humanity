@@ -177,7 +177,7 @@ try {
     const browserScript = await readFile(join(packageRoot, "dist/browser.js"), "utf8");
 
     assert.ok(home.includes(`<script>${browserScript}</script>`));
-    assert.ok(home.indexOf(`<script>${browserScript}</script>`) < home.indexOf('<main class="wg_shell__main">'));
+    assert.ok(home.indexOf(`<script>${browserScript}</script>`) < home.indexOf('<main class="shell__main">'));
 
     const guide = await readFile(join(output, "guide/index.html"), "utf8");
     const mermaidPath = guide.match(/data-mermaid-module="([^"]+)"/)?.[1];
@@ -195,16 +195,16 @@ try {
     }
 
     const nested = await readFile(join(output, "guide/agents/index.html"), "utf8");
-    const nestedNavigation = nested.match(/<nav\b[^>]*class="wg_docTree__root"[\s\S]*?<\/nav>/)?.[0];
+    const nestedNavigation = nested.match(/<nav\b[^>]*class="docTree__root"[\s\S]*?<\/nav>/)?.[0];
 
     assert.ok(nestedNavigation);
     assert.match(nested, /Example<\/span><ul\b/);
     assert.match(nested, /Guide<\/span><ul\b/);
     assert.match(nested, /href="\/guide\/agents\/"[^>]*aria-current="page"/);
-    assert.equal([...nestedNavigation.matchAll(/wg_docList__link--active/g)].length, 1);
+    assert.equal([...nestedNavigation.matchAll(/docList__link--active/g)].length, 1);
 
     const child = await readFile(join(output, "guide/options/index.html"), "utf8");
-    const childNavigation = child.match(/<nav\b[^>]*class="wg_docTree__root"[\s\S]*?<\/nav>/)?.[0];
+    const childNavigation = child.match(/<nav\b[^>]*class="docTree__root"[\s\S]*?<\/nav>/)?.[0];
 
     assert.ok(childNavigation);
     assert.match(child, /href="\/guide\/"[^>]*>Guide<\/a><ul\b[^>]*aria-label="Guide"/);
@@ -222,7 +222,7 @@ try {
     assert.ok(notFound.includes(`src="${imagePath}"`));
     assert.equal([...child.matchAll(/href="\/guide\/options\/"/g)].length, 1);
     assert.equal([...child.matchAll(/aria-current="page"/g)].length, 1);
-    assert.equal([...childNavigation.matchAll(/wg_docList__link--active/g)].length, 1);
+    assert.equal([...childNavigation.matchAll(/docList__link--active/g)].length, 1);
     assert.ok(nested.indexOf('aria-label="Projects"') < nested.indexOf('aria-label="Guide"'));
 
     const entries = (await readdir(output, {recursive: true})).map((path) => path.replaceAll("\\", "/"));

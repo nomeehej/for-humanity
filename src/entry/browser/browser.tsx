@@ -4,7 +4,7 @@
 // 서버 자료 검증과 저장소 생성 후 공통 셸 컨트롤 1회 마운트
 // ----------------------------------------------------------------------------------------
 import {createRoot} from "hono/jsx/dom/client";
-import {WgShellControls} from "@/component/widget/shell-controls/wg-shell-controls";
+import {ShellControls} from "@/component/widget/shell-controls/shell-controls";
 import {navigationDataSchema} from "@/component/widget/sidebar/_constant/navigation-data-schema";
 import {toNavigationStores} from "@/store/navigation/to-navigation-stores";
 
@@ -14,7 +14,7 @@ const payload = document.getElementById("fh-navigation-data");
 if (root !== null && payload !== null) {
     try {
         createRoot(root).render(
-            <WgShellControls
+            <ShellControls
                 data={navigationDataSchema.parse(JSON.parse(payload.textContent))}
                 stores={toNavigationStores({
                     session: () => {

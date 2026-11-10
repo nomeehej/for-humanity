@@ -18,7 +18,7 @@ describe("상태 표지", () => {
 
             remarkStatus({status: [{phrase: scenario.phrase, kind: scenario.kind}]})(tree, new VFile({path: "/docs/public/a.md"}));
 
-            expect(tree).toHaveProperty("children.0.children.1.value", `<span class="wg_article__pill wg_article__pill--${scenario.kind}">${scenario.phrase}</span>`);
+            expect(tree).toHaveProperty("children.0.children.1.value", `<span class="article__pill article__pill--${scenario.kind}">${scenario.phrase}</span>`);
         });
     });
 });

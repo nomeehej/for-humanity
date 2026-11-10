@@ -1,0 +1,53 @@
+import clsx from "clsx";
+import {raw} from "hono/html";
+import {Status, type StatusProps} from "@/component/ui/status/status";
+import {asset_favicon_path} from "@/constant/asset";
+import type {SiteAssets} from "@/type/site-assets";
+import type {ResolvedSiteConfig} from "@/type/site-config";
+import {toSitePath} from "@/util/url/to-site-path";
+import "@/style/base.css";
+import "@/style/token.css";
+import "./status-page.css";
+
+// ----------------------------------------------------------------------------------------
+// 탐색과 브라우저 스크립트가 없는 상태 문서의 입력
+//
+// site: HTML 언어, 사이트 이름과 배포 경로
+// assets: 문서와 동일한 글꼴과 스타일 자원
+// status: 상태 번호, 안내, 이미지와 복귀 링크
+// ----------------------------------------------------------------------------------------
+export interface StatusPageProps {
+    site: ResolvedSiteConfig;
+    assets: SiteAssets;
+    status: StatusProps;
+}
+
+export const StatusPage = (props: StatusPageProps) => {
+    // ----------------------------------------------------------------------------------------
+    // 화면 구성
+    //
+    // head: 검색 제외, JavaScript 없는 테마와 글꼴 적용
+    // statusPage__root: 전체 화면 중앙의 상태 안내와 복귀 경로
+    // ----------------------------------------------------------------------------------------
+    return (
+        <html className={clsx("statusPage__document")} lang={props.site.lang}>
+            <head>
+                <meta charset="utf-8" />
+                <meta name="viewport" content="width=device-width, initial-scale=1" />
+                <meta name="robots" content="noindex, follow" />
+                <title>{`${props.status.code} ${props.status.title} | ${props.site.title}`}</title>
+                <link rel="icon" href={toSitePath({basePath: props.site.basePath, path: asset_favicon_path})} type="image/svg+xml" />
+                <style>{raw(props.assets.fontCss)}</style>
+                {props.assets.stylePaths.map((path) => (
+                    <link key={path} rel="stylesheet" href={toSitePath({basePath: props.site.basePath, path})} />
+                ))}
+            </head>
+
+            <body className={clsx("statusPage__root")}>
+                <main className={clsx("statusPage__main")}>
+                    <Status {...props.status} />
+                </main>
+            </body>
+        </html>
+    );
+};

@@ -45,7 +45,7 @@ export const remarkStatus = (options: StatusOptions) => {
 
                     return {
                         type: "html",
-                        value: `<span class="wg_article__pill wg_article__pill--${item.kind}">${escapeHtml(text)}</span>`,
+                        value: `<span class="article__pill article__pill--${item.kind}">${escapeHtml(text)}</span>`,
                     };
                 },
             ],

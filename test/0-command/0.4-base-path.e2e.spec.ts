@@ -24,8 +24,8 @@ test("[BASE-002] 브라우저 마운트, 문서 이동, Mermaid와 글꼴이 배
     await expect(page.locator("body")).toHaveCSS("display", "grid");
     await page.evaluate(() => document.fonts.ready);
     expect(await page.evaluate(() => [...document.fonts].every((font) => font.status !== "error"))).toBe(true);
-    await expect(page.locator(".wg_sidebar__brand")).toHaveAttribute("href", basePath);
-    await expect(page.locator(".wg_docList__link").first()).toHaveAttribute("href", new RegExp(`^${basePath}`));
+    await expect(page.locator(".sidebar__brand")).toHaveAttribute("href", basePath);
+    await expect(page.locator(".docList__link").first()).toHaveAttribute("href", new RegExp(`^${basePath}`));
 
     await page.getByRole("navigation", {name: "Document navigation"}).getByRole("link", {name: "Diagrams", exact: true}).click();
     await expect(page).toHaveURL(new RegExp(`${basePath}diagrams/$`));
@@ -37,7 +37,7 @@ test("[BASE-002] 브라우저 마운트, 문서 이동, Mermaid와 글꼴이 배
     await page.setViewportSize({width: 390, height: 844});
     await page.getByRole("button", {name: "Open navigation"}).click();
     await expect(page.getByRole("dialog")).toBeVisible();
-    await expect(page.getByRole("dialog").locator(".wg_docList__link").first()).toHaveAttribute("href", new RegExp(`^${basePath}`));
+    await expect(page.getByRole("dialog").locator(".docList__link").first()).toHaveAttribute("href", new RegExp(`^${basePath}`));
 
     expect(failures).toStrictEqual([]);
 });

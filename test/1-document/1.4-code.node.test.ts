@@ -26,7 +26,7 @@ describe("코드 블록", () => {
             const [doc] = await readDocs({scope, processor: toProcessor({site, scope})});
 
             // THEN 줄 상태와 번호 표시, 지시문 원문 제외
-            expect(doc.html).toMatch(/<pre class="[^"]*wg_article__lineNumbers[^"]*"/);
+            expect(doc.html).toMatch(/<pre class="[^"]*article__lineNumbers[^"]*"/);
             expect(doc.html).toMatch(/<span class="line highlighted error">/);
             expect(doc.html).toMatch(/<span class="line diff add">/);
             expect(doc.html).toMatch(/<span class="line highlighted">[^\n]*first/);
@@ -47,11 +47,9 @@ describe("코드 블록", () => {
             const [doc] = await readDocs({scope, processor: toProcessor({site, scope})});
 
             // THEN 파일 제목과 작성 언어 표시, 코드와 제목의 상태 공유
-            expect(doc.html).toMatch(
-                /<figcaption class="[^"]*wg_article__codeFileTitle--bad[^"]*">page\/products\.ts<span class="wg_article__codeFileLang">ts<\/span><\/figcaption>/,
-            );
+            expect(doc.html).toMatch(/<figcaption class="[^"]*article__codeFileTitle--bad[^"]*">page\/products\.ts<span class="article__codeFileLang">ts<\/span><\/figcaption>/);
 
-            expect(doc.html).toMatch(/<pre class="[^"]*wg_article__code--bad[^"]*"/);
+            expect(doc.html).toMatch(/<pre class="[^"]*article__code--bad[^"]*"/);
             expect(doc.html).not.toMatch(/<pre\b[^>]*\bstyle=/);
             expect(doc.html.split("<figure").length - 1, "braces meta is not a title").toBe(1);
         });
@@ -69,9 +67,9 @@ describe("코드 블록", () => {
             const [doc] = await readDocs({scope, processor: toProcessor({site, scope})});
 
             // THEN 파일 제목 표시, 제목 밖 메타의 줄 번호 하나, 상태 배경 없음
-            expect(doc.html).toMatch(/>good\.ts<span class="wg_article__codeFileLang">ts<\/span><\/figcaption>/);
-            expect(doc.html.split("wg_article__lineNumbers").length - 1, "only the block with line-numbers outside its title").toBe(1);
-            expect(doc.html).not.toMatch(/wg_article__code(FileTitle)?--(good|bad)/);
+            expect(doc.html).toMatch(/>good\.ts<span class="article__codeFileLang">ts<\/span><\/figcaption>/);
+            expect(doc.html.split("article__lineNumbers").length - 1, "only the block with line-numbers outside its title").toBe(1);
+            expect(doc.html).not.toMatch(/article__code(FileTitle)?--(good|bad)/);
         });
     });
 
@@ -96,9 +94,7 @@ describe("코드 블록", () => {
             const [doc] = await readDocs({scope, processor: toProcessor({site, scope})});
 
             // THEN 전체 파일과 선택 영역의 코드, 지시문 제외와 메타 전달
-            expect(doc.html).toMatch(
-                /<pre class="[^"]*wg_article__lineNumbers[^"]*wg_article__code--bad[^"]*"|<pre class="[^"]*wg_article__code--bad[^"]*wg_article__lineNumbers[^"]*"/,
-            );
+            expect(doc.html).toMatch(/<pre class="[^"]*article__lineNumbers[^"]*article__code--bad[^"]*"|<pre class="[^"]*article__code--bad[^"]*article__lineNumbers[^"]*"/);
 
             expect(doc.html).toMatch(/<span class="line highlighted error">[^\n]*const<\/span>[^\n]* a/);
             expect(doc.html).not.toContain("#region");

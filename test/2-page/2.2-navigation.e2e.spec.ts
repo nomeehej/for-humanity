@@ -133,7 +133,7 @@ test.describe("문서 탐색", () => {
             const cursor = page.locator("[data-cursor-face]");
             const navigation = page.locator("[data-sidebar-docs]");
             const details = page.locator("details");
-            const hiddenHeading = page.locator("#hidden-detail .wg_article__headingText");
+            const hiddenHeading = page.locator("#hidden-detail .article__headingText");
 
             // 소수 높이와 스크롤 앵커링의 반올림만 허용
             const roundingTolerance = 1;
@@ -212,7 +212,7 @@ test.describe("문서 탐색", () => {
             await test.step("배치를 전환해도 독립 스크롤, 포커스, 본문을 유지한다", async () => {
                 await page.getByRole("link", {name: "Hidden detail", exact: true}).click();
                 await expect(details).toHaveJSProperty("open", true);
-                await expect(hiddenHeading).toHaveClass(/wg_article__headingText--highlighted/);
+                await expect(hiddenHeading).toHaveClass(/article__headingText--highlighted/);
 
                 const body = await page.getByRole("main").elementHandle();
 
@@ -259,8 +259,8 @@ test.describe("문서 탐색", () => {
                 await page.getByRole("link", {name: "Hidden detail", exact: true}).click();
 
                 await expect(details).toHaveJSProperty("open", true);
-                await expect(hiddenHeading).toHaveClass(/wg_article__headingText--highlighted/);
-                await expect(hiddenHeading).not.toHaveClass(/wg_article__headingText--highlighted/);
+                await expect(hiddenHeading).toHaveClass(/article__headingText--highlighted/);
+                await expect(hiddenHeading).not.toHaveClass(/article__headingText--highlighted/);
                 expect(scriptRequests, "one inline entry must provide every browser behavior").toStrictEqual([]);
                 expect(errors).toStrictEqual([]);
             });
@@ -311,7 +311,7 @@ test.describe("문서 탐색", () => {
             await page.goto("/guide/");
 
             const signature = await page.locator("[data-sidebar-docs]").evaluate((element) => {
-                return [...element.querySelectorAll<HTMLAnchorElement>(".wg_docTree__root a[href]")].map((link) => `${link.pathname}:${link.textContent}`).join("\n");
+                return [...element.querySelectorAll<HTMLAnchorElement>(".docTree__root a[href]")].map((link) => `${link.pathname}:${link.textContent}`).join("\n");
             });
 
             await page.addInitScript(
@@ -498,7 +498,7 @@ test.describe("문서 탐색", () => {
                 expect(new Set(frames.filter((position) => position !== 0)).size).toBe(1);
 
                 // 강조 유지 시간 종료 전의 즉시 조회
-                expect(await page.locator(".wg_article__headingText--highlighted").count()).toBe(0);
+                expect(await page.locator(".article__headingText--highlighted").count()).toBe(0);
                 await expect(page.locator("html")).toHaveCSS("scroll-behavior", "auto");
             });
 
@@ -534,7 +534,7 @@ test.describe("문서 탐색", () => {
                 await test.step(`${area.name} 위의 링크와 빈 영역에서 휠을 굴리면 본문이 스크롤된다`, async () => {
                     const list = page.locator(`[data-sidebar-scroll="${area.kind}"]`);
 
-                    await expect(list).not.toHaveClass(/wg_sidebar__scroll--overflow/);
+                    await expect(list).not.toHaveClass(/sidebar__scroll--overflow/);
 
                     const center = await list.evaluate((element) => element.getBoundingClientRect().left + element.getBoundingClientRect().width / 2);
 
@@ -558,7 +558,7 @@ test.describe("문서 탐색", () => {
 
                 const documents = page.locator('[data-sidebar-scroll="documents"]');
 
-                await expect(documents).toHaveClass(/wg_sidebar__scroll--overflow/);
+                await expect(documents).toHaveClass(/sidebar__scroll--overflow/);
 
                 await documents.evaluate((element) => {
                     element.scrollTop = element.scrollHeight;

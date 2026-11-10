@@ -177,7 +177,7 @@ test.describe("개발 서버", () => {
 
         test("[DEV-008] 첫 요청과 새로고침은 JavaScript 없이 최신 CSS를 적용한다", {tag: "@high"}, async ({page, devSite}) => {
             // GIVEN 스크립트를 끈 브라우저와 소스 개발 서버의 셸 CSS
-            const path = join(devSite.kitRoot, "src/component/widget/shell/wg-shell.css");
+            const path = join(devSite.kitRoot, "src/component/widget/shell/shell.css");
 
             await test.step("첫 요청은 JavaScript 없이 전역 CSS와 셸 배치를 적용한다", async () => {
                 await page.goto("/");
@@ -205,13 +205,13 @@ test.describe("개발 서버", () => {
 
         test("[DEV-009] CSS 파일 추가와 삭제는 HTML의 스타일 목록에 반영된다", {tag: "@high"}, async ({page, devSite}) => {
             // GIVEN 소스 스타일 목록을 사용하는 개발 페이지
-            const path = join(devSite.kitRoot, "src/component/widget/shell/_wg-shell-test.css");
+            const path = join(devSite.kitRoot, "src/component/widget/shell/_shell-test.css");
 
             await page.goto("/");
             await expect(page.getByRole("main")).toHaveCSS("outline-style", "none");
 
             await test.step("새 CSS 파일은 등록 설정 없이 적용한다", async () => {
-                await writeFile(path, ".wg_shell__main { outline: 2px solid rgb(4, 5, 6); }\n");
+                await writeFile(path, ".shell__main { outline: 2px solid rgb(4, 5, 6); }\n");
 
                 await expect(page.getByRole("main")).toHaveCSS("outline-color", "rgb(4, 5, 6)");
                 await expect(page.getByRole("main")).toHaveCSS("outline-style", "solid");
@@ -255,10 +255,10 @@ test.describe("개발 서버", () => {
 
         test("[DEV-003] CSS 변경은 페이지 상태를 유지하고 TSX 변경은 서버와 브라우저에 반영한다", {tag: "@high"}, async ({page, devSite}) => {
             // GIVEN 최초 HTML의 스타일시트에 테두리가 있는 개발 페이지
-            const path = join(devSite.kitRoot, "src/component/widget/shell/wg-shell.css");
+            const path = join(devSite.kitRoot, "src/component/widget/shell/shell.css");
             const original = await readFile(path, "utf8");
 
-            await writeFile(path, `${original}\n.wg_shell__main { outline: 3px solid rgb(1, 2, 3); }\n`);
+            await writeFile(path, `${original}\n.shell__main { outline: 3px solid rgb(1, 2, 3); }\n`);
 
             const errors: string[] = [];
 
@@ -280,7 +280,7 @@ test.describe("개발 서버", () => {
             });
 
             await test.step("서버 JSX 변경은 새 HTML로 반영한다", async () => {
-                const path = join(devSite.kitRoot, "src/component/widget/shell/wg-shell.tsx");
+                const path = join(devSite.kitRoot, "src/component/widget/shell/shell.tsx");
 
                 await writeFile(path, (await readFile(path, "utf8")).replace("<html lang={props.locale ?? props.site.lang}", '<html lang="en"'));
 
@@ -290,7 +290,7 @@ test.describe("개발 서버", () => {
             });
 
             await test.step("브라우저 JSX 변경도 상호작용에 반영한다", async () => {
-                const path = join(devSite.kitRoot, "src/component/widget/sidebar/wg-sidebar.tsx");
+                const path = join(devSite.kitRoot, "src/component/widget/sidebar/sidebar.tsx");
 
                 await writeFile(path, (await readFile(path, "utf8")).replace("aria-label={copy_nav_open}", 'aria-label="Updated navigation"'));
                 await page.getByRole("button", {name: "Updated navigation", exact: true}).click();

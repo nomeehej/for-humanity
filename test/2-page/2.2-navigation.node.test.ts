@@ -96,7 +96,7 @@ describe("문서 탐색", () => {
             // THEN 설정 순서의 묶음과 현재 문서 표시
             expect(groups.map((group) => group[1])).toStrictEqual(["Getting started", "Guide"]);
             expect(html).not.toMatch(/<details\b/);
-            expect(html).not.toMatch(/wg_docTree__docIcon/);
+            expect(html).not.toMatch(/docTree__docIcon/);
             expect(html).not.toMatch(/href="\/"/);
             expect(html).not.toMatch(/>Documents<|>Overview</);
             expect(html.indexOf('href="/writing/"')).toBeLessThan(html.indexOf('href="/parts/"'));
@@ -194,7 +194,7 @@ describe("문서 탐색", () => {
             expect(html).toMatch(/href="\/guide\/site\/"[^>]*>Site<\/a><ul\b[^>]*aria-label="Site"/);
             expect(html).toMatch(/href="\/details\/"[^>]*aria-current="page"/);
             expect([...html.matchAll(/aria-current="page"/g)].length).toBe(1);
-            expect([...html.matchAll(/wg_docList__link--active/g)].length).toBe(1);
+            expect([...html.matchAll(/docList__link--active/g)].length).toBe(1);
 
             for (const doc of docs) {
                 expect(html.split(`href="/${doc.id}/"`).length - 1).toBe(1);
@@ -268,7 +268,7 @@ describe("문서 탐색", () => {
             expect(korean.homePath).toBe("/ko/");
             expect(koreanHome.home).toBe(true);
             expect(navigationDataSchema.parse(JSON.parse(toScriptJson(korean)))).toStrictEqual(korean);
-            expect(html).toMatch(/wg_sidebar__brand" href="\/ko\/"/);
+            expect(html).toMatch(/sidebar__brand" href="\/ko\/"/);
             expect(html).not.toContain('href="/setup/"');
         });
     });

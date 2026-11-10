@@ -15,13 +15,13 @@
 
 /* ------------------------------------------------------------------------------------- */
 /* 움직임 줄이기, 컴포넌트보다 우선하는 전역 !important 예외 */
-/* Mermaid의 측정 영역(.wg_mermaid__measurement)은 제외 */
+/* Mermaid의 측정 영역(.mermaid__measurement)은 제외 */
 /* 0.01ms 전이가 걸리면 Mermaid가 라벨 크기를 전이 도중의 값으로 재어 흐름도 라벨이 */
 /*   5분의 1 높이로 나옴 */
 /* ------------------------------------------------------------------------------------- */
 @media (prefers-reduced-motion: reduce) {
     /* stylelint-disable-next-line selector-pseudo-class-disallowed-list -- 측정 영역만 빼려면 부정 선택자가 필요하다. 컴포넌트 쪽의 transition: none은 이 !important 규칙을 이기지 못한다 */
-    *:not(.wg_mermaid__measurement, .wg_mermaid__measurement *),
+    *:not(.mermaid__measurement, .mermaid__measurement *),
     *::before,
     *::after {
         animation-duration: 0.01ms !important;

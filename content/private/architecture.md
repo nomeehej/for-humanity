@@ -25,8 +25,8 @@ flowchart LR
 | `src/entry/dev/to-dev-config.ts` | Vite 서버, Hono 연결, 문서 갱신 | Node.js, dev |
 | `src/entry/preview/to-preview-config.ts` | Vite 정적 미리보기, 출력 경로, 404, 폰트 캐시 | Node.js, preview |
 | `src/app/_function/to-page-app/to-page-app.tsx` | 첫 화면과 문서 라우트, Hono JSX → HTML | Node.js |
-| `src/page/status/pg-status.tsx` | 스크립트 없는 상태 문서, 글꼴과 사이트 테마 | Node.js |
-| `src/component/ui/status/ui-status.tsx` | 교체 가능한 이미지, 상태 번호와 안내, 복귀 링크 | 공통 JSX |
+| `src/page/status/status-page.tsx` | 스크립트 없는 상태 문서, 글꼴과 사이트 테마 | Node.js |
+| `src/component/ui/status/status.tsx` | 교체 가능한 이미지, 상태 번호와 안내, 복귀 링크 | 공통 JSX |
 | `src/app/_function/to-http-app.ts` | 등록 자원, 페이지와 크롤러 앱 위임 | Node.js, dev |
 | `src/app/_function/to-crawling-app.ts` | 공개 URL을 설정한 사이트의 robots.txt와 사이트맵 응답 | Node.js |
 | `src/entry/browser/browser.tsx` | 입력 검증, 저장소 생성, 브라우저 셸 마운트 | Browser, 동기 |
@@ -78,7 +78,7 @@ flowchart LR
 
 preview는 Vite의 `preview()`로 사이트 출력 폴더만 제공합니다. 패키지 코드가 들어 있는 저장소 루트 `dist`와 사이트 출력 폴더를 혼동하지 않도록 출력 경로를 명시합니다. 소비 프로젝트의 Vite 설정과 환경 파일은 자동으로 실행하지 않습니다. `appType: "mpa"`로 없는 문서에 홈 화면 대신 404를 반환하며, 끝 슬래시 없는 문서 주소는 폴더의 `index.html`로 연결합니다. 생성된 HTML은 Vite의 HTML 응답으로 넘기고, 없는 문서는 빌드된 `404.html`과 HTTP 404로 응답합니다. 폰트는 기존 장기 캐시 헤더를 유지하고 없는 파일에는 적용하지 않습니다. 빌드 결과가 없으면 서버 시작 전에 실패합니다.
 
-`loadSite`는 `PgStatus`와 `UiStatus`로 404 문서를 한 번 렌더하고 primitive HTML 문자열로 보관합니다. 개발 응답과 정적 `404.html`은 같은 결과를 사용합니다. `statusImage`의 로컬 파일은 링크 미리보기 이미지와 같은 경로 검사와 내용 지문 등록을 사용하며, 공개 주소 설정 없이도 배포합니다. 다른 상태는 `UiStatus`의 번호, 문구, 이미지와 링크를 교체해 표현합니다. 실제 HTTP 상태와 라우트는 해당 기능의 실행 계층이 소유합니다.
+`loadSite`는 `StatusPage`와 `Status`로 404 문서를 한 번 렌더하고 primitive HTML 문자열로 보관합니다. 개발 응답과 정적 `404.html`은 같은 결과를 사용합니다. `statusImage`의 로컬 파일은 링크 미리보기 이미지와 같은 경로 검사와 내용 지문 등록을 사용하며, 공개 주소 설정 없이도 배포합니다. 다른 상태는 `Status`의 번호, 문구, 이미지와 링크를 교체해 표현합니다. 실제 HTTP 상태와 라우트는 해당 기능의 실행 계층이 소유합니다.
 
 dev와 preview는 기본적으로 `localhost`의 사이트 설정 포트를 사용하며, `host` 설정이나 CLI의 `--host [address]`로 수신 주소를 바꿀 수 있습니다. CLI 옵션이 설정보다 우선하며 포트 충돌 시 다른 번호로 자동 변경하지 않습니다. Vite의 기본 hostname 허용 목록은 유지합니다. preview에는 Hono 앱, 개발 클라이언트, 파일 감시를 연결하지 않습니다. CLI와 브라우저 fixture는 같은 `toPreviewConfig`를 사용합니다. `@hono/node-server` 직접 의존성은 제거했지만 `@hono/vite-dev-server`의 전이 의존성은 남습니다.
 
@@ -166,7 +166,7 @@ Hono의 고정 파일과 wildcard 경로를 중첩 문서의 정규식 매개변
 
 ### Document head
 
-`WgShell`이 렌더마다 `unhead/server` 인스턴스를 생성해 제목, 설명, charset, viewport, favicon, 글꼴, CSS 태그를 조립합니다. Unhead가 중복 태그 제거와 직렬화를 담당하고 Hono는 `<html lang="ko">`와 페이지 본문을 렌더링합니다. 공용 head 인스턴스를 저장하지 않으므로 사이트나 요청 사이에 메타데이터가 섞이지 않습니다.
+`Shell`이 렌더마다 `unhead/server` 인스턴스를 생성해 제목, 설명, charset, viewport, favicon, 글꼴, CSS 태그를 조립합니다. Unhead가 중복 태그 제거와 직렬화를 담당하고 Hono는 `<html lang="ko">`와 페이지 본문을 렌더링합니다. 공용 head 인스턴스를 저장하지 않으므로 사이트나 요청 사이에 메타데이터가 섞이지 않습니다.
 
 CSS와 글꼴 선언은 최초 HTML의 `<head>`에 포함합니다. JavaScript가 꺼져 있어도 스타일과 메타데이터가 적용되며 CSS의 상대 순서를 유지합니다. Unhead는 서버 전용으로 사용하고 브라우저 head 동기화 코드나 React 어댑터를 추가하지 않습니다. 현재 문서 이동은 전체 페이지 요청입니다.
 
@@ -197,9 +197,9 @@ CSS와 글꼴 선언은 최초 HTML의 `<head>`에 포함합니다. JavaScript�
 
 서버에서 JSX를 출력해도 `onClick` 함수가 HTML로 전송되지는 않습니다. 브라우저 상호작용에는 별도의 클라이언트 JavaScript가 필요합니다. Hono의 `hono/jsx/dom`은 브라우저에서 컴포넌트와 Hooks를 실행할 수 있습니다.
 
-`WgShell`은 HTML 문서, 자원, 본문 배치를 소유합니다. `src/component/widget/shell-controls`의 `WgShellControls`는 서버와 브라우저가 공유하는 탐색, 커서 조립과 앵커 수명을 소유합니다. `browser.tsx`는 DOM과 서버 자료를 찾고 검증, 스토어 생성, 최초 마운트를 실행하는 진입점입니다.
+`Shell`은 HTML 문서, 자원, 본문 배치를 소유합니다. `src/component/widget/shell-controls`의 `ShellControls`는 서버와 브라우저가 공유하는 탐색, 커서 조립과 앵커 수명을 소유합니다. `browser.tsx`는 DOM과 서버 자료를 찾고 검증, 스토어 생성, 최초 마운트를 실행하는 진입점입니다.
 
-서버는 `WgShellControls`로 탐색 링크를 출력합니다. 브라우저 진입점은 `hono/jsx/dom/client`의 `createRoot(root).render(...)`로 같은 영역을 브라우저 JSX로 교체합니다. 이후 드로어와 현재 헤딩은 Hooks와 JSX 이벤트로 갱신합니다. 컴포넌트 해제는 같은 root의 `unmount()`가 Effect 정리를 실행합니다. 본문은 마운트 범위 밖의 서버 HTML로 유지합니다.
+서버는 `ShellControls`로 탐색 링크를 출력합니다. 브라우저 진입점은 `hono/jsx/dom/client`의 `createRoot(root).render(...)`로 같은 영역을 브라우저 JSX로 교체합니다. 이후 드로어와 현재 헤딩은 Hooks와 JSX 이벤트로 갱신합니다. 컴포넌트 해제는 같은 root의 `unmount()`가 Effect 정리를 실행합니다. 본문은 마운트 범위 밖의 서버 HTML로 유지합니다.
 
 정적 출력과 설치 패키지는 Hono 브라우저 렌더러로 탐색과 커서 영역을 첫 paint 전에 마운트합니다. 저장소 소스 개발만 Vite module 진입점을 불러옵니다. 이 스크립트는 head에 `blocking="render"`로 들어가므로 Chromium에서는 첫 paint 전에 마운트합니다. 다른 브라우저는 module 실행 전에 서버 HTML을 먼저 표시할 수 있습니다. 본문은 서버가 만든 HTML을 그대로 표시하고 문서 링크는 전체 페이지를 이동합니다.
 
@@ -227,9 +227,9 @@ Hono의 최초 레이아웃 효과는 아직 연결되지 않은 fragment에서 
 
 ### Shell and cursor lifecycle
 
-`WgShellControls`가 앵커 클릭, hash 변경, Details 공개, 3초 헤딩 강조, 초기 글꼴 보정을 소유합니다. 초기화는 본문 앞에서 실행되므로 본문 대상 조회는 `DOMContentLoaded` 이후로 미룹니다. 새로 생성한 `AbortController`로 DOM 이벤트를 묶고, 해제 시 이벤트, 강조 타이머, 도착 감시를 정리합니다. 개발 갱신 통신은 Vite가 소유합니다. 글꼴 완료를 기다리는 비동기 보정도 해제된 인스턴스에서는 실행하지 않습니다.
+`ShellControls`가 앵커 클릭, hash 변경, Details 공개, 3초 헤딩 강조, 초기 글꼴 보정을 소유합니다. 초기화는 본문 앞에서 실행되므로 본문 대상 조회는 `DOMContentLoaded` 이후로 미룹니다. 새로 생성한 `AbortController`로 DOM 이벤트를 묶고, 해제 시 이벤트, 강조 타이머, 도착 감시를 정리합니다. 개발 갱신 통신은 Vite가 소유합니다. 글꼴 완료를 기다리는 비동기 보정도 해제된 인스턴스에서는 실행하지 않습니다.
 
-커서 장식은 `src/component/widget/cursor-face`의 `WgCursorFace`가 DOM ref, 좌표, 미디어 조건, 전역 이벤트, 예약 frame을 소유합니다. 마지막 좌표는 같은 탭의 페이지 이동에서만 이어받으며 터치나 reduced motion에서는 숨깁니다. 본문과 커서 동작을 모듈 최상위에서 바로 실행하지 않고 컴포넌트의 Effect에서 설치하고 정리합니다.
+커서 장식은 `src/component/widget/cursor-face`의 `CursorFace`가 DOM ref, 좌표, 미디어 조건, 전역 이벤트, 예약 frame을 소유합니다. 마지막 좌표는 같은 탭의 페이지 이동에서만 이어받으며 터치나 reduced motion에서는 숨깁니다. 본문과 커서 동작을 모듈 최상위에서 바로 실행하지 않고 컴포넌트의 Effect에서 설치하고 정리합니다.
 
 `.tsx`는 JSX 문법의 구분입니다. 서버의 `hono/jsx`는 HTML을 만들고 Effect 콜백은 실행하지 않습니다. Vite가 브라우저 진입점에서 가져오는 컴포넌트와 Hook을 JS로 묶으며, `hono/jsx/dom` 렌더러가 브라우저에서 Effect를 실행합니다. Hono가 Hook마다 자동으로 청크를 생성하거나 전송하는 구조는 아닙니다.
 
@@ -260,15 +260,15 @@ raw HTML은 Shiki 다음에 해석. Mermaid 원문과 raw `pre`는 코드 강조
 중간 계약은 `file.data.fh`. 제목과 section 정보는 문서 순서 유지.
 경고는 각 단계가 파일 메시지로 남기고 마지막 rehype 단계가 `파일:줄` 형식으로 일괄 출력. 빌드는 계속.
 
-Mermaid 펜스는 이스케이프한 원문과 렌더 영역으로 변환합니다. `WgMermaid`가 본문 파싱 후 자체 호스팅 ESM을 불러와 공식 SVG를 생성합니다.
+Mermaid 펜스는 이스케이프한 원문과 렌더 영역으로 변환합니다. `Mermaid`가 본문 파싱 후 자체 호스팅 ESM을 불러와 공식 SVG를 생성합니다.
 Mermaid는 별도 ESM 그래프로 번들링하며 유형별 청크는 필요할 때 수신합니다. 프로젝트에 Mermaid 펜스가 있으면 해당 그래프를 정적 출력과 dev 자원 목록에 등록합니다.
 SVG는 Shadow DOM 안에 삽입해 본문의 `p`, `code`, `a` 스타일과 격리합니다. 측정용 DOM은 본문 밖에서 만들고 렌더 완료, 실패, 컴포넌트 해제 때 제거합니다.
 테마 변경과 Details 공개 요청은 직렬 처리하고 해제 뒤의 비동기 결과는 적용하지 않습니다. 브라우저 오류와 JavaScript 비활성 환경에서는 원문을 유지합니다.
 공식 `bindFunctions`에는 Shadow DOM 내부의 SVG 부모를 전달합니다. 해제 시 생성 SVG와 툴팁을 제거하고 원문으로 복원합니다.
 렌더 완료는 셸에 통지하며, 초기 hash와 사용자 이동 여부를 소유한 셸이 비동기 배치 변경 후 앵커 위치를 보정합니다.
 
-인터랙티브 그림은 작성자의 원시 HTML `.fx[data-fx]`(`figure`, 실행 상자는 `div`)이며 Markdown 처리기는 손대지 않습니다. `WgFx`가 표 정렬처럼 `DOMContentLoaded` 뒤 그림마다 종류별 enhance를 붙이고 해제 시 조작부와 상태를 되돌립니다. 모든 enhance는 `AbortController` 하나의 signal을 받아 `abort`에서 각자 DOM을 복원합니다. 조작부가 붙고 캡션이 접혀 본문 높이가 바뀌면 셸에 알려 Mermaid 렌더 뒤처럼 앵커 위치를 보정합니다. 실행 상자는 `sandbox="allow-scripts"`만 준 `srcdoc` iframe에서 코드를 돌리고 실행마다 만든 id가 맞는 `postMessage`만 받습니다.
-작성자가 쓰는 클래스, data 속성, `--fx-*` 변수는 공개 계약이라 `src/style/authoring/fx.css`에 두고 `WgArticle`이 본문 CSS 다음에 가져옵니다. 위젯이 만드는 조작부 조각은 `wg-fx.css`의 `wg_fx__*`입니다.
+인터랙티브 그림은 작성자의 원시 HTML `.fx[data-fx]`(`figure`, 실행 상자는 `div`)이며 Markdown 처리기는 손대지 않습니다. `FxControls`가 표 정렬처럼 `DOMContentLoaded` 뒤 그림마다 종류별 enhance를 붙이고 해제 시 조작부와 상태를 되돌립니다. 모든 enhance는 `AbortController` 하나의 signal을 받아 `abort`에서 각자 DOM을 복원합니다. 조작부가 붙고 캡션이 접혀 본문 높이가 바뀌면 셸에 알려 Mermaid 렌더 뒤처럼 앵커 위치를 보정합니다. 실행 상자는 `sandbox="allow-scripts"`만 준 `srcdoc` iframe에서 코드를 돌리고 실행마다 만든 id가 맞는 `postMessage`만 받습니다.
+작성자가 쓰는 클래스, data 속성, `--fx-*` 변수는 공개 계약이라 `src/style/authoring/fx.css`에 두고 `Article`이 본문 CSS 다음에 가져옵니다. 위젯이 만드는 조작부 조각은 `fx-controls.css`의 `fxControls__*`입니다.
 작성자의 `<style>`은 본문에 있어 head의 사이트 CSS보다 뒤에 옵니다. 그래서 동작 규칙(단계 표시, 형광펜, 전환)에만 `html` 접두를 붙여 특이도가 같은 작성자 규칙보다 앞서게 하고, 모양 규칙은 작성자가 덮어쓸 수 있게 둡니다. 작성 계약은 [Figures](../public/figures.md).
 
 frontmatter는 정규식으로 잘라내지 않고 AST 노드로 읽음. 본문 노드의 원본 줄과 열은 유지.

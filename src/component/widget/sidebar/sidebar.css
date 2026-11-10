@@ -1,0 +1,275 @@
+.sidebar__brandRow {
+    display: flex;
+    height: var(--app-size-brand);
+    padding-block: var(--app-space-page-top) var(--app-space-group);
+    gap: var(--app-space-inline);
+    align-items: start;
+}
+
+.sidebar__brand {
+    display: block;
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    color: var(--app-color-text-strong);
+    font-family: var(--app-font-brand);
+    font-size: var(--app-font-size-brand);
+    font-weight: var(--app-font-weight-mark);
+    line-height: var(--app-line-height-title);
+    letter-spacing: var(--app-letter-spacing-brand);
+    text-decoration: none;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+
+    &:hover {
+        text-decoration: underline;
+    }
+
+    &:focus-visible {
+        /* 브랜드도 호버와 같은 밑줄로 키보드 위치 표시 */
+        outline: none;
+        text-decoration: underline;
+    }
+}
+
+.sidebar__menuIcon {
+    width: 20px;
+    height: 20px;
+    fill: none;
+    stroke: currentcolor;
+    stroke-linecap: round;
+    stroke-width: 1.5;
+}
+
+.sidebar__menuToggle {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    flex: none;
+    width: var(--app-size-menu-button);
+    height: var(--app-size-menu-button);
+    padding: 0;
+    border: 0;
+    border-radius: var(--app-radius-box);
+    background: transparent;
+    color: var(--app-color-text-strong);
+    cursor: pointer;
+
+    &:hover {
+        background: var(--app-color-accent-soft);
+    }
+
+    &:focus-visible {
+        outline: var(--app-outline-focus);
+        outline-offset: var(--app-outline-focus-offset);
+    }
+}
+
+.sidebar__menuToggle--visible {
+    display: flex;
+}
+
+.sidebar__docsColumn {
+    /* body의 왼쪽 grid 열, 문서 스크롤과 독립된 뷰포트 기준 sticky */
+    grid-area: nav;
+    position: sticky;
+    top: 0;
+    align-self: start;
+    min-width: 0;
+    height: 100dvh;
+    margin-inline-end: var(--app-space-sidebar-gap);
+}
+
+.sidebar__docsScroll {
+    /* 모든 배치에서 남은 탐색 높이를 문서 목록 전체에 사용 */
+    flex: 1;
+    min-height: 0;
+
+    /* 끝까지 내린 목록 아래는 본문 끝과 같은 section 여백 */
+    padding-block-end: var(--app-space-section);
+}
+
+.sidebar__tocScroll {
+    flex: 1;
+    min-height: 0;
+
+    /* 문서 목록과 같은 끝 여백 */
+    padding-block-end: var(--app-space-section);
+}
+
+.sidebar__docsPanel {
+    display: flex;
+    flex-direction: column;
+    height: calc(100dvh - var(--app-size-brand));
+    min-width: 0;
+    min-height: 0;
+}
+
+.sidebar__tocColumn {
+    /* body의 오른쪽 grid 열, 문서 스크롤과 독립된 뷰포트 기준 sticky */
+    grid-area: outline;
+    position: sticky;
+    top: 0;
+    align-self: start;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    height: 100dvh;
+    margin-inline-start: var(--app-space-sidebar-gap);
+    padding-top: var(--app-size-brand);
+}
+
+.sidebar__tocColumn--empty {
+    display: none;
+}
+
+.sidebar__scroll {
+    overflow-y: auto;
+    scroll-padding-block: var(--app-size-navigation-fade);
+}
+
+.sidebar__scroll--overflow {
+    /* 넘치는 목록만 끝의 휠 전파 차단. Chrome은 넘침 없는 영역에도 적용, 본문 스크롤 불가 */
+    overscroll-behavior-y: contain;
+}
+
+.sidebar__scroll--ready {
+    /* 흐림으로 넘침을 알릴 때만 손잡이 숨김, JS 없으면 네이티브 손잡이 유지 */
+    scrollbar-width: none;
+}
+
+.sidebar__scroll--above {
+    mask-image: linear-gradient(to bottom, transparent, #000 var(--app-size-navigation-fade));
+}
+
+.sidebar__scroll--below {
+    mask-image: linear-gradient(to bottom, #000 calc(100% - var(--app-size-navigation-fade)), transparent);
+}
+
+.sidebar__scroll--above.sidebar__scroll--below {
+    mask-image: linear-gradient(to bottom, transparent, #000 var(--app-size-navigation-fade), #000 calc(100% - var(--app-size-navigation-fade)), transparent);
+}
+
+.sidebar__drawer {
+    /* 네이티브 모달의 최상위 레이어, 뷰포트 왼쪽에 고정 */
+    position: fixed;
+    inset: 0 auto 0 0;
+    width: min(var(--app-size-drawer), calc(100% - var(--app-space-gutter) * 2));
+    max-width: none;
+    height: 100dvh;
+    max-height: 100dvh;
+    margin: 0;
+    padding: 0 var(--app-space-gutter) var(--app-space-group);
+    border: 0;
+    border-right: 1px solid var(--app-color-border-layout);
+    background: var(--app-color-ground);
+    color: var(--app-color-text);
+    overflow: hidden;
+
+    &::backdrop {
+        background: var(--app-color-backdrop);
+    }
+}
+
+.sidebar__drawerHeader {
+    /* 목록 스크롤 바깥에서 닫기 버튼 유지 */
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--app-space-inline);
+    min-height: var(--app-size-mobile-header);
+    margin-bottom: var(--app-space-block);
+}
+
+.sidebar__drawerTitle {
+    margin: 0;
+    font-size: var(--app-font-size-part);
+    font-weight: var(--app-font-weight-strong);
+}
+
+.sidebar__drawerClose {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: none;
+    width: var(--app-size-menu-button);
+    height: var(--app-size-menu-button);
+    padding: 0;
+    border: 0;
+    border-radius: var(--app-radius-box);
+    background: transparent;
+    color: var(--app-color-text-strong);
+    cursor: pointer;
+
+    &:hover {
+        background: var(--app-color-accent-soft);
+    }
+
+    &:focus-visible {
+        outline: var(--app-outline-focus);
+        outline-offset: var(--app-outline-focus-offset);
+    }
+}
+
+.sidebar__drawerContent {
+    min-width: 0;
+    height: calc(100% - var(--app-size-mobile-header) - var(--app-space-block));
+
+    & > .sidebar__docsPanel {
+        height: 100%;
+    }
+
+    /* 드로어는 자체 아래 여백 유지 */
+    & .sidebar__docsScroll {
+        padding-block-end: 0;
+    }
+}
+
+/* 강제 색상 환경은 흐림 대신 시스템 손잡이로 넘침 표시 */
+@media (forced-colors: active) {
+    .sidebar__scroll {
+        mask-image: none;
+        scrollbar-width: thin;
+        scrollbar-color: auto;
+    }
+}
+
+/* 본문 최소 약 800px을 남기는 폭부터 목차 숨김, 셸 grid와 같은 기준 */
+@media (width < 1360px) {
+    .sidebar__tocColumn {
+        display: none;
+    }
+}
+
+@media (width < 1024px) {
+    .sidebar__docsColumn {
+        position: static;
+        height: auto;
+        margin-block-end: var(--app-space-block);
+        margin-inline-end: 0;
+        border-bottom: 1px solid var(--app-color-border-layout);
+
+        /* 스크립트 없는 펼친 목록은 아래 보더까지 기존 간격 */
+        & .sidebar__docsScroll {
+            padding-block-end: 0;
+        }
+    }
+
+    .sidebar__docsColumn > .sidebar__docsPanel {
+        height: auto;
+    }
+
+    .sidebar__docsColumn--ready {
+        /* 본문을 스크롤해도 메뉴 진입 유지, 스크립트 없는 긴 목록에는 적용하지 않음 */
+        position: sticky;
+        top: 0;
+        z-index: var(--app-z-index-sticky);
+        background: var(--app-color-ground);
+    }
+
+    .sidebar__brandRow {
+        height: var(--app-size-mobile-header);
+        padding-block: 0;
+        align-items: center;
+    }
+}

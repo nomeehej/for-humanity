@@ -16,7 +16,7 @@ export const rehypeBlocks = () => (tree: Root, file: VFile) => {
     visit(tree, "element", (node) => {
         const classes = node.properties.className;
 
-        if (!Array.isArray(classes) || !(classes.includes("wg_article__note") || classes.includes("wg_article__details"))) {
+        if (!Array.isArray(classes) || !(classes.includes("article__note") || classes.includes("article__details"))) {
             return;
         }
 
@@ -24,7 +24,7 @@ export const rehypeBlocks = () => (tree: Root, file: VFile) => {
             const depth = /^h([1-6])$/.exec(heading.tagName)?.[1];
 
             if (depth !== undefined && Number(depth) <= section_heading_depth.section) {
-                file.fail(`${copy_error_directive_syntax}: ${classes.includes("wg_article__note") ? "note" : "details"} ${copy_error_part_heading}`, heading);
+                file.fail(`${copy_error_directive_syntax}: ${classes.includes("article__note") ? "note" : "details"} ${copy_error_part_heading}`, heading);
             }
         });
     });

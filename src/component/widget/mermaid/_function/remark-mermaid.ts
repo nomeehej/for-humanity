@@ -33,7 +33,7 @@ export const remarkMermaid = (options: MermaidOptions) => (tree: Root) => {
 
         parent.children[index] = {
             type: "html",
-            value: `<figure class="wg_mermaid__root" data-mermaid${options.assets === undefined ? "" : ` data-mermaid-module="${options.assets.entry}"`}><div class="wg_mermaid__result" hidden></div><pre class="wg_mermaid__source"><code data-mermaid-source>${escapeHtml(node.value)}</code></pre><p class="wg_mermaid__error" role="status" hidden></p></figure>`,
+            value: `<figure class="mermaid__root" data-mermaid${options.assets === undefined ? "" : ` data-mermaid-module="${options.assets.entry}"`}><div class="mermaid__result" hidden></div><pre class="mermaid__source"><code data-mermaid-source>${escapeHtml(node.value)}</code></pre><p class="mermaid__error" role="status" hidden></p></figure>`,
         };
     });
 };

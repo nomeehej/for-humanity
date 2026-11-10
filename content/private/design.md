@@ -109,7 +109,7 @@ h1 자간은 `-0.045em`, h2, h3와 part는 `-0.04em`으로 본문보다 조금 �
 h1, 문서와 목차 묶음 라벨, On this page에는 `text-box: trim-start cap alphabetic` 적용. 크기가 달라도 대문자 위쪽 시작선을 맞추며, 미지원 브라우저는 기존 행 상자로 표시. [MDN text-box](https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/text-box).
 README 홈의 소개 제목은 `24px`, 얼굴은 `72px`. Markdown 원문의 내용은 유지하고 사이트에서만 크기 조정.
 Shiki 토큰 색상은 GitHub 기본 테마 `github-light-default`, `github-dark-default`를 `light-dark()`로 적용. 주석과 보라 토큰은 github.com 현행 값 `#59636e`, `#6639ba`, 어두운 주석 `#9198a1`로 교체해 코드 상자 바탕 위 대비 4.5 이상 확보.
-코드 상자와 파일 제목의 바탕은 `wg-article.css`에서 상태 수정자로 지정. `token.css`는 역할색과 테마 값만 소유하며 컴포넌트 클래스를 선언하지 않음. Shiki 토큰의 구문 색상은 유지하고 `pre`의 인라인 색상은 제거.
+코드 상자와 파일 제목의 바탕은 `article.css`에서 상태 수정자로 지정. `token.css`는 역할색과 테마 값만 소유하며 컴포넌트 클래스를 선언하지 않음. Shiki 토큰의 구문 색상은 유지하고 `pre`의 인라인 색상은 제거.
 
 글꼴 이름과 fallback은 `token.css`에 정적 선언. CLI는 내장 `@font-face`와 내용 지문이 붙은 자원 URL 생성.
 공통 폰트 토큰의 정의를 IDE에서도 같은 소스로 확인 가능.
@@ -164,12 +164,12 @@ TOC의 현재 위치도 같은 `anchor` 토큰 사용. 본문 끝은 `section` �
 
 양쪽 탐색 400px, 간격 64px, 바깥 여백 56px의 합은 520px. 여기에 본문 최소 800px과 스크롤바 여유를 더해 1360px에서 3열 전환. 1600px보다 넓은 화면은 페이지 전체를 가운데 정렬.
 
-없는 문서는 탐색 없이 전체 화면 가운데 이미지, 상태 번호와 안내, 복귀 링크를 표시. 기본 그림은 favicon과 같은 윤곽, 눈과 색을 유지하고 입만 바꾼 슬픈 얼굴. `UiStatus`는 이미지와 상태 내용을 받는 공통 표현, `PgStatus`는 사이트 글꼴과 테마를 적용하는 독립 문서. 기본 404 그림은 `statusImage` 설정으로 교체.
+없는 문서는 탐색 없이 전체 화면 가운데 이미지, 상태 번호와 안내, 복귀 링크를 표시. 기본 그림은 favicon과 같은 윤곽, 눈과 색을 유지하고 입만 바꾼 슬픈 얼굴. `Status`는 이미지와 상태 내용을 받는 공통 표현, `StatusPage`는 사이트 글꼴과 테마를 적용하는 독립 문서. 기본 404 그림은 `statusImage` 설정으로 교체.
 사이트 이름은 데스크톱의 왼쪽 사이드바, 모바일의 56px 고정 헤더에 배치. 넓은 화면의 양쪽 목록은 `size-brand` 아래부터 남은 뷰포트 높이를 각각 사용. 목록 끝에는 본문 끝과 같은 `section` 여백을 두어 끝까지 내리면 마지막 줄이 화면 바닥에서 떨어짐. 모바일 드로어는 자체 아래 여백 유지.
 좁은 데스크톱에서는 목차를 숨기고 문서 목록이 전체 탐색 높이를 사용. 오른쪽 목차를 왼쪽 목록에 합치거나 이동하지 않음.
 실제 남은 내용이 있는 위아래 끝만 `size-navigation-fade` 28px로 흐리게 표시. `ResizeObserver`로 글꼴과 화면 크기 변경을 추적. 강제 색상 환경과 JavaScript 미사용 환경은 네이티브 스크롤바 제공.
 모바일에서는 같은 문서 탐색 컴포넌트를 네이티브 `dialog` 안에 렌더. 드로어에서는 문서 목록만 스크롤하며 닫기 버튼은 고정. 본문 세로 보더, 열 패딩, 열 간격은 해제. JavaScript가 없으면 문서 목록을 본문 위에 제공.
-폭 기준의 CSS 변수 사용 불가. `shell/wg-shell.css`, `sidebar/wg-sidebar.css`, `token.css`, `sidebar/_constant/navigation.ts`의 적용 구간 일치 필요.
+폭 기준의 CSS 변수 사용 불가. `shell/shell.css`, `sidebar/sidebar.css`, `token.css`, `sidebar/_constant/navigation.ts`의 적용 구간 일치 필요.
 
 ## Interaction
 
@@ -205,4 +205,4 @@ TOC의 현재 위치도 같은 `anchor` 토큰 사용. 본문 끝은 `section` �
 
 ### Figures
 
-인터랙티브 그림은 본문과 같은 흑백, 가는 선, 직각 유지. 강조는 형광펜 노랑 하나(`--app-color-anchor-highlight`). 굵은 실선은 강조할 경계, 점선은 아직 없거나 검토만 한 것. 조작부 띠는 `--app-color-accent-soft` 바탕에 직각 버튼, 아이콘은 끝과 꺾인 곳만 살짝 둥글게. 움직임은 독자가 시작하며 화면 진입만으로 재생하지 않음. 변수와 클래스는 [Figures](../public/figures.md). 작성 어휘는 `src/style/authoring/fx.css`, 위젯이 만드는 조작부 조각은 `wg-fx.css`의 `wg_fx__*`.
+인터랙티브 그림은 본문과 같은 흑백, 가는 선, 직각 유지. 강조는 형광펜 노랑 하나(`--app-color-anchor-highlight`). 굵은 실선은 강조할 경계, 점선은 아직 없거나 검토만 한 것. 조작부 띠는 `--app-color-accent-soft` 바탕에 직각 버튼, 아이콘은 끝과 꺾인 곳만 살짝 둥글게. 움직임은 독자가 시작하며 화면 진입만으로 재생하지 않음. 변수와 클래스는 [Figures](../public/figures.md). 작성 어휘는 `src/style/authoring/fx.css`, 위젯이 만드는 조작부 조각은 `fx-controls.css`의 `fxControls__*`.

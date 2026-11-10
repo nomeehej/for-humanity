@@ -33,7 +33,7 @@ describe("참조 칩", () => {
                     type: "element",
                     tagName: "h3",
                     properties: {id: text.toLowerCase()},
-                    children: [{type: "element", tagName: "span", properties: {className: ["wg_article__headingText"]}, children: [{type: "text", value: text}]}],
+                    children: [{type: "element", tagName: "span", properties: {className: ["article__headingText"]}, children: [{type: "text", value: text}]}],
                 },
             ],
         };
@@ -45,8 +45,8 @@ describe("참조 칩", () => {
 
     describe("접두와 번호인 링크 글자", () => {
         test.each([
-            {text: "Q3", className: ["wg_article__ref", "wg_article__ref--violet"]},
-            {text: "BE12", className: ["wg_article__ref", "wg_article__ref--gray"]},
+            {text: "Q3", className: ["article__ref", "article__ref--violet"]},
+            {text: "BE12", className: ["article__ref", "article__ref--gray"]},
         ])("설정 접두의 $text 링크는 색 class 를 단다", (scenario) => {
             const tree = toLinkTree(scenario.text);
 
@@ -70,7 +70,7 @@ describe("참조 칩", () => {
 
             rehypeRefs({refs: [...refs]})(tree);
 
-            expect(toFirstChild(tree).properties.className).toStrictEqual(["wg_article__headingText", "wg_article__ref", "wg_article__ref--heading", "wg_article__ref--gray"]);
+            expect(toFirstChild(tree).properties.className).toStrictEqual(["article__headingText", "article__ref", "article__ref--heading", "article__ref--gray"]);
         });
 
         test("번호가 아닌 제목은 그대로 둔다", () => {
@@ -78,7 +78,7 @@ describe("참조 칩", () => {
 
             rehypeRefs({refs: [...refs]})(tree);
 
-            expect(toFirstChild(tree).properties.className).toStrictEqual(["wg_article__headingText"]);
+            expect(toFirstChild(tree).properties.className).toStrictEqual(["article__headingText"]);
         });
     });
 
@@ -88,7 +88,7 @@ describe("참조 칩", () => {
 
             rehypeRefs({refs: []})(tree);
 
-            expect(toFirstChild(tree).properties.className).toStrictEqual(["wg_article__idLink"]);
+            expect(toFirstChild(tree).properties.className).toStrictEqual(["article__idLink"]);
         });
 
         test.each(["ssd-001", "SSD-01a", "SSD 001", "Q3"])("%s 링크는 식별자 class 를 달지 않는다", (text) => {
@@ -104,7 +104,7 @@ describe("참조 칩", () => {
         const toSummaryTree = (text: string): Root => {
             return {
                 type: "root",
-                children: [{type: "element", tagName: "summary", properties: {className: ["wg_article__detailsSummary"]}, children: [{type: "text", value: text}]}],
+                children: [{type: "element", tagName: "summary", properties: {className: ["article__detailsSummary"]}, children: [{type: "text", value: text}]}],
             };
         };
 
@@ -114,7 +114,7 @@ describe("참조 칩", () => {
             rehypeRefs({refs: [...refs]})(tree);
 
             expect((tree.children[0] as Element).children).toStrictEqual([
-                {type: "element", tagName: "span", properties: {className: ["wg_article__ref", "wg_article__ref--violet"]}, children: [{type: "text", value: "Q9"}]},
+                {type: "element", tagName: "span", properties: {className: ["article__ref", "article__ref--violet"]}, children: [{type: "text", value: "Q9"}]},
                 {type: "text", value: " · 합계에 타겟 행을 넣나요?"},
             ]);
         });

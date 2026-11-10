@@ -1,6 +1,6 @@
 import {flushSync} from "hono/jsx/dom";
 import {createRoot} from "hono/jsx/dom/client";
-import {WgFx} from "@/component/widget/fx/wg-fx";
+import {FxControls} from "@/component/widget/fx-controls/fx-controls";
 
 let mounted: ReturnType<typeof createRoot>;
 
@@ -16,7 +16,7 @@ window.fxFixture = {
         mounted = createRoot(document.createElement("div"));
         flushSync(() =>
             mounted.render(
-                <WgFx
+                <FxControls
                     onEnhanced={() => {
                         window.fxEnhanced += 1;
                     }}

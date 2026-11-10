@@ -60,7 +60,7 @@ public은 라이브러리를 설치하고 사용하는 독자를 위한 안내�
 ## Conventions
 
 - Formatter: 공백 4칸, `lineWidth: 180`, Biome과 EditorConfig
-- Files: kebab-case와 컴포넌트 `Pg`, `Wg`, `Ui` 레이어 접두사
+- Files: kebab-case, 진입 파일 이름은 폴더 이름과 일치. 파일과 심볼에 레이어 접두사 없음, 화면 진입만 `<folder>-page`와 `Page` 접미사, 부품 파일은 `_` 접두
 - Imports: `@/`, 같은 폴더 CSS 부수효과 import만 `./`
 - Ownership: 소유자 전용 파일 `_`와 `_function`, `_type`, `_constant` 역할 폴더
 - Functions: 이름 붙인 `const` 화살표, 블록 본문, 명시적 반환
@@ -72,7 +72,7 @@ public은 라이브러리를 설치하고 사용하는 독자를 위한 안내�
     - `if`, `for`, `while`은 한 줄이어도 중괄호
     - 선언 묶음, 블록 문, 여러 줄 문장의 앞뒤와 `return`이나 `throw` 앞에 빈 줄
 - Props: 구조분해 없이 `props.*` 접근
-- Classes: `scope_slug__element--modifier`, 조합은 `clsx`
+- Classes: `block__element--modifier`, 블록 이름은 소유 컴포넌트 이름의 camelCase, 조합은 `clsx`
 - Comments:
     - 명사구
     - 목적, 계약, 제약

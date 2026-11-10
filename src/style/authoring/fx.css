@@ -4,12 +4,12 @@
 /*   상태 */
 /* Figures 문서의 표와 같다 */
 /* 이름을 바꾸면 호환성 변경이다 */
-/* wg_ 문법 밖의 공개 이름이다 */
-/* 위젯이 만드는 조작부 조각은 wg-fx.css */
+/* 컴포넌트 블록 이름 검사 밖의 공개 이름이다 */
+/* 위젯이 만드는 조작부 조각은 fx-controls.css */
 /* svg text, figcaption, button, li, input, svg는 작성자 HTML이라 클래스를 요구하지 않고 */
 /*   요소 선택자로 꾸민다 */
 /* --fx-* 변수는 작성자 그림의 style과 script가 읽는 공개 계약이다 */
-/* wg-article.css 뒤에 와야 .fx__captions > li가 본문 li 여백을 이긴다 */
+/* article.css 뒤에 와야 .fx__captions > li가 본문 li 여백을 이긴다 */
 /* ------------------------------------------------------------------------------------- */
 
 /* 그림 상자. 공개 변수는 사이트 토큰의 별칭이거나 light-dark 값 */
@@ -84,7 +84,7 @@
     padding-left: 1.6em;
 }
 
-/* 본문의 ol 여백 규칙(.wg_article__root ol)보다 앞서야 그림과 설명 사이가 벌어진다 */
+/* 본문의 ol 여백 규칙(.article__root ol)보다 앞서야 그림과 설명 사이가 벌어진다 */
 .fx .fx__captions {
     margin-top: var(--app-space-block);
 }

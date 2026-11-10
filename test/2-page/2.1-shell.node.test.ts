@@ -9,7 +9,7 @@ import {docDataSchema} from "@/type/doc-data";
 import {siteConfigSchema} from "@/type/site-config";
 
 // ----------------------------------------------------------------------------------------
-// 페이지 셸 HTML(src/component/widget/shell/wg-shell.tsx) 검증
+// 페이지 셸 HTML(src/component/widget/shell/shell.tsx) 검증
 // ----------------------------------------------------------------------------------------
 describe("페이지 셸", () => {
     describe("head", () => {
@@ -34,7 +34,7 @@ describe("페이지 셸", () => {
             expect([...head.matchAll(/charset="utf-8"/g)]).toHaveLength(1);
             expect([...head.matchAll(/name="viewport"/g)]).toHaveLength(1);
             expect(head).not.toContain('name="description"');
-            expect(html).toContain('<html lang="ko" class="wg_shell__document">');
+            expect(html).toContain('<html lang="ko" class="shell__document">');
         });
 
         test("[SHL-002] 동시 렌더에서 사이트와 문서의 제목과 설명을 공유하지 않는다", async () => {
@@ -87,7 +87,7 @@ describe("페이지 셸", () => {
             const html = await (await toPageApp({site, store: {docs: [], homes: new Map()}, assets}).request("/")).text();
 
             // THEN 설정한 언어 태그의 html 요소
-            expect(html).toContain('<html lang="en-US" class="wg_shell__document">');
+            expect(html).toContain('<html lang="en-US" class="shell__document">');
         });
 
         test("[SHL-010] 공개 주소를 지정하면 대표 주소와 링크 미리보기 태그를 출력한다", async () => {
@@ -187,14 +187,14 @@ describe("페이지 셸", () => {
             // THEN 탐색 DOM 뒤, 본문 앞의 초기화 스크립트
             expect(html, "server HTML must not serialize browser refs or handlers").not.toMatch(/\sref="|\sonClick="/);
 
-            for (const marker of ["fh-navigation-data", "data-sidebar-drawer", "data-cursor-face", '<main class="wg_shell__main">']) {
+            for (const marker of ["fh-navigation-data", "data-sidebar-drawer", "data-cursor-face", '<main class="shell__main">']) {
                 expect(html).toContain(marker);
             }
 
             expect(initialization).toBeGreaterThan(html.indexOf("fh-navigation-data"));
             expect(initialization).toBeGreaterThan(html.indexOf("data-sidebar-drawer"));
             expect(initialization).toBeGreaterThan(html.indexOf("data-cursor-face"));
-            expect(initialization).toBeLessThan(html.indexOf('<main class="wg_shell__main">'));
+            expect(initialization).toBeLessThan(html.indexOf('<main class="shell__main">'));
         });
 
         test("[SHL-008] 소스 개발의 모듈 진입점은 첫 페인트를 막는 head 스크립트로 불러온다", async () => {
@@ -226,7 +226,7 @@ describe("페이지 셸", () => {
             expect(html.slice(0, html.indexOf("</head>"))).toContain('<link rel="expect" href="#fh-browser-ready" blocking="render">');
             expect(html.match(/rel="expect"/g)).toHaveLength(1);
             expect(html.slice(initialization, marker)).toBe(`<script>${browserScript}</script>`);
-            expect(marker).toBeLessThan(html.indexOf('<main class="wg_shell__main">'));
+            expect(marker).toBeLessThan(html.indexOf('<main class="shell__main">'));
         });
     });
 
@@ -271,12 +271,12 @@ describe("페이지 셸", () => {
             expect(alternates(koreanHome)).toStrictEqual(alternates(home));
             expect(koreanHome).toContain('<link rel="canonical" href="https://docs.example.org/project/ko/">');
             expect(korean).toContain(
-                '<main class="wg_shell__main"><nav class="wg_shell__languages" aria-label="Languages"><a class="wg_shell__language" href="/project/guide/" lang="en" hreflang="en">English</a> | <span class="wg_shell__language wg_shell__language--active" lang="ko" aria-current="true">한국어</span></nav>',
+                '<main class="shell__main"><nav class="shell__languages" aria-label="Languages"><a class="shell__language" href="/project/guide/" lang="en" hreflang="en">English</a> | <span class="shell__language shell__language--active" lang="ko" aria-current="true">한국어</span></nav>',
             );
             expect(guide).toContain(
-                '<span class="wg_shell__language wg_shell__language--active" lang="en" aria-current="true">English</span> | <a class="wg_shell__language" href="/project/ko/guide/" lang="ko" hreflang="ko">한국어</a>',
+                '<span class="shell__language shell__language--active" lang="en" aria-current="true">English</span> | <a class="shell__language" href="/project/ko/guide/" lang="ko" hreflang="ko">한국어</a>',
             );
-            expect(setup).not.toContain("wg_shell__languages");
+            expect(setup).not.toContain("shell__languages");
             expect(home).toContain('href="/project/ko/" lang="ko" hreflang="ko">한국어</a>');
         });
     });

@@ -24,6 +24,6 @@ export const rehypeFigures = () => (tree: Root) => {
         const svg = typeof image.properties.src === "string" && /\.svg(?:[?#]|$)/i.test(image.properties.src);
 
         node.tagName = "div";
-        node.properties = svg ? {className: ["wg_article__figure", "wg_article__figure--svg"], tabIndex: 0} : {className: ["wg_article__figure", "wg_article__figure--raster"]};
+        node.properties = svg ? {className: ["article__figure", "article__figure--svg"], tabIndex: 0} : {className: ["article__figure", "article__figure--raster"]};
     });
 };

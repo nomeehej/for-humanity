@@ -119,13 +119,13 @@ export const remarkBlocks = () => (tree: Root, file: VFile) => {
         label.data = {
             ...label.data,
             hName: node.name === "note" ? "strong" : "summary",
-            hProperties: {className: [node.name === "note" ? "wg_article__noteTitle" : "wg_article__detailsSummary"]},
+            hProperties: {className: [node.name === "note" ? "article__noteTitle" : "article__detailsSummary"]},
         };
 
         node.data = {
             ...node.data,
             hName: node.name === "note" ? "aside" : "details",
-            hProperties: node.name === "note" ? {className: ["wg_article__note"], ariaLabel: title} : {className: ["wg_article__details"], open: node.attributes?.open === ""},
+            hProperties: node.name === "note" ? {className: ["article__note"], ariaLabel: title} : {className: ["article__details"], open: node.attributes?.open === ""},
         };
     });
 };

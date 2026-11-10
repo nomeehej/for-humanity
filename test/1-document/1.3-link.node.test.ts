@@ -133,14 +133,14 @@ describe("문서 링크와 목차", () => {
             const html = await (await app.request("/guide/")).text();
 
             // THEN 작성한 텍스트와 번호를 유지한 제목 id와 목차
-            expect(html).toMatch(/<h2[^>]*id="overview"[^>]*><span class="wg_article__headingText">Overview<\/span><\/h2>/);
-            expect(html).toMatch(/<h3[^>]*id="01-keep-this-number"[^>]*><span class="wg_article__headingText">01\. Keep this number<\/span><\/h3>/);
+            expect(html).toMatch(/<h2[^>]*id="overview"[^>]*><span class="article__headingText">Overview<\/span><\/h2>/);
+            expect(html).toMatch(/<h3[^>]*id="01-keep-this-number"[^>]*><span class="article__headingText">01\. Keep this number<\/span><\/h3>/);
             expect(html).toMatch(/href="#overview"[^>]*>Overview<\/a>/);
             expect(html).toMatch(/href="#01-keep-this-number"[^>]*>01\. Keep this number<\/a>/);
             expect(html).toMatch(/href="#nested-heading"[^>]*>Nested heading<\/a>/);
             expect(html).toMatch(/href="#overview-1"[^>]*>Overview<\/a>/);
-            expect(html).toMatch(/wg_toc__group">Setup<\/div>/);
-            expect(html).not.toMatch(/wg_article__num|wg_toc__mark/);
+            expect(html).toMatch(/toc__group">Setup<\/div>/);
+            expect(html).not.toMatch(/article__num|toc__mark/);
         });
 
         test.for([
@@ -213,8 +213,8 @@ describe("문서 링크와 목차", () => {
 
             // THEN 본문 가름, 목차 묶음, Note 제목의 같은 원문
             expect(docs[0].outline.sections).toStrictEqual([{part: "예:이것"}]);
-            expect(docs[0].html).toContain('<div class="wg_article__part">예:이것</div>');
-            expect(docs[0].html).toContain('<strong class="wg_article__noteTitle">예:요약</strong>');
+            expect(docs[0].html).toContain('<div class="article__part">예:이것</div>');
+            expect(docs[0].html).toContain('<strong class="article__noteTitle">예:요약</strong>');
         });
 
         test("[LNK-019] 원시 HTML의 h2, h3에도 제목 id와 목차 항목을 만든다", async ({scope}) => {
@@ -237,7 +237,7 @@ describe("문서 링크와 목차", () => {
                 {depth: 2, slug: "markdown-section", text: "Markdown section"},
             ]);
 
-            expect(docs[0].html).toContain('</header><h2 id="raw-section"><span class="wg_article__headingText">Raw section</span></h2>');
+            expect(docs[0].html).toContain('</header><h2 id="raw-section"><span class="article__headingText">Raw section</span></h2>');
         });
 
         test("[LNK-020] 자동 제목 id는 원시 HTML에 작성한 id와 겹치지 않는다", async ({scope}) => {

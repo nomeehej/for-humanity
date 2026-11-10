@@ -78,7 +78,7 @@ test.describe("문서 탐색", () => {
                         dispatchEvent(new HashChangeEvent("hashchange"));
                     });
 
-                    await expect(page.locator("#hidden-detail .wg_article__headingText")).toHaveClass(/wg_article__headingText--highlighted/);
+                    await expect(page.locator("#hidden-detail .article__headingText")).toHaveClass(/article__headingText--highlighted/);
 
                     const main = await page.getByRole("main").elementHandle();
 
@@ -87,7 +87,7 @@ test.describe("문서 탐색", () => {
                     expect(await main.evaluate((element) => element === document.querySelector<HTMLElement>("main"))).toBe(true);
 
                     // 강조 유지 시간 종료 전의 즉시 조회
-                    expect(await page.locator(".wg_article__headingText--highlighted").count()).toBe(0);
+                    expect(await page.locator(".article__headingText--highlighted").count()).toBe(0);
 
                     expect(await readActiveListeners(initialListeners), "unmount must clean every global listener and pending highlight").toStrictEqual([]);
                 });

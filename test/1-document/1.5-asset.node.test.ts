@@ -163,11 +163,9 @@ describe("문서 자원", () => {
             const docs = await readDocs({scope, processor: toProcessor({site: siteConfigSchema.parse({}), scope, files: new Map()})});
 
             // THEN SVG 그림의 스크롤 상자와 포커스, 래스터 그림의 그림 상자, 문장과 원시 HTML 문단 유지
-            expect(docs[0].html).toMatch(
-                /<div class="wg_article__figure wg_article__figure--svg" tabindex="0"><img src="\/_fh\/media\/asset\.[a-f0-9]+\.svg" alt="Diagram"><\/div>/,
-            );
-            expect(docs[0].html).toContain('<div class="wg_article__figure wg_article__figure--svg" tabindex="0"><img src="https://example.com/chart.svg?v=1" alt="Chart"></div>');
-            expect(docs[0].html).toMatch(/<div class="wg_article__figure wg_article__figure--raster"><img src="\/_fh\/media\/asset\.[a-f0-9]+\.png" alt="Shot"><\/div>/);
+            expect(docs[0].html).toMatch(/<div class="article__figure article__figure--svg" tabindex="0"><img src="\/_fh\/media\/asset\.[a-f0-9]+\.svg" alt="Diagram"><\/div>/);
+            expect(docs[0].html).toContain('<div class="article__figure article__figure--svg" tabindex="0"><img src="https://example.com/chart.svg?v=1" alt="Chart"></div>');
+            expect(docs[0].html).toMatch(/<div class="article__figure article__figure--raster"><img src="\/_fh\/media\/asset\.[a-f0-9]+\.png" alt="Shot"><\/div>/);
             expect(docs[0].html).toMatch(/<p>See <img src="\/_fh\/media\/asset\.[a-f0-9]+\.png" alt="Inline"> here\.<\/p>/);
             expect(docs[0].html).toMatch(/<p align="center"><img src="\/_fh\/media\/asset\.[a-f0-9]+\.svg" alt="Raw"><\/p>/);
         });

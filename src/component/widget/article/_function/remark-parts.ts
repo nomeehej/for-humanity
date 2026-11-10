@@ -57,7 +57,7 @@ export const remarkParts = () => (tree: Root, file: VFile) => {
         }
 
         node.children = [{type: "text", value: title}];
-        node.data = {hName: "div", hProperties: {className: ["wg_article__part"]}};
+        node.data = {hName: "div", hProperties: {className: ["article__part"]}};
 
         section.data = {
             ...section.data,

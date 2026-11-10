@@ -7,7 +7,7 @@ import {jsx} from "hono/jsx/jsx-runtime";
 import {describe, expect} from "vitest";
 import {toHtml} from "@/app/_function/to-html";
 import {loadSite} from "@/app/load-site";
-import {PgStatus} from "@/page/status/pg-status";
+import {StatusPage} from "@/page/status/status-page";
 import {siteConfigSchema} from "@/type/site-config";
 
 // ----------------------------------------------------------------------------------------
@@ -99,7 +99,7 @@ describe("상태 화면", () => {
 
             // WHEN 공통 상태 문서 렌더
             const html = await toHtml(
-                jsx(PgStatus, {
+                jsx(StatusPage, {
                     site: siteConfigSchema.parse({title: "Team notes"}),
                     assets: {stylePaths: [], fontCss: "", preload: [], browser: {kind: "inline", code: ""}},
                     status,

@@ -1,0 +1,182 @@
+/* ------------------------------------------------------------------------------------- */
+/* 인터랙티브 그림 위젯이 만드는 조작부 조각 */
+/* 작성 어휘는 src/style/authoring/fx.css */
+/* 생성 띠는 fx__bar와 fxControls__bar를 함께 달아 공개 띠와 버튼 모양을 받는다 */
+/* 작성자 문법이 아니라 이름을 바꿔도 작성자 그림은 그대로다 */
+/* ------------------------------------------------------------------------------------- */
+
+/* ------------------------------------------------------------------------------------- */
+/* 아이콘 버튼 */
+/* 이름은 aria-label과 같은 data-tip을 hover와 키보드 포커스에서 툴팁으로 보인다 */
+/* 작성자가 fx__bar 안에 둔 data-icon 버튼도 같은 모양이라 생성 띠가 아닌 공개 띠 아래 */
+/* 공개 .fx__bar button (0,1,1)보다 앞서는 (0,2,0) */
+/* ------------------------------------------------------------------------------------- */
+.fx__bar .fxControls__icon {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 34px;
+    padding: 0;
+}
+
+/* 아이콘 SVG */
+.fxControls__glyph {
+    display: block;
+}
+
+.fxControls__icon[data-tip] {
+    /* content가 없으면 그려지지 않는 상자. 포커스와 hover가 content만 준다 */
+    &::after {
+        position: absolute;
+        bottom: calc(100% + 6px);
+        left: 50%;
+
+        /* 층 토큰 밖. popper(300)는 sticky 층 위로 올라가 그림 안에서만 뜨는 2 */
+        z-index: 2;
+        padding: 2px 6px;
+        background: var(--fx-ink-strong);
+        color: var(--fx-ground);
+        font-size: 11px;
+        line-height: 1.5;
+        white-space: nowrap;
+        pointer-events: none;
+        translate: -50% 0;
+    }
+
+    &:focus-visible::after {
+        content: attr(data-tip);
+    }
+}
+
+/* 터치 화면은 누른 뒤 남는 hover 대신 포커스에서만 */
+@media (hover: hover) {
+    .fxControls__icon[data-tip] {
+        &:hover::after {
+            content: attr(data-tip);
+        }
+    }
+}
+
+/* ------------------------------------------------------------------------------------- */
+/* 처음과 끝의 이전, 다음 */
+/* 포커스를 잃지 않도록 disabled 대신 aria-disabled와 함께 붙는다 */
+/* 공개 .fx__bar button (0,1,1)의 color, cursor보다 앞서는 (0,2,0) */
+/* 이전, 다음은 생성 띠에만 있어 fxControls__bar 아래 */
+/* ------------------------------------------------------------------------------------- */
+.fxControls__bar .fxControls__icon--off {
+    color: var(--fx-ink-muted);
+    cursor: default;
+
+    /* 꺼진 버튼만 hover 바탕을 되돌린다. 공개 :enabled:hover (0,3,1)보다 앞서도록 :enabled까지 */
+    &:enabled:hover {
+        background: var(--fx-ground);
+    }
+}
+
+/* 스크러버. 기본 모양을 지우고 2px 선과 작은 네모 손잡이. 진행은 JS가 주는 --fx-p */
+.fxControls__scrub {
+    flex: 1;
+    min-width: 120px;
+    max-width: 340px;
+    height: 22px;
+    margin: 0;
+    background: none;
+    appearance: none;
+    cursor: pointer;
+
+    &::-webkit-slider-runnable-track {
+        height: 2px;
+        background:
+            linear-gradient(var(--fx-ink-strong), var(--fx-ink-strong)) 0 0 / var(--fx-p, 0%) 100% no-repeat,
+            var(--app-color-border);
+    }
+
+    &::-webkit-slider-thumb {
+        width: 12px;
+        height: 12px;
+        margin-top: -5px;
+        border: 1.5px solid var(--fx-ink-strong);
+        border-radius: 0;
+        background: var(--fx-ground);
+        appearance: none;
+    }
+
+    &::-moz-range-track {
+        height: 2px;
+        background: var(--app-color-border);
+    }
+
+    &::-moz-range-progress {
+        height: 2px;
+        background: var(--fx-ink-strong);
+    }
+
+    &::-moz-range-thumb {
+        width: 9px;
+        height: 9px;
+        border: 1.5px solid var(--fx-ink-strong);
+        border-radius: 0;
+        background: var(--fx-ground);
+    }
+
+    &:hover::-webkit-slider-thumb {
+        background: var(--fx-mark);
+    }
+
+    &:hover::-moz-range-thumb {
+        background: var(--fx-mark);
+    }
+}
+
+.fxControls__count {
+    min-width: 4.5em;
+    color: var(--fx-ink-muted);
+    font-size: var(--app-font-size-detail);
+    font-variant-numeric: tabular-nums;
+    text-align: center;
+}
+
+/* 실행 상자의 띠. 코드 블록 아래 버튼 줄이라 여백과 바탕 없음 */
+.fx[data-fx="run"] .fxControls__bar {
+    margin: var(--app-space-stack) 0 0;
+    padding: 0;
+    border: 0;
+    background: none;
+}
+
+/* 실행 상자의 코드 고치기 입력 */
+.fxControls__editor {
+    box-sizing: border-box;
+    width: 100%;
+    min-height: 12em;
+    margin-top: var(--app-space-stack);
+    padding: var(--app-space-stack) var(--app-space-block);
+    border: 1px solid var(--app-color-border);
+    border-radius: var(--app-radius-box);
+    background: var(--app-color-code);
+    color: var(--fx-ink-strong);
+    font-family: var(--app-font-mono);
+    font-size: var(--app-font-size-detail);
+    line-height: var(--app-line-height-code);
+    resize: vertical;
+    tab-size: 2;
+}
+
+/* 실행 출력. 비면 data-empty 문구 */
+.fxControls__out {
+    min-height: 1.7em;
+    margin: var(--app-space-stack) 0 0;
+    padding: var(--app-space-stack) var(--app-space-block);
+    border: 1px dashed var(--app-color-border);
+    color: var(--fx-ink-strong);
+    font-family: var(--app-font-mono);
+    font-size: var(--app-font-size-detail);
+    line-height: var(--app-line-height-code);
+    white-space: pre-wrap;
+
+    &:empty::before {
+        content: attr(data-empty);
+        color: var(--fx-ink-muted);
+    }
+}

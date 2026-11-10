@@ -22,7 +22,7 @@ for (const source of [false, true]) {
 
             await Promise.all([page.waitForEvent("console", (message) => message.text().includes("[vite] connected")), page.goto("/dev-docs/")]);
 
-            await expect(page.locator(".wg_sidebar__docsColumn--ready")).toHaveCount(1);
+            await expect(page.locator(".sidebar__docsColumn--ready")).toHaveCount(1);
             await expect(page.locator("body")).toHaveCSS("display", "grid");
             await expect(page.locator("[data-mermaid-status=rendered]")).toHaveCount(1);
             expect((await page.request.get("/dev-docs/@vite/client")).status()).toBe(200);
@@ -30,7 +30,7 @@ for (const source of [false, true]) {
 
             await writeFile(join(devSite.root, "README.md"), "# Project home\n\nAfter update.\n");
             await expect(page.getByText("After update.", {exact: true})).toBeVisible();
-            await expect(page.locator(".wg_sidebar__brand")).toHaveAttribute("href", "/dev-docs/");
+            await expect(page.locator(".sidebar__brand")).toHaveAttribute("href", "/dev-docs/");
             expect(devSite.errors).toStrictEqual([]);
             expect(errors).toStrictEqual([]);
         });

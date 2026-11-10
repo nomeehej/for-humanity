@@ -1,8 +1,8 @@
 import {Hono} from "hono";
 import {ssgParams} from "hono/ssg";
 import {toHtml} from "@/app/_function/to-html";
-import {PgDoc} from "@/page/doc/pg-doc";
-import {PgHome} from "@/page/home/pg-home";
+import {DocPage} from "@/page/doc/doc-page";
+import {HomePage} from "@/page/home/home-page";
 import type {Doc} from "@/type/doc";
 import type {DocContent} from "@/type/doc-content";
 import type {SiteAssets} from "@/type/site-assets";
@@ -34,7 +34,7 @@ export interface PageParams {
 export const toPageApp = (params: PageParams) => {
     const app = new Hono();
 
-    app.get("/", (c) => c.html(toHtml(<PgHome site={params.site} docs={params.store.docs} assets={params.assets} home={params.store.homes.get(undefined)} />)));
+    app.get("/", (c) => c.html(toHtml(<HomePage site={params.site} docs={params.store.docs} assets={params.assets} home={params.store.homes.get(undefined)} />)));
 
     app.get(
         "/:slug{.+}/",
@@ -44,12 +44,12 @@ export const toPageApp = (params: PageParams) => {
             const locale = params.site.locales.find((entry) => entry.code === slug);
 
             if (locale !== undefined) {
-                return c.html(toHtml(<PgHome site={params.site} docs={params.store.docs} assets={params.assets} home={params.store.homes.get(locale.code)} locale={locale} />));
+                return c.html(toHtml(<HomePage site={params.site} docs={params.store.docs} assets={params.assets} home={params.store.homes.get(locale.code)} locale={locale} />));
             }
 
             const doc = params.store.docs.find((entry) => entry.id === slug);
 
-            return doc === undefined ? c.notFound() : c.html(toHtml(<PgDoc site={params.site} docs={params.store.docs} assets={params.assets} doc={doc} />));
+            return doc === undefined ? c.notFound() : c.html(toHtml(<DocPage site={params.site} docs={params.store.docs} assets={params.assets} doc={doc} />));
         },
     );
 

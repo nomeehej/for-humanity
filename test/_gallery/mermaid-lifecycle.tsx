@@ -1,6 +1,6 @@
 import {flushSync} from "hono/jsx/dom";
 import {createRoot} from "hono/jsx/dom/client";
-import {WgMermaid} from "@/component/widget/mermaid/wg-mermaid";
+import {Mermaid} from "@/component/widget/mermaid/mermaid";
 
 let mounted: ReturnType<typeof createRoot>;
 
@@ -10,7 +10,7 @@ let mounted: ReturnType<typeof createRoot>;
 window.diagramFixture = {
     mount: () => {
         mounted = createRoot(document.createElement("div"));
-        flushSync(() => mounted.render(<WgMermaid />));
+        flushSync(() => mounted.render(<Mermaid />));
     },
     unmount: () => {
         flushSync(() => mounted.unmount());

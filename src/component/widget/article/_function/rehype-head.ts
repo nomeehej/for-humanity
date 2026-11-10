@@ -42,7 +42,7 @@ export const rehypeHead = (options: HeadOptions) => (tree: Root, file: VFile) =>
     const head: Element = {
         type: "element",
         tagName: "header",
-        properties: {className: ["wg_article__head"]},
+        properties: {className: ["article__head"]},
         children: [
             ...(frontmatter === undefined
                 ? []
@@ -50,7 +50,7 @@ export const rehypeHead = (options: HeadOptions) => (tree: Root, file: VFile) =>
                       {
                           type: "element",
                           tagName: "h1",
-                          properties: {className: ["wg_article__title"]},
+                          properties: {className: ["article__title"]},
                           children: [{type: "text", value: frontmatter.name}],
                       } satisfies Element,
                   ]),
@@ -60,7 +60,7 @@ export const rehypeHead = (options: HeadOptions) => (tree: Root, file: VFile) =>
                       {
                           type: "element",
                           tagName: "p",
-                          properties: {className: ["wg_article__lead"]},
+                          properties: {className: ["article__lead"]},
                           children: [{type: "text", value: frontmatter.label.trim()}],
                       } satisfies Element,
                   ]),
@@ -70,7 +70,7 @@ export const rehypeHead = (options: HeadOptions) => (tree: Root, file: VFile) =>
                       {
                           type: "element",
                           tagName: "p",
-                          properties: {className: ["wg_article__dates"]},
+                          properties: {className: ["article__dates"]},
                           children: dates.flatMap((date, index): ElementContent[] => [
                               {type: "text", value: `${index === 0 ? "" : ", "}${date.label} `},
                               {type: "element", tagName: "time", properties: {dateTime: date.value}, children: [{type: "text", value: date.value}]},

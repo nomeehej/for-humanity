@@ -11,7 +11,7 @@ describe("다이어그램", () => {
 
             expect(tree.children[0].type).toBe("html");
             expect(tree.children[0]).toHaveProperty("value", expect.stringContaining("한글 &lt;script&gt;alert(&quot;x&quot;)&lt;/script&gt; &amp; guide.md"));
-            expect(tree.children[0]).toHaveProperty("value", expect.stringContaining('class="wg_mermaid__result" hidden'));
+            expect(tree.children[0]).toHaveProperty("value", expect.stringContaining('class="mermaid__result" hidden'));
             expect(tree.children[0]).toHaveProperty("value", expect.stringContaining('role="status" hidden'));
             expect(tree.children[0]).toHaveProperty("value", expect.not.stringMatching(/<script>|<svg|data-mermaid-module=/));
         });

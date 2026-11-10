@@ -72,7 +72,7 @@ export const rehypeRefs = (options: RefOptions) => {
                 }
 
                 if (id_link_text_pattern.test(child.value.trim())) {
-                    node.properties.className = [...toClassList(node), "wg_article__idLink"];
+                    node.properties.className = [...toClassList(node), "article__idLink"];
 
                     return;
                 }
@@ -83,7 +83,7 @@ export const rehypeRefs = (options: RefOptions) => {
                     return;
                 }
 
-                node.properties.className = [...toClassList(node), "wg_article__ref", `wg_article__ref--${color}`];
+                node.properties.className = [...toClassList(node), "article__ref", `article__ref--${color}`];
 
                 return;
             }
@@ -101,7 +101,7 @@ export const rehypeRefs = (options: RefOptions) => {
                     0,
                     1,
                     ...(match[1] === "" ? [] : [{type: "text" as const, value: match[1]}]),
-                    {type: "element", tagName: "span", properties: {className: ["wg_article__ref", `wg_article__ref--${color}`]}, children: [{type: "text", value: match[2]}]},
+                    {type: "element", tagName: "span", properties: {className: ["article__ref", `article__ref--${color}`]}, children: [{type: "text", value: match[2]}]},
                     {type: "text", value: first.value.slice(match[0].length)},
                 );
 
@@ -124,7 +124,7 @@ export const rehypeRefs = (options: RefOptions) => {
                 return;
             }
 
-            span.properties.className = [...toClassList(span), "wg_article__ref", "wg_article__ref--heading", `wg_article__ref--${color}`];
+            span.properties.className = [...toClassList(span), "article__ref", "article__ref--heading", `article__ref--${color}`];
         });
     };
 };

@@ -22,7 +22,7 @@ const codeMetadata: ShikiTransformer = {
     name: "for-humanity:code-metadata",
     root(root) {
         this.pre.properties.style = undefined;
-        this.addClassToHast(this.pre, "wg_article__code");
+        this.addClassToHast(this.pre, "article__code");
 
         if (this.options.meta?.__raw === undefined) {
             return;
@@ -32,18 +32,18 @@ const codeMetadata: ShikiTransformer = {
         const flags = this.options.meta.__raw.replace(/\[[^\]]+\]/, " ");
 
         if (/\bline-numbers\b/.test(flags)) {
-            this.addClassToHast(this.pre, "wg_article__lineNumbers");
+            this.addClassToHast(this.pre, "article__lineNumbers");
         }
 
         const isBad = /\bbad\b/.test(flags);
         const isGood = /\bgood\b/.test(flags);
 
         if (isBad) {
-            this.addClassToHast(this.pre, "wg_article__code--bad");
+            this.addClassToHast(this.pre, "article__code--bad");
         }
 
         if (isGood) {
-            this.addClassToHast(this.pre, "wg_article__code--good");
+            this.addClassToHast(this.pre, "article__code--good");
         }
 
         const title = /\[([^\]]+)\]/.exec(this.options.meta.__raw)?.[1];
@@ -56,17 +56,17 @@ const codeMetadata: ShikiTransformer = {
             {
                 type: "element",
                 tagName: "figure",
-                properties: {className: ["wg_article__codeFile"]},
+                properties: {className: ["article__codeFile"]},
                 children: [
                     {
                         type: "element",
                         tagName: "figcaption",
                         properties: {
-                            className: ["wg_article__codeFileTitle", ...(isBad ? ["wg_article__codeFileTitle--bad"] : []), ...(isGood ? ["wg_article__codeFileTitle--good"] : [])],
+                            className: ["article__codeFileTitle", ...(isBad ? ["article__codeFileTitle--bad"] : []), ...(isGood ? ["article__codeFileTitle--good"] : [])],
                         },
                         children: [
                             {type: "text", value: title},
-                            {type: "element", tagName: "span", properties: {className: ["wg_article__codeFileLang"]}, children: [{type: "text", value: this.options.lang}]},
+                            {type: "element", tagName: "span", properties: {className: ["article__codeFileLang"]}, children: [{type: "text", value: this.options.lang}]},
                         ],
                     },
                     ...root.children.filter((child): child is ElementContent => child.type !== "doctype"),

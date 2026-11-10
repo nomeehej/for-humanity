@@ -53,10 +53,10 @@ describe("홈", () => {
             expect(html).toContain('<a href="/guide/setup/" target="_blank" rel="noopener">Guide</a>');
             expect(html).toMatch(/href="#start" data-toc-link/);
             expect(html).toMatch(/class="shiki/);
-            expect(html).toMatch(/wg_sidebar__brand" href="\/" aria-current="page"/);
+            expect(html).toMatch(/sidebar__brand" href="\/" aria-current="page"/);
             expect([...html.matchAll(/href="\/"/g)].length).toBe(1);
             expect(docs[0].html).toMatch(/href="\/#start"/);
-            expect(html).not.toMatch(/wg_article__eyebrow|pg_home__card/);
+            expect(html).not.toMatch(/article__eyebrow|homePage__card/);
             expect(readme.status).toBe(404);
         });
 
@@ -78,7 +78,7 @@ describe("홈", () => {
             // THEN 홈 작성 안내
             expect(home).toBe(undefined);
             expect(html).toMatch(/문서 폴더에 README\.md를 추가/);
-            expect(html).not.toMatch(/pg_home__card|>Overview<|>Documents</);
+            expect(html).not.toMatch(/homePage__card|>Overview<|>Documents</);
         });
 
         test("[HOM-003] 번역 폴더의 README는 /<code>/ 홈으로 렌더하고 언어별 lang과 설명을 쓴다", async ({scope}) => {
@@ -100,7 +100,7 @@ describe("홈", () => {
             expect(korean).toContain('<html lang="ko"');
             expect(korean).toContain('name="description" content="한국어 안내"');
             expect(korean).toContain('<a href="/" target="_blank" rel="noopener">English</a>');
-            expect(korean).toMatch(/wg_sidebar__brand" href="\/ko\/" aria-current="page"/);
+            expect(korean).toMatch(/sidebar__brand" href="\/ko\/" aria-current="page"/);
             expect(japanese).toContain('<html lang="ja"');
             expect(japanese).not.toContain('name="description"');
             expect(japanese).toMatch(/문서 폴더에 README\.md를 추가/);
