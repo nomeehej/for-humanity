@@ -83,6 +83,43 @@ HTML에는 `public, max-age=0, must-revalidate, no-transform`, `/_fh/*`에는 `p
 문서 설정의 `url`은 계속 `https://for-humanity.fyi`를 사용합니다.
 공식 절차는 [Migrate from Pages](https://developers.cloudflare.com/workers/static-assets/migration-guides/migrate-from-pages/)를 참고합니다.
 
+## Private site
+
+내부 문서까지 담은 내부판은 두 번째 Worker `for-humanity-private`으로 배포합니다. 설정은 저장소 루트의 `wrangler.private.jsonc`이고 자산 폴더는 `content/dist-private`입니다.
+공식 저장소는 공개라서 내부판을 잠가도 원본은 GitHub에서 읽힙니다. 이 Worker는 내부판 배포와 Cloudflare Access 절차를 실제로 확인하는 용도입니다.
+
+```sh
+pnpm build:private
+pnpm preview:private
+pnpm deploy:private
+```
+
+| Configuration | Value |
+| --- | --- |
+| Worker name | `for-humanity-private` |
+| Static assets | `content/dist-private` |
+| `workers_dev`, `preview_urls` | `false`. Access를 켜기 전에는 주소를 열지 않음 |
+| Build command | `pnpm build:private` |
+| Deploy command | `pnpm exec wrangler deploy --config wrangler.private.jsonc` |
+
+2026-11-10에 주소 없이 처음 배포했습니다. 배포 뒤 `workers.dev` 주소와 버전 주소가 모두 404인 것을 확인했습니다. 캐시 헤더 파일은 두지 않습니다. 내부판은 독자가 적어 Workers 정적 자산의 기본 재검증으로 충분합니다.
+
+### Access checks
+
+Access를 켜고 주소를 여는 순서입니다. 화면의 항목은 [Cloudflare Access for Workers](https://developers.cloudflare.com/workers/configuration/cloudflare-access/)를 따릅니다.
+
+1. 대시보드의 Workers & Pages에서 `for-humanity-private`을 열고 Access 탭에서 보호를 켭니다. 허용할 이메일을 정책에 넣습니다.
+2. `wrangler.private.jsonc`의 `workers_dev`를 `true`로 바꾸거나 `routes`에 Custom Domain을 추가한 뒤 `pnpm deploy:private`을 실행합니다. 주소는 대시보드가 아니라 설정 파일에서 엽니다. 다음 배포가 설정 파일의 값으로 덮어쓰기 때문입니다.
+3. 아래 항목을 확인하고 결과를 [Server design](server-design.md#구현-첫-단계에서-확인할-것)에 적습니다.
+
+- [ ] 주소가 없는 Worker에서 Access를 켤 수 있는지
+- [ ] 로그아웃한 브라우저에서 Custom Domain, `workers.dev`, 미리보기 주소가 모두 로그인을 요구하는지
+- [ ] `/_fh/` 아래 CSS와 그림 주소를 직접 열어도 로그인을 요구하는지
+- [ ] 허용한 이메일로 로그인하면 공개 문서와 내부 문서가 함께 보이는지
+- [ ] 무료 요금제가 허용하는 사용자 수
+
+확인이 끝나면 공개 문서 [Deployment](../public/deployment.md#private-site)에 순서를 적습니다.
+
 ## Other projects
 
 설치 사용자의 배포 방법은 [Deployment](../public/deployment.md)를 참고합니다.

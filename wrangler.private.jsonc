@@ -1,0 +1,14 @@
+{
+    "$schema": "node_modules/wrangler/config-schema.json",
+    "name": "for-humanity-private",
+    "compatibility_date": "2026-10-23",
+
+    // 접근 제어를 켜기 전에는 어떤 주소도 열지 않음
+    "workers_dev": false,
+    "preview_urls": false,
+    "assets": {
+        "directory": "./content/dist-private",
+        "html_handling": "force-trailing-slash",
+        "not_found_handling": "404-page"
+    }
+}
