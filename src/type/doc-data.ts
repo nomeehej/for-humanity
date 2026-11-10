@@ -6,7 +6,8 @@ import {groupPathSchema} from "@/type/group-path";
 // ----------------------------------------------------------------------------------------
 // 작성자가 적은 문서 날짜
 //
-// 달까지 또는 실제 있는 날까지, 적은 그대로 표시
+// 달 또는 실제 있는 날까지 허용
+// 적은 그대로 표시
 // ----------------------------------------------------------------------------------------
 const docDateSchema = z.union([z.iso.date(), z.string().regex(doc_date_month_pattern)], {error: copy_error_doc_date});
 
@@ -35,7 +36,8 @@ export const docDataSchema = z
         created: docDateSchema.optional(),
         revised: docDateSchema.optional(),
     })
-    // 정밀도가 다른 두 날짜는 짧은 쪽 길이까지 비교. 2026-10과 2026-10-05는 같은 달
+    // 정밀도가 다른 두 날짜는 짧은 쪽 길이까지 비교
+    // 2026-10과 2026-10-05는 같은 달
     .refine(
         (data) => {
             if (data.created === undefined || data.revised === undefined) {
@@ -50,6 +52,6 @@ export const docDataSchema = z
     );
 
 // ----------------------------------------------------------------------------------------
-// 기본값을 적용한 문서 frontmatter
+// 기본값 적용 문서 frontmatter
 // ----------------------------------------------------------------------------------------
 export type DocData = z.infer<typeof docDataSchema>;

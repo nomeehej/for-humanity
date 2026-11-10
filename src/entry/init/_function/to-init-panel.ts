@@ -7,7 +7,7 @@ import {init_defaults, init_panel_color, init_panel_layout} from "@/entry/init/_
 import type {InitPanelParams} from "@/entry/init/_type/init-panel";
 
 // ----------------------------------------------------------------------------------------
-// Clack 박스 출력을 안내와 입력 렌더러에서 공유하는 경계
+// 안내와 입력 렌더러가 공유하는 Clack 박스 출력 경계
 // ----------------------------------------------------------------------------------------
 export const toInitPanel = (params: InitPanelParams): string => {
     const width = Math.max(1, Math.min(params.columns ?? init_panel_layout.width, init_panel_layout.width));
@@ -25,7 +25,8 @@ export const toInitPanel = (params: InitPanelParams): string => {
     const fits = stringWidth(params.title) <= width - init_panel_layout.titleInset;
     const title = fits ? params.title : init_defaults.emptyText;
     const message = fits ? params.message : `${params.title}\n\n${params.message}`;
-    // Clack의 짝수 폭과 맞춰 결합 문자를 끊지 않는 줄바꿈을 먼저 적용
+
+    // 결합 문자 비분리 줄바꿈 선적용, Clack의 짝수 폭에 일치
     const inner = Math.floor(width / init_panel_layout.even) * init_panel_layout.even - init_panel_layout.contentInset;
     box(`\n${wrapAnsi(message, inner, {hard: true, trim: false, wordWrap: true})}\n`, title, {
         output,

@@ -6,10 +6,7 @@ import {toChangeQueue} from "@/util/async/to-change-queue";
 import "./wg-mermaid.css";
 
 // ----------------------------------------------------------------------------------------
-// 서버 본문의 Mermaid 영역 렌더 수명
-//
-// 셸과 본문 DOM 교체 미포함
-// 렌더 완료 알림으로 문서 배치와 연결
+// Mermaid 영역 렌더 속성
 //
 // onRendered: 렌더에 따른 본문 높이 변경 후 초기 앵커 위치 보정
 // ----------------------------------------------------------------------------------------
@@ -17,6 +14,12 @@ export interface WgMermaidProps {
     onRendered?: () => void;
 }
 
+// ----------------------------------------------------------------------------------------
+// 서버 본문의 Mermaid 영역 렌더 수명
+//
+// 셸과 본문 DOM 교체 미포함
+// 렌더 완료 알림으로 문서 배치와 연결
+// ----------------------------------------------------------------------------------------
 export const WgMermaid = (props: WgMermaidProps) => {
     // ----------------------------------------------------------------------------------------
     // 본문 파싱 후 모듈 수신, 테마 변경과 Details 공개의 직렬 렌더
@@ -29,7 +32,10 @@ export const WgMermaid = (props: WgMermaidProps) => {
         const tooltips = new Set<HTMLElement>();
 
         // ----------------------------------------------------------------------------------------
-        // 공유 툴팁 재사용, 테마나 접힘 변경에서 숨긴 안내의 다음 호버 복원
+        // 호버 시 공유 툴팁 재표시
+        //
+        // 툴팁 요소 재사용
+        // 테마나 Details 열림 변경에서 숨긴 안내는 다음 호버에 복원
         // ----------------------------------------------------------------------------------------
         const handleTooltipShow = (event: MouseEvent) => {
             if (!(event.target instanceof Element) || event.target.closest("[title]") === null) {
@@ -47,7 +53,9 @@ export const WgMermaid = (props: WgMermaidProps) => {
         };
 
         // ----------------------------------------------------------------------------------------
-        // SVG 이탈이나 배치 변경에서 툴팁의 이전 절대 좌표와 스크롤 넘침 제외
+        // SVG 이탈과 배치 변경 시 툴팁 비표시
+        //
+        // 툴팁의 이전 절대 좌표와 스크롤 넘침 제외
         // ----------------------------------------------------------------------------------------
         const handleTooltipHide = () => {
             for (const tooltip of tooltips) {
@@ -61,7 +69,7 @@ export const WgMermaid = (props: WgMermaidProps) => {
         // 모듈 수신 실패는 모든 영역에 오류 안내
         // toggle 시점의 checkVisibility가 ::details-content 전환 첫 프레임에서 false 반환
         //
-        // 제약: 펼침 판정은 open 속성
+        // 제약: 열림 판정은 open 속성
         // ----------------------------------------------------------------------------------------
         const render = toChangeQueue({
             run: async () => {
@@ -75,7 +83,9 @@ export const WgMermaid = (props: WgMermaidProps) => {
                 const mode = theme.matches ? "dark" : "light";
 
                 // ----------------------------------------------------------------------------------------
-                // 해제, 문서 교체, 테마 전환으로 이번 회차의 결과를 적용하지 않을 영역
+                // 이번 회차 결과 적용 제외 영역
+                //
+                // 해제, 문서 교체, 테마 전환이 원인
                 // ----------------------------------------------------------------------------------------
                 const isStale = (element: HTMLElement) => {
                     return lifetime.signal.aborted || !element.isConnected || theme.matches !== (mode === "dark");
@@ -120,7 +130,7 @@ export const WgMermaid = (props: WgMermaidProps) => {
                             throw new Error(`Mermaid source exceeds ${render_source_max_chars} characters`);
                         }
 
-                        // Mermaid 설정은 렌더마다 초기화. 앞 다이어그램의 frontmatter 전파 제외
+                        // Mermaid 설정은 렌더마다 초기화, 앞 다이어그램의 frontmatter 전파 제외
                         const config = mode === "dark" ? render_dark_config : render_config;
 
                         library.default.initialize(config);
@@ -140,7 +150,8 @@ export const WgMermaid = (props: WgMermaidProps) => {
                         canvas.innerHTML = rendered.svg;
                         toOpenArrows(canvas, config.themeVariables?.lineColor);
 
-                        // 생성 SVG의 공식 스타일 격리. 본문 p, code, a 선택자의 내부 라벨 개입 제외
+                        // 생성 SVG의 공식 스타일 격리
+                        // 본문 p, code, a 선택자의 내부 라벨 개입 제외
                         (result.shadowRoot ?? result.attachShadow({mode: "open"})).replaceChildren(canvas);
 
                         // Mermaid bindFunctions는 SVG 자식이 있는 Element 요구
@@ -201,7 +212,9 @@ export const WgMermaid = (props: WgMermaidProps) => {
         });
 
         // ----------------------------------------------------------------------------------------
-        // 연속 이벤트 집약, 직전 렌더 완료 후 최신 테마 반영
+        // 연속 이벤트의 렌더 집약
+        //
+        // 직전 렌더 완료 후 최신 테마 반영
         // ----------------------------------------------------------------------------------------
         const handleRender = () => {
             handleTooltipHide();

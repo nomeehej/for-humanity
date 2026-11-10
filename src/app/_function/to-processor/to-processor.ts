@@ -38,7 +38,7 @@ import type {ResolvedSiteConfig} from "@/type/site-config";
 // Markdown 처리기 조립 입력
 //
 // site: 기본값을 적용한 사이트 설정
-// scope: 상대 링크, 자원, 스니펫을 해석하고 공개 범위를 검사할 문서 범위
+// scope: 상대 링크, 자원, 스니펫 해석과 공개 범위 검사의 문서 범위
 // files: 사용한 자원의 URL과 원본 경로 수집
 // mermaid: 지연 수신할 로컬 Mermaid 런타임
 // ----------------------------------------------------------------------------------------
@@ -55,9 +55,10 @@ interface ProcessorParams {
 // 코드와 문서 머리 생성 후 제목 ID와 가름 수집
 // 원시 HTML과 플러그인 HTML 조각은 Shiki 다음 rehype-raw에서 해석
 // Mermaid 원문과 원시 pre의 코드 강조 방지
-// 부품 제목 검사, 머리, 제목 ID, 가름, 표, 그림, 링크, 새 탭 target, hash 대상, 자원
-//   처리는 원시 HTML 포함
-// 코드 상자의 바탕과 글색은 article CSS 소유, 토큰 색상은 GitHub 기본 테마의 light-dark()
+// 부품 제목 검사, 머리, 제목 ID, 가름, 표, 그림, 링크, 새 탭 target, hash 대상, 자원 처리
+// 위 처리는 원시 HTML 포함
+// 코드 상자의 바탕과 글색은 article CSS 담당
+// 토큰 색상은 GitHub 기본 테마의 light-dark()
 // 주석과 보라 토큰은 github.com 현행 값으로 교체, 코드 상자 바탕 위 대비 4.5 확보
 // ----------------------------------------------------------------------------------------
 export const toProcessor = (params: ProcessorParams) => {
@@ -67,7 +68,8 @@ export const toProcessor = (params: ProcessorParams) => {
         unified()
             .use(remarkParse)
             .use(remarkFrontmatter, ["yaml"])
-            // 취소선은 ~~만. 물결표 하나는 10~11 같은 범위 표기라 글자 그대로
+            // 취소선은 ~~만 인정
+            // 물결표 하나는 글자 그대로 유지, 10~11 같은 범위 표기
             .use(remarkGfm, {singleTilde: false})
             .use(remarkSnippets, {scope: params.scope})
             .use(remarkSmartypants)

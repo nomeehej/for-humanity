@@ -14,7 +14,9 @@ interface InitFileParams {
 }
 
 // ----------------------------------------------------------------------------------------
-// 원본을 보존하는 파일 조회, 새 파일이면 undefined
+// 원본 보존 파일 조회
+//
+// 새 파일이면 undefined
 // ----------------------------------------------------------------------------------------
 export const readInitFile = async (params: InitFileParams) => {
     const entry = await readInitPath(params);

@@ -12,7 +12,7 @@ export const toNoticesPlugin = (): Plugin => {
     return {
         name: "for-humanity:notices",
 
-        // Rolldown의 호출 컨텍스트에서 emitFile 사용, 화살표 함수 전환 불가
+        // 예외: Rolldown의 호출 컨텍스트에서 emitFile 사용, 화살표 함수 전환 불가
         generateBundle: async function (_options, bundle) {
             const packages = new Set(
                 Object.values(bundle)

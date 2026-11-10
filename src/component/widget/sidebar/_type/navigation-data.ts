@@ -8,8 +8,6 @@ import type {ResolvedSiteConfig} from "@/type/site-config";
 //
 // 본문, 파일 경로를 포함하지 않는 탐색 전용 계약
 //
-// id: 링크의 문서 id
-// name: 표시 이름
 // label: 링크의 보조 설명
 // active: 현재 페이지 한 항목만 강조
 // children: 클릭 가능한 하위 문서
@@ -27,10 +25,8 @@ export interface NavigationDoc {
 //
 // 같은 이름은 전체 경로로 구분
 //
-// name: 묶음 이름
 // path: 최상위부터 현재 묶음까지
 // docs: 현재 단계의 문서
-// groups: 하위 묶음
 // ----------------------------------------------------------------------------------------
 export interface NavigationGroup {
     name: DocData["group"][number];
@@ -46,10 +42,9 @@ export interface NavigationGroup {
 //
 // basePath: 서버와 브라우저 탐색이 공유하는 배포 경로
 // title: 브랜드 이름
-// homePath: 현재 언어 홈의 사이트 경로, 브랜드 링크
+// homePath: 현재 언어 홈의 사이트 경로, 브랜드 링크 대상
 // groups: 읽는 순서의 문서 트리
-// signature: 페이지별 활성 표시를 제외한 문서 목록의 짧은 식별값, 같은 목록에서만 저장
-//   위치 복원
+// signature: 페이지별 활성 표시를 제외한 목록의 짧은 식별값, 목록 변경 시 위치 미복원
 // outline: 현재 페이지의 목차
 // home: README 홈 여부
 // cursorFace: 커서 옆 픽셀 얼굴 표시 여부

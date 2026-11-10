@@ -28,7 +28,7 @@ import {toContentId} from "@/util/file/to-content-id";
 import {logger} from "@/util/logger/logger";
 
 // ----------------------------------------------------------------------------------------
-// 문서 폴더를 읽고 명령별 출력 경로와 함께 검증하는 입력
+// 문서 폴더 조회와 명령별 출력 경로 검증 입력
 //
 // scope: 공개, 내부, 번역 문서 폴더와 참조 범위
 // processor: 설정, 자원 목록을 연결한 Markdown 처리기
@@ -72,7 +72,8 @@ export const readDocs = async (params: ReadDocsParams): Promise<Doc[]> => {
             const id = toContentId({scope: params.scope, path: absolutePath});
             const segments = id.split("/");
 
-            // Hono, SSG, 정적 제공의 공통 URL 계약. 예약 문자로 생기는 페이지 누락 방지
+            // Hono, SSG, 정적 제공의 공통 URL 계약
+            // 예약 문자로 생기는 페이지 누락 방지
             if (
                 segments.some((segment) => segment === "" || segment === "." || segment === ".." || segment === "index.html") ||
                 /[#?%*:\\]/.test(id) ||
@@ -87,13 +88,15 @@ export const readDocs = async (params: ReadDocsParams): Promise<Doc[]> => {
 
             const source = await readFile(absolutePath, "utf8");
 
-            // 원문에서도 UTF-8 BOM 제거. remark 파서와 지시문 offset 기준 일치
+            // 원문에서도 UTF-8 BOM 제거
+            // remark 파서와 지시문 offset 기준 일치
             const file = new VFile({value: source.replace(/^﻿/, ""), path: absolutePath});
             const tree = params.processor.parse(file);
             const frontmatter = tree.children[0];
 
-            // YAML 문법 오류와 경고에 문서 경로 추가. yaml 패키지의 기본 출력은 경로 미포함
-            // 줄 번호의 원문 기준 보정, 여는 --- 줄 자리에 빈 줄 추가
+            // YAML 문법 오류와 경고에 문서 경로 추가
+            // yaml 패키지의 기본 출력은 경로 미포함
+            // 줄 번호의 원문 기준 보정, 여는 `---` 줄 위치에 빈 줄 추가
             const yaml = frontmatter?.type === "yaml" ? parseDocument(`\n${frontmatter.value}`) : new Document(doc_data_absent);
 
             if (yaml.errors.length > 0) {
@@ -110,10 +113,12 @@ export const readDocs = async (params: ReadDocsParams): Promise<Doc[]> => {
                 throw new Error(`${copy_error_frontmatter}: ${entry.path}: ${toIssueText(parsed.error)}`);
             }
 
-            // 일반 부모 id는 사이트 id. 번역 문서에서는 같은 언어 안의 id
+            // 일반 문서의 부모 id는 사이트 id
+            // 번역 문서의 부모 id는 같은 언어 안의 id
             const parentId = entry.locale === undefined || parsed.data.parent === undefined ? parsed.data.parent : `${entry.locale}/${parsed.data.parent}`;
 
-            // 상대 부모 id는 파일 위치 기준으로 한 번 해소. 문서 루트를 바꿔도 같은 관계 유지
+            // 상대 부모 id는 파일 위치 기준으로 한 번 해소
+            // 문서 루트 변경에도 같은 관계 유지
             const data = {
                 ...parsed.data,
                 parent:
@@ -127,7 +132,8 @@ export const readDocs = async (params: ReadDocsParams): Promise<Doc[]> => {
 
             file.data.fh = fh;
 
-            // YAML 노드만 제외. 본문 위치와 오류의 원본 줄, 열, offset 유지
+            // YAML 노드만 제외
+            // 본문 위치와 오류의 원본 줄, 열, offset 유지
             tree.children = tree.children.filter((node) => node.type !== "yaml");
 
             const hast = await params.processor.run(tree, file);
@@ -156,10 +162,12 @@ export const readDocs = async (params: ReadDocsParams): Promise<Doc[]> => {
         throw new Error(`${copy_error_doc_id_clash}: ${duplicateIds.map((entry) => entry[0]).join(", ")}`);
     }
 
-    // 전체 파일 수집 후 부모 참조 검증. 파일 읽기 순서와 무관한 문서 경로
+    // 전체 파일 수집 후 부모 참조 검증
+    // 파일 조회 순서와 무관한 문서 경로
     const docsById = new Map(docs.map((doc) => [doc.id, doc]));
 
-    // 다른 문서의 id 대조. 없는 문서는 remark-links 가 이미 경고
+    // 다른 문서의 id 대조
+    // 없는 문서는 remark-links가 이미 경고
     const idsById = new Map(rendered.map((entry) => [entry.doc.id, entry.ids]));
 
     for (const entry of rendered) {

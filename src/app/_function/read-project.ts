@@ -6,7 +6,9 @@ import {hasReservedFolder} from "@/util/file/has-reserved-folder";
 import {isOutsideRoot} from "@/util/file/is-outside-root";
 
 // ----------------------------------------------------------------------------------------
-// 프로젝트 설정과 문서 루트 해소, 외부와 시스템 폴더 symlink 거부
+// 프로젝트 설정 조회와 문서 루트 해소
+//
+// 외부와 시스템 폴더 symlink 거부
 // ----------------------------------------------------------------------------------------
 export const readProject = async (directory: string) => {
     const projectRoot = realpathSync(resolve(directory));

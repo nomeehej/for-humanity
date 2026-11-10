@@ -15,7 +15,9 @@ import {toErrorMessage} from "@/util/error/to-error-message";
 import {isOutsideRoot} from "@/util/file/is-outside-root";
 
 // ----------------------------------------------------------------------------------------
-// 같은 문서 앱을 소스 또는 설치 번들로 실행하는 개발 입력
+// 개발 서버 입력
+//
+// 같은 문서 앱의 소스 실행과 설치 번들 실행 공용
 //
 // source: 저장소 소스의 JSX 변환과 CSS HMR 활성화
 // ----------------------------------------------------------------------------------------
@@ -27,7 +29,8 @@ export interface DevParams extends SiteParams {
 // 단일 Vite 서버의 Hono 연결과 문서 갱신 설정
 //
 // 소비 프로젝트의 Vite 설정과 환경 파일은 자동 실행하지 않음
-// 마지막 정상 스냅샷 유지, 서버 종료 이후 결과 제외
+// 마지막 정상 스냅샷 유지
+// 서버 종료 이후 결과 제외
 // 준비 중 새 변경이 생긴 결과는 기존 스냅샷이 있을 때만 제외
 // ----------------------------------------------------------------------------------------
 export const toDevConfig = (params: DevParams): InlineConfig => {
@@ -63,7 +66,8 @@ export const toDevConfig = (params: DevParams): InlineConfig => {
             fs: {
                 allow: [kitRoot],
 
-                // 설치 모드는 정확한 Vite 내부 URL만 통과. dev .의 node_modules는 차단하지 않음
+                // 설치 모드는 정확한 Vite 내부 URL만 통과
+                // dev .의 node_modules는 차단하지 않음
                 deny: [
                     ".env",
                     ".env.*",
@@ -81,7 +85,8 @@ export const toDevConfig = (params: DevParams): InlineConfig => {
                 name: "for-humanity:documents",
                 enforce: "pre",
 
-                // Vite의 resolve 호출 컨텍스트 보존, 서버와 브라우저의 JSX 런타임 분리
+                // Vite의 resolve 호출 컨텍스트 보존
+                // 서버와 브라우저의 JSX 런타임 분리
                 resolveId: function (id, importer, options) {
                     if (!options.ssr && /^hono\/jsx\/jsx-(dev-)?runtime$/.test(id)) {
                         return this.resolve(id.replace("hono/jsx/", "hono/jsx/dom/"), importer, {skipSelf: true});
@@ -103,7 +108,7 @@ export const toDevConfig = (params: DevParams): InlineConfig => {
 
                             const generation = state.generation;
 
-                            // 저장소 자체 모듈의 공개 계약, Vite가 캐시를 무효화한 소스에서 로드
+                            // 저장소 자체 모듈의 공개 계약, Vite 캐시 무효화 소스에서 로드
                             const module = params.source ? await server.ssrLoadModule("/src/app/load-site.ts") : await import(pathToFileURL(join(kitRoot, "dist/site.js")).href);
 
                             const nextSite = await z.custom<typeof loadSite>((value) => typeof value === "function").parse(module.loadSite)({
@@ -123,7 +128,7 @@ export const toDevConfig = (params: DevParams): InlineConfig => {
 
                             currentSite = nextSite;
 
-                            // Vite는 연결 전 갱신도 보관, 최초 응답의 불필요한 재접속 제외
+                            // 최초 응답의 불필요한 재접속 제외, Vite는 연결 전 갱신도 보관
                             if (generation > 0) {
                                 server.hot.send({type: "full-reload"});
                             }
@@ -134,12 +139,14 @@ export const toDevConfig = (params: DevParams): InlineConfig => {
                     });
 
                     // ----------------------------------------------------------------------------------------
-                    // 연속 저장을 한 번의 재준비로 병합
+                    // 연속 저장의 재준비 1회 병합
                     // ----------------------------------------------------------------------------------------
                     const reload = debounce(refresh, watch_reload_delay_ms);
 
                     // ----------------------------------------------------------------------------------------
-                    // 문서와 소스 변경 시 스냅샷 갱신, 기존 CSS 수정은 Vite HMR 사용
+                    // 문서와 소스 변경 시 스냅샷 갱신
+                    //
+                    // 기존 CSS 수정은 Vite HMR 사용
                     // ----------------------------------------------------------------------------------------
                     const handleChange = (event: string, file: string) => {
                         const documentPath = relative(root, file);

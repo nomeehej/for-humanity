@@ -17,8 +17,10 @@ interface NavigationStoresParams {
 // ----------------------------------------------------------------------------------------
 // 페이지별 브라우저 탐색 스토어
 //
-// 브라우저 진입점에서만 생성, 서버 요청 간 상태 공유 금지
-// 읽기 오류는 persist에서 처리, 쓰기 오류는 메모리 상태 유지
+// 생성은 브라우저 진입점에서만 허용
+// 서버 요청 간 상태 공유 금지
+// 읽기 오류는 persist에서 처리
+// 쓰기 오류는 메모리 상태 유지
 // ----------------------------------------------------------------------------------------
 export const toNavigationStores = (params: NavigationStoresParams) => {
     const storage = createJSONStorage<NavigationScrollState>(() => {

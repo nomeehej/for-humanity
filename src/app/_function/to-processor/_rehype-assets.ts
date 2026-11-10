@@ -18,7 +18,7 @@ import {toDecodedPath} from "@/util/file/to-decoded-path";
 // ----------------------------------------------------------------------------------------
 // 명시적으로 참조한 로컬 이미지, 영상, 소리, 첨부의 수집 계약
 //
-// scope: 자원 경로를 해석하고 공개 범위를 검사할 문서 범위
+// scope: 자원 경로 해석과 공개 범위 검사의 문서 범위
 // files: dev 응답과 정적 복사가 공유하는 자원 URL별 파일 경로
 // ----------------------------------------------------------------------------------------
 interface AssetOptions {
@@ -29,13 +29,13 @@ interface AssetOptions {
 // ----------------------------------------------------------------------------------------
 // 문서 상대 경로의 이미지, 영상, 소리, 첨부 수집
 //
-// 원시 HTML의 srcset, poster, video, audio, source, track, embed, object에도 같은 내용
-//   지문 URL 적용
+// 원시 HTML의 srcset, poster, video, audio, source, track, embed, object도 수집
+// 같은 내용 지문 URL 적용
 // 없는 파일, 폴더 밖 경로와 symlink, 삽입 자원의 미지원 형식은 빌드 실패
 // 배포 형식이 아닌 로컬 파일 링크와 로컬 iframe은 파일 경고
-// 절대 URL, 외부 URL은 작성자가 제공하며 수집하지 않음
-// 로컬 래스터 img에 원본 width, height 추가
-// 로드 전 자리 확보, 작성자가 적은 크기 유지
+// 절대 URL, 외부 URL은 수집 제외, 작성자 제공 주소
+// 로컬 래스터 img에 원본 width, height 추가, 로드 전 공간 확보
+// 작성자가 적은 크기 유지
 // ----------------------------------------------------------------------------------------
 export const rehypeAssets = (options: AssetOptions) => (tree: Root, file: VFile) => {
     visit(tree, "element", (node) => {
@@ -71,7 +71,8 @@ export const rehypeAssets = (options: AssetOptions) => (tree: Root, file: VFile)
                     file.fail(`${copy_error_asset}: ${url} (${reference.unsupported})`, node);
                 }
 
-                // 실제 파일만 경고. 폴더와 페이지 기준 상대 URL 제외
+                // 실제 파일만 경고
+                // 폴더와 페이지 기준 상대 URL 제외
                 if (existsSync(target) && statSync(target).isFile()) {
                     file.message(`${copy_warn_unpublished_file}: ${url}`, node);
                 }
@@ -120,7 +121,8 @@ export const rehypeAssets = (options: AssetOptions) => (tree: Root, file: VFile)
                     : toAssetUrl(value, reference);
         }
 
-        // 로컬 래스터 img의 원본 크기. 작성자가 적은 크기 유지
+        // 로컬 래스터 img의 원본 크기 적용 대상
+        // 작성자가 적은 크기 유지
         const image =
             node.tagName === "img" && typeof node.properties.src === "string" && node.properties.width === undefined && node.properties.height === undefined
                 ? options.files.get(node.properties.src)
@@ -137,7 +139,8 @@ export const rehypeAssets = (options: AssetOptions) => (tree: Root, file: VFile)
             node.properties.width = isRotated ? size.height : size.width;
             node.properties.height = isRotated ? size.width : size.height;
         } catch {
-            // 크기를 읽을 수 없는 파일은 속성 없이 유지. 형식 검사는 위 수집 규칙 담당
+            // 크기 조회가 불가한 파일은 속성 없이 유지
+            // 형식 검사는 위 수집 규칙 담당
         }
     });
 };

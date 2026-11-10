@@ -8,11 +8,13 @@ import {toPagePath} from "@/util/url/to-page-path";
 import {toSitePath} from "@/util/url/to-site-path";
 
 // ----------------------------------------------------------------------------------------
-// URL을 명시한 공개 프로젝트의 크롤러 응답 입력
+// 공개 URL 설정 프로젝트의 크롤러 응답 입력
+//
+// 사이트맵은 문서 본문 미포함
 //
 // url: 설정 검증에서 루트 origin으로 정규화한 공개 HTTP(S) URL
 // site: 배포 경로와 언어 설정
-// store: dev 파일 변경 시 교체되는 현재 문서 목록, 본문은 사이트맵에 포함하지 않음
+// store: dev 파일 변경 시 교체되는 현재 문서 목록
 // ----------------------------------------------------------------------------------------
 interface CrawlingParams {
     url: NonNullable<ResolvedSiteConfig["url"]>;
@@ -23,8 +25,9 @@ interface CrawlingParams {
 // ----------------------------------------------------------------------------------------
 // dev와 정적 빌드에서 같은 크롤러 파일 생성
 //
-// 정책, 수정 시각은 추정하지 않고 frontmatter 날짜만 사용
-// 번역이 둘 이상인 페이지만 hreflang 대체 링크, 기본 언어판은 x-default 겸함
+// 정책과 수정 시각 추정 없음, frontmatter 날짜만 사용
+// 번역이 둘 이상인 페이지만 hreflang 대체 링크
+// 기본 언어판은 x-default 겸용
 // ----------------------------------------------------------------------------------------
 export const toCrawlingApp = (params: CrawlingParams) => {
     const app = new Hono();
@@ -39,7 +42,8 @@ export const toCrawlingApp = (params: CrawlingParams) => {
         const pages = [
             ...homes.map((home) => ({path: home.path, alternates: homes, lastmod: undefined})),
             ...params.store.docs.map((doc) => {
-                // 작성자가 적은 마지막 날짜. 사이트맵 스키마의 날짜는 날까지 필요, 달까지만 적으면 생략
+                // 작성자가 적은 마지막 날짜
+                // 사이트맵 스키마의 날짜는 날까지 필요, 달까지만 적으면 생략
                 const lastmod = doc.data.revised ?? doc.data.created;
 
                 return {

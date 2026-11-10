@@ -6,10 +6,9 @@ import {visit} from "unist-util-visit";
 //
 // SVG 그림은 좁은 화면에서 표처럼 가로 스크롤
 // SVG의 width, height는 작성자가 정한 CSS 픽셀
-// 래스터는 촬영 배율을 알 수 없어 화면 폭에 맞춤
-// 래스터 그림은 액자 수정자
-// 캡처가 본문 바탕에 떠 보이지 않게 테두리
-// 속성을 적은 원시 HTML 문단은 작성자 마크업으로 유지
+// 래스터는 촬영 배율 불명, 화면 폭 기준 크기 조정
+// 래스터 그림은 테두리 수정자, 캡처와 본문 바탕 구분
+// 속성 지정 원시 HTML 문단은 작성자 마크업 유지
 // ----------------------------------------------------------------------------------------
 export const rehypeFigures = () => (tree: Root) => {
     visit(tree, "element", (node) => {
@@ -20,7 +19,8 @@ export const rehypeFigures = () => (tree: Root) => {
             return;
         }
 
-        // 내용 지문 URL로 바꾸기 전의 작성 경로. 쿼리와 해시 제외 확장자
+        // 내용 지문 URL 치환 전의 작성 경로
+        // 쿼리와 해시 제외 확장자 판정
         const svg = typeof image.properties.src === "string" && /\.svg(?:[?#]|$)/i.test(image.properties.src);
 
         node.tagName = "div";

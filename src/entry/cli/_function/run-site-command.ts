@@ -32,7 +32,9 @@ interface CliCommandParams {
 }
 
 // ----------------------------------------------------------------------------------------
-// 사이트 명령 실행과 실패 시 종료 코드 1
+// 사이트 명령 실행
+//
+// 실패 시 종료 코드 1
 // ----------------------------------------------------------------------------------------
 export const runSiteCommand = async (params: CliCommandParams) => {
     try {
@@ -40,7 +42,8 @@ export const runSiteCommand = async (params: CliCommandParams) => {
             throw new Error(copy_error_project_args);
         }
 
-        // CLI 입력 검증과 설정 파일보다 우선하는 수신 주소
+        // 수신 주소의 CLI 입력 검증
+        // 설정 파일보다 CLI 입력 우선
         const host = params.args.host === undefined ? undefined : siteConfigSchema.shape.host.parse(params.args.host === "" ? site_host_network : params.args.host);
 
         // dist의 실행 청크 기준 패키지 루트

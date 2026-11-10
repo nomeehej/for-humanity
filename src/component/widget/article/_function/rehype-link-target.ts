@@ -3,21 +3,18 @@ import {visit} from "unist-util-visit";
 import type {ResolvedSiteConfig} from "@/type/site-config";
 
 // ----------------------------------------------------------------------------------------
-// 본문 링크가 열리는 자리의 설정
-//
-// linkTarget: 사이트 설정의 linkTarget
+// 본문 링크의 열림 위치 설정
 // ----------------------------------------------------------------------------------------
 interface LinkTargetOptions {
     linkTarget: ResolvedSiteConfig["linkTarget"];
 }
 
 // ----------------------------------------------------------------------------------------
-// 본문 링크를 새 탭에서 여는 target 속성
+// 본문 링크의 새 탭 target 속성
 //
-// 같은 문서의 `#hash` 링크는 현재 탭
-// 읽던 자리 안의 이동
-// 작성자가 원시 HTML 에 target 을 쓴 링크는 그대로
-// same-tab 설정은 아무것도 바꾸지 않음
+// 같은 문서의 `#hash` 링크는 현재 탭, 읽던 위치 안의 이동
+// 원시 HTML에 작성자 target이 있는 링크는 유지
+// same-tab 설정은 링크 변경 없음
 // ----------------------------------------------------------------------------------------
 export const rehypeLinkTarget = (options: LinkTargetOptions) => (tree: Root) => {
     if (options.linkTarget !== "new-tab") {

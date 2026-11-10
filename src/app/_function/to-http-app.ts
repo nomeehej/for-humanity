@@ -11,7 +11,7 @@ import {font_cache_control} from "@/constant/font";
 //
 // pages: 정적 자원 외 요청을 처리할 페이지 앱
 // crawling: 공개 URL을 설정한 프로젝트의 크롤러 파일 앱
-// files: 자원 URL별 파일 경로, 정적 빌드와 동일 목록
+// files: 정적 빌드와 동일한 자원 URL별 파일 경로
 // ----------------------------------------------------------------------------------------
 interface HttpParams {
     pages: Hono;
@@ -20,10 +20,10 @@ interface HttpParams {
 }
 
 // ----------------------------------------------------------------------------------------
-// 등록 자원과 크롤러 응답, 나머지 요청은 페이지 앱에 위임
+// 등록 자원과 크롤러 응답, 나머지 요청의 페이지 앱 위임
 //
 // dev 응답 전용
-// 정적 생성은 페이지 앱과 크롤러 앱을 직접 출력
+// 정적 생성은 페이지 앱, 크롤러 앱 직접 출력
 // 파일 응답과 정규식 페이지 라우트 분리
 // ----------------------------------------------------------------------------------------
 export const toHttpApp = (params: HttpParams) => {
@@ -61,7 +61,8 @@ export const toHttpApp = (params: HttpParams) => {
             return c.body(body);
         }
 
-        // 시작 생략은 끝에서부터의 길이, 끝 생략은 파일 끝까지
+        // 시작 생략은 끝에서부터의 길이
+        // 끝 생략은 파일 끝까지
         const start = range[1] === "" ? Math.max(0, body.length - Number(range[2])) : Number(range[1]);
         const end = range[1] === "" || range[2] === "" ? body.length - 1 : Math.min(Number(range[2]), body.length - 1);
 

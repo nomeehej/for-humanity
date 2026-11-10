@@ -10,7 +10,7 @@ import type {DocOutline} from "@/type/doc-outline";
 //
 // frontmatter: 일반 문서의 검증된 머리말, README 홈은 생략
 // locale: 번역 문서의 언어 코드, 기본 언어 문서와 README 홈은 생략
-// anchors: 다른 문서의 제목을 가리키는 링크, read-docs 가 전체 수집 뒤 검증
+// anchors: 다른 문서 제목 참조 링크, read-docs가 전체 수집 뒤 검증
 // ids: 문서 안 요소의 id, 제목의 자동 id와 원시 HTML에 쓴 id, hash 링크의 대상
 // ----------------------------------------------------------------------------------------
 export interface DocFileData extends DocOutline {

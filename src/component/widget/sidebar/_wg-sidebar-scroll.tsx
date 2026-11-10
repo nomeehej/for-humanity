@@ -3,14 +3,17 @@ import {type Child, type DOMAttributes, type RefObject, useLayoutEffect, useRef,
 import {overflow_slack_px} from "@/component/widget/sidebar/_constant/overflow";
 
 // ----------------------------------------------------------------------------------------
-// 탐색 좌표를 제어하는 부모와 넘침 표시를 소유하는 스크롤 영역의 경계
+// 탐색 스크롤 영역 입력
+//
+// 탐색 좌표 제어는 부모 담당
+// 넘침 표시는 스크롤 영역 담당
 //
 // portRef: 배치별 좌표 복원과 저장에 필요한 실제 스크롤 요소
 // kind: 문서 목록과 현재 페이지 목차의 독립된 스크롤 수명
-// ready: JavaScript가 연결된 뒤에만 손잡이를 넘침 표시로 대체
-// children: 탐색 링크를 포함한 영역 내용
-// onClick: 이동 직전 좌표 보존과 모바일 모달 닫기
-// onScroll: 실제 스크롤 좌표가 바뀔 때 부모 저장소에 반영
+// ready: JavaScript 연결 뒤에만 손잡이 대신 넘침 표시
+// children: 탐색 링크 포함 영역 내용
+// onClick: 이동 직전 좌표 보존, 모바일 모달 닫기 처리
+// onScroll: 실제 스크롤 좌표 변경 시 부모 저장소에 반영
 // ----------------------------------------------------------------------------------------
 export interface WgSidebarScrollProps {
     portRef: RefObject<HTMLDivElement | null>;
@@ -26,7 +29,9 @@ export const WgSidebarScroll = (props: WgSidebarScrollProps) => {
     const frameRef = useRef(0);
 
     // ----------------------------------------------------------------------------------------
-    // 소수 픽셀 반올림을 제외한 실제 남은 내용만 위, 아래 흐림으로 표시
+    // 위, 아래 넘침 측정
+    //
+    // 실제 남은 내용만 흐림 표시, 소수 픽셀 반올림 제외
     // ----------------------------------------------------------------------------------------
     const measureOverflow = () => {
         frameRef.current = 0;
@@ -42,7 +47,7 @@ export const WgSidebarScroll = (props: WgSidebarScrollProps) => {
     };
 
     // ----------------------------------------------------------------------------------------
-    // 연속 스크롤과 관찰자 알림은 프레임당 한 번 측정
+    // 연속 스크롤과 관찰자 알림의 프레임당 한 번 측정
     // ----------------------------------------------------------------------------------------
     const handleOverflowMeasure = () => {
         if (frameRef.current === 0) {
@@ -51,7 +56,10 @@ export const WgSidebarScroll = (props: WgSidebarScrollProps) => {
     };
 
     // ----------------------------------------------------------------------------------------
-    // 네이티브 좌표는 즉시 저장, 시각적 넘침만 프레임 단위 갱신
+    // 스크롤 영역의 스크롤 처리
+    //
+    // 네이티브 좌표는 즉시 저장
+    // 시각적 넘침만 프레임 단위 갱신
     // ----------------------------------------------------------------------------------------
     const handlePortScroll: DOMAttributes["onScroll"] = (_event) => {
         props.onScroll?.();
@@ -59,7 +67,7 @@ export const WgSidebarScroll = (props: WgSidebarScrollProps) => {
     };
 
     // ----------------------------------------------------------------------------------------
-    // 영역과 내용의 크기 함께 추적
+    // 영역과 내용의 크기 추적
     //
     // Hono 최초 마운트의 분리된 프래그먼트 측정은 연결 직후 실행
     // ----------------------------------------------------------------------------------------
@@ -82,7 +90,7 @@ export const WgSidebarScroll = (props: WgSidebarScrollProps) => {
         if (props.portRef.current.isConnected) {
             measureOverflow();
         } else {
-            // Hono 최초 레이아웃 효과는 분리된 프래그먼트에서 실행, DOM 연결 후 첫 페인트 전 측정
+            // DOM 연결 후 첫 페인트 전 측정, Hono 최초 레이아웃 효과는 분리된 프래그먼트에서 실행
             queueMicrotask(() => {
                 if (active) {
                     measureOverflow();

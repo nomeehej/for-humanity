@@ -4,7 +4,7 @@ import {printInitPanel} from "@/entry/init/_function/print-init-panel";
 import type {InitPlan} from "@/entry/init/_type/init";
 
 // ----------------------------------------------------------------------------------------
-// 선택한 설정과 생성 전 파일 목록
+// 선택한 설정과 생성 전 파일 목록 출력
 // ----------------------------------------------------------------------------------------
 export const printInitPlan = (plan: InitPlan) => {
     const deployment = init_deploy_choices.find((choice) => choice.value === plan.options.deploy);

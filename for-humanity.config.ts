@@ -1,17 +1,21 @@
 import type {SiteConfig} from "for-humanity";
 
 // ----------------------------------------------------------------------------------------
-// 프로젝트 문서 설정, 모든 항목 선택
+// 프로젝트 문서 설정
+//
+// 모든 항목 선택 사항
 // ----------------------------------------------------------------------------------------
 export default {
     content: {root: "content", public: "public", private: "private"},
     title: "for humanity",
     url: "https://for-humanity.fyi",
 
-    // 링크 미리보기 이미지. favicon 픽셀 얼굴의 PNG
+    // 링크 미리보기 이미지
+    // favicon 픽셀 얼굴의 PNG
     image: "asset/preview.png",
 
-    // 영어가 기본 언어, 한국어 번역은 content/ko와 /ko/
+    // 영어가 기본 언어
+    // 한국어 번역은 content/ko 폴더와 /ko/ 경로
     lang: "en",
     description: "A docs kit that writes Markdown and shares it as a static site. Installation, writing, site configuration and deployment.",
     locales: {

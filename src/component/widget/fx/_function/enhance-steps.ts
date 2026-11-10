@@ -38,12 +38,15 @@ const step_mark_attributes = [
 ] as const;
 
 // ----------------------------------------------------------------------------------------
-// 단계 재생 그림의 조작부 추가, data-on, data-hl, data-pos의 단계별 반영
+// 단계 재생 그림 enhance
 //
+// 조작부 추가
+// data-on, data-hl, data-pos의 단계별 반영
 // 단계 수는 data-steps, 없으면 캡션 항목 수
 // 1 미만이면 변경 없음
 // data-labels가 있으면 재생 조작부 대신 탭 버튼
-// 단계 변경마다 fx:step 발송, 그림의 fx:goto 수신
+// 단계 변경마다 fx:step 발송
+// 그림의 fx:goto 수신
 // 처음과 끝에서도 포커스 유지, disabled 대신 aria-disabled와 모양용 wg_fx__icon--off
 // 해제는 signal의 abort에서 조작부와 상태 복원
 // ----------------------------------------------------------------------------------------
@@ -138,8 +141,9 @@ export const enhanceSteps: FxEnhance = (params) => {
     };
 
     // ----------------------------------------------------------------------------------------
-    // 단계를 1과 count 사이로 제한하고 요소와 조작부에 반영
+    // 단계 이동, 1과 count 사이로 제한
     //
+    // 요소와 조작부 반영
     // 마지막에 fx:step 발송
     // 수신 측의 fx:goto로 재진입 가능
     // ----------------------------------------------------------------------------------------
@@ -181,7 +185,8 @@ export const enhanceSteps: FxEnhance = (params) => {
     // ----------------------------------------------------------------------------------------
     // 다음 tick 예약
     //
-    // 이전 예약 해제, 해제 뒤 예약 없음
+    // 이전 예약 해제
+    // signal abort 뒤 예약 없음
     // ----------------------------------------------------------------------------------------
     const schedule = (delay: number) => {
         window.clearTimeout(timer);
@@ -196,7 +201,7 @@ export const enhanceSteps: FxEnhance = (params) => {
     const tick = () => {
         show(step + 1);
 
-        // fx:step 수신 측의 fx:goto가 재생을 멈춘 경우
+        // fx:step 수신 측의 fx:goto로 재생 중지된 경우
         if (timer === 0) {
             return;
         }
@@ -213,9 +218,11 @@ export const enhanceSteps: FxEnhance = (params) => {
     // ----------------------------------------------------------------------------------------
     // 재생 시작
     //
-    // 끝에서 누르면 1단계로 복귀, 첫 장면도 한 간격 동안 표시
+    // 끝에서 누르면 1단계로 복귀
+    // 첫 장면도 한 간격 동안 표시
     // wait는 첫 전환까지의 시간
-    // 재생 버튼은 짧은 기본값, fx:goto의 바로 재생은 한 간격
+    // 재생 버튼은 짧은 기본값
+    // fx:goto의 바로 재생은 한 간격
     // ----------------------------------------------------------------------------------------
     const start = (wait = fx_first_interval_ms) => {
         const restart = step >= count;
@@ -250,7 +257,8 @@ export const enhanceSteps: FxEnhance = (params) => {
     params.root.addEventListener(
         "keydown",
         (event) => {
-            // 다른 처리기가 소비한 키와 조합 키 제외, Alt+ArrowLeft는 브라우저 뒤로가기
+            // 다른 처리기가 소비한 키와 조합 키 제외
+            // Alt+ArrowLeft는 브라우저 뒤로가기
             if (event.defaultPrevented || event.altKey || event.ctrlKey || event.metaKey) {
                 return;
             }
@@ -271,7 +279,8 @@ export const enhanceSteps: FxEnhance = (params) => {
         {signal: params.signal},
     );
 
-    // 그림 스크립트의 단계 이동 요청, 단계가 없으면 1단계
+    // 그림 스크립트의 단계 이동 요청
+    // 단계가 없으면 1단계
     params.root.addEventListener(
         "fx:goto",
         (event) => {

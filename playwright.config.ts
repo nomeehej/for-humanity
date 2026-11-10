@@ -5,7 +5,8 @@ export default defineConfig({
     fullyParallel: true,
     forbidOnly: Boolean(process.env.CI),
     retries: 0,
-    // GitHub 러너의 vCPU 수. 접근성 검사 분할 뒤 네 워커에 비슷한 길이의 묶음 배분
+    // GitHub 러너의 vCPU 수
+    // 접근성 검사 분할 뒤 네 워커에 비슷한 길이의 묶음 배분
     workers: 4,
     timeout: 30000,
     expect: {timeout: 10000},
@@ -20,7 +21,8 @@ export default defineConfig({
         screenshot: "only-on-failure",
     },
 
-    // 파일 접미사와 같은 프로젝트 이름. 결과 목록의 [integration], [e2e] 표시와 --project 선택 기준
+    // 파일 접미사와 같은 프로젝트 이름
+    // 결과 목록의 [integration], [e2e] 표시와 --project 선택 기준
     projects: [
         {name: "integration", testMatch: "**/*.integration.spec.ts"},
         {name: "e2e", testMatch: "**/*.e2e.spec.ts"},

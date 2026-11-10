@@ -11,7 +11,7 @@ type InitDeployment = (typeof init_deployments)[number];
 export type InitManager = (typeof init_managers)[number];
 
 // ----------------------------------------------------------------------------------------
-// 입력과 기본값 검증을 마친 사이트 초기화 설정
+// 입력과 기본값 검증 완료 사이트 초기화 설정
 //
 // title: 사이트 이름
 // content: 프로젝트 기준 문서 루트
@@ -59,9 +59,9 @@ export interface InitChange extends InitFile {
 // 검사와 생성 전 확인에 사용하는 파일 변경 계획
 //
 // root: 프로젝트의 절대 경로
-// options: 입력 수집을 마친 초기화 설정
+// options: 입력 수집 완료 초기화 설정
 // files: 적용 순서의 텍스트 파일과 원본
-// directories: 문서용 빈 폴더를 포함한 상대 경로
+// directories: 문서용 빈 폴더 포함 상대 경로
 // install: 초기화 후 의존성 설치 필요 여부
 // ----------------------------------------------------------------------------------------
 export interface InitPlan {

@@ -4,7 +4,9 @@ import {copy_error_content_overlap, copy_error_content_path, copy_error_private_
 import {hasReservedFolder} from "@/util/file/has-reserved-folder";
 
 // ----------------------------------------------------------------------------------------
-// 프로젝트 내부의 상대 경로, 출력 폴더와 시스템 폴더 제외
+// 프로젝트 내부의 상대 경로
+//
+// 출력 폴더와 시스템 폴더 제외
 // ----------------------------------------------------------------------------------------
 const contentPathSchema = z
     .string()

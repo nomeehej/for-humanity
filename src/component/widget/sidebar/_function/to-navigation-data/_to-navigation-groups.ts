@@ -4,13 +4,13 @@ import type {NavigationGroup} from "@/component/widget/sidebar/_type/navigation-
 import type {Doc} from "@/type/doc";
 
 // ----------------------------------------------------------------------------------------
-// 같은 부모의 문서를 다음 경로 단계로 묶는 재귀 입력
+// 경로 단계별 문서 묶음의 재귀 입력
 //
-// docs: 부모 경로에 속한 문서
-// children: 검증된 부모 id별 문서, 자손을 각 단계에서 다시 수집하지 않음
+// docs: 같은 부모 경로에 속한 문서
+// children: 검증된 부모 id별 문서, 자손은 각 단계에서 재수집 없음
 // path: 부모까지의 경로, 최상위는 빈 배열
 // positions: 전체 경로의 JSON 키와 navigation 위치
-// unlistedPosition: 미지정 경로를 지정한 묶음 뒤에 배치하는 위치
+// unlistedPosition: 미지정 경로의 위치, 지정한 묶음 뒤 배치
 // current: 현재 문서 식별자, 홈이면 생략
 // ----------------------------------------------------------------------------------------
 interface NavigationGroupsParams {

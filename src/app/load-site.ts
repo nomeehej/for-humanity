@@ -57,7 +57,8 @@ export interface SiteParams {
 // 문서, 등록 자원과 Hono 앱의 일관된 스냅샷
 //
 // 준비 실패 시 결과 미반환, 이전 스냅샷 유지
-// 파일 조회와 Markdown 변환은 준비 시에만 실행, 페이지 요청에서는 재사용
+// 파일 조회와 Markdown 변환은 준비 시에만 실행
+// 페이지 요청에서는 스냅샷 재사용
 // ----------------------------------------------------------------------------------------
 export const loadSite = async (params: SiteParams) => {
     const mono = toFontCss({css: join(params.kitRoot, font_mono_css), fontDir: asset_font_dir, basePath: params.site.basePath});
@@ -77,7 +78,9 @@ export const loadSite = async (params: SiteParams) => {
         files.set(stylePaths[0], join(params.kitRoot, "dist/cli.css"));
     }
 
-    // 문서 범위. 공개 폴더 필수, 내부 폴더 선택, 범위 폴더의 symlink 별칭 금지
+    // 문서 범위 폴더 검증
+    // 공개 폴더 필수, 내부 폴더 선택
+    // 범위 폴더의 symlink 별칭 금지
     if (!existsSync(params.root) || !statSync(params.root).isDirectory()) {
         throw new Error(`${copy_error_content_root_missing}: ${params.root}`);
     }
@@ -87,7 +90,8 @@ export const loadSite = async (params: SiteParams) => {
     const privateRoot = join(root, params.site.content.private);
     const locales = params.site.locales.map((locale) => ({code: locale.code, root: join(root, locale.code), publicRoot: join(root, locale.code, params.site.content.public)}));
 
-    // 공개 폴더만 필수. 내부 폴더와 번역 폴더는 있을 때만 실제 폴더 검사
+    // 공개 폴더만 필수
+    // 내부 폴더와 번역 폴더는 있을 때만 실제 폴더 검사
     for (const path of [publicRoot, privateRoot, ...locales.flatMap((locale) => [locale.root, locale.publicRoot])]) {
         if (!existsSync(path)) {
             if (path !== publicRoot) {
@@ -126,7 +130,8 @@ export const loadSite = async (params: SiteParams) => {
         preload: [...brand.files.keys(), ...mono.files.keys(), ...body.files.keys()],
         noindex: params.noindex,
 
-        // 링크 미리보기 이미지. 공개 주소가 있을 때만 배포
+        // 링크 미리보기 이미지
+        // 공개 주소가 있을 때만 배포
         image:
             params.site.url === undefined || params.site.image === undefined
                 ? undefined

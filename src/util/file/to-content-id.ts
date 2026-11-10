@@ -16,9 +16,13 @@ interface ContentIdParams {
 }
 
 // ----------------------------------------------------------------------------------------
-// 폴더 이름과 독립적인 공개 URL, 내부 문서의 private 접두사, 번역 문서의 언어 코드 접두사
+// 원본 문서의 사이트 식별자 변환
 //
-// 문서 루트의 README는 빈 id, 번역 폴더의 README는 언어 코드 하나
+// 공개 URL은 폴더 이름과 독립
+// 내부 문서는 private 접두사
+// 번역 문서는 언어 코드 접두사
+// 문서 루트의 README는 빈 id
+// 번역 폴더의 README는 언어 코드 하나
 // ----------------------------------------------------------------------------------------
 export const toContentId = (params: ContentIdParams) => {
     if (relative(params.scope.root, params.path).toLowerCase() === "readme.md") {

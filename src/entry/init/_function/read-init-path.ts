@@ -14,7 +14,7 @@ interface InitPathParams {
 }
 
 // ----------------------------------------------------------------------------------------
-// 프로젝트 외부와 심볼릭 링크를 거부한 경로 정보
+// 프로젝트 외부와 심볼릭 링크 거부 경로 정보
 // ----------------------------------------------------------------------------------------
 export const readInitPath = async (params: InitPathParams) => {
     const location = relative(params.root, resolve(params.root, params.path));

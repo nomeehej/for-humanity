@@ -9,13 +9,9 @@ import {readInitFile} from "@/entry/init/_function/read-init-file";
 import type {InitManager} from "@/entry/init/_type/init";
 
 // ----------------------------------------------------------------------------------------
-// package.json의 알려진 필드와 추가 키를 보존하는 입력 경계
+// package.json의 알려진 필드와 추가 키 보존 입력 경계
 //
 // name: 사이트 이름 후보
-// scripts: 기존 실행 명령
-// packageManager: 기존 패키지 매니저 지정
-// devDependencies: 개발용 의존성
-// dependencies: 실행용 의존성
 // ----------------------------------------------------------------------------------------
 const manifestSchema = z.looseObject({
     name: z.string().optional(),
@@ -29,9 +25,9 @@ const manifestSchema = z.looseObject({
 // CLI와 생성 계획이 공유하는 초기화 대상 프로젝트
 //
 // root: 프로젝트의 절대 경로
-// kitRoot: 템플릿을 포함한 패키지 루트
+// kitRoot: 템플릿 포함 패키지 루트
 // version: 실행 중인 CLI 버전
-// manifest: 추가 키를 보존한 기존 패키지 설정
+// manifest: 추가 키 보존 기존 패키지 설정
 // packageFile: package.json 원본, 새 프로젝트이면 없음
 // manager: 선택한 패키지 매니저
 // packageManager: pnpm 워크플로의 버전 지정
@@ -51,7 +47,7 @@ export interface InitProject {
 }
 
 // ----------------------------------------------------------------------------------------
-// 프로젝트와 명시한 패키지 매니저
+// 초기화 프로젝트 조회 입력
 //
 // root: 프로젝트의 절대 경로
 // manager: 사용자 지정, 미지정 시 로컬 정보에서 판별

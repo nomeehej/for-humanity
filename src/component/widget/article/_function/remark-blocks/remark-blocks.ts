@@ -22,9 +22,10 @@ import {toTitleText} from "@/component/widget/article/_function/to-title-text";
 // ----------------------------------------------------------------------------------------
 // Note, Details의 제목, 본문, 속성, 닫힘 계약
 //
-// label은 첫 자식, summary는 Details의 첫 요소
+// label은 첫 자식
+// summary는 Details의 첫 요소
 // part는 문서 최상위의 ::part[...] 한 줄만 허용
-// 원문 위치는 오류 기준
+// 오류 위치는 원문 위치 기준
 // ----------------------------------------------------------------------------------------
 export const remarkBlocks = () => (tree: Root, file: VFile) => {
     const source = String(file.value);
@@ -78,7 +79,7 @@ export const remarkBlocks = () => (tree: Root, file: VFile) => {
 
         const attributeSource = source.slice(label.position?.end.offset, node.position?.end.offset).split(/\r?\n/, 1)[0].trim();
 
-        // 속성 정규화 이전의 표기. 중복 open과 open="" 거부
+        // 속성 정규화 이전의 표기 검사, 중복 open과 open="" 거부
         if (attributeSource !== "" && (node.name !== "details" || !/^\{[ \t]*open[ \t]*\}$/.test(attributeSource))) {
             file.fail(`${copy_error_directive_syntax}: ${node.name} ${copy_error_part_attribute_syntax}`, node);
         }
@@ -97,7 +98,7 @@ export const remarkBlocks = () => (tree: Root, file: VFile) => {
             }
         });
 
-        // 코드 안의 :::가 container를 먼저 닫은 경우. 더 긴 바깥 fence로 구분
+        // 코드 안의 :::로 container가 먼저 닫히는 경우 검사, 더 긴 바깥 fence로 구분
         visit(node, "code", (code) => {
             // 원문 위치가 없는 스니펫 삽입 코드는 fence 검사 제외
             if (code.position === undefined) {

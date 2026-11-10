@@ -7,7 +7,9 @@ import type {InitChange, InitPlan} from "@/entry/init/_type/init";
 import {logger} from "@/util/logger/logger";
 
 // ----------------------------------------------------------------------------------------
-// 전체 재검사 뒤 파일 생성, 실패 시 이 실행의 변경만 복구
+// 전체 재검사 뒤 파일 생성
+//
+// 실패 시 이 실행의 변경만 복구
 // ----------------------------------------------------------------------------------------
 export const applyInitPlan = async (plan: InitPlan) => {
     // 적용 완료 파일과 이번 실행이 생성한 폴더의 복구 기록
@@ -32,7 +34,8 @@ export const applyInitPlan = async (plan: InitPlan) => {
 
     try {
         for (const path of [...plan.directories.map((directory) => join(plan.root, directory)), ...plan.files.map((file) => dirname(join(plan.root, file.path)))]) {
-            // 생성 전 없는 폴더 기록, Windows의 mkdir 반환값은 \\?\ 접두사 경로라 비교에 사용하지 않음
+            // 생성 전 없는 폴더 기록
+            // Windows의 mkdir 반환값은 비교에 사용하지 않음, \\?\ 접두사 경로 반환
             for (let missing = path; (await fileSystem.stat(missing).catch(() => undefined)) === undefined; missing = dirname(missing)) {
                 directories.push(missing);
             }

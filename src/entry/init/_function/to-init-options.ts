@@ -9,7 +9,7 @@ import {type InitInput, initBranchSchema, initContentSchema, initRepositorySchem
 import {siteConfigSchema} from "@/type/site-config";
 
 // ----------------------------------------------------------------------------------------
-// 명시적 인자와 로컬 후보를 대화형 입력으로 보완하는 경계
+// 명시적 인자와 로컬 후보의 대화형 입력 보완 경계
 //
 // args: 검증한 초기화 인자
 // project: 기존 프로젝트와 Git 후보

@@ -8,7 +8,7 @@ import {init_input_segments} from "@/entry/init/_constant/init";
 type InitInputCursor = Pick<TextPrompt, "userInput" | "cursor">;
 
 // ----------------------------------------------------------------------------------------
-// 한글 결합 문자와 이모지를 분리하지 않는 입력 커서
+// 한글 결합 문자와 이모지 비분리 입력 커서
 // ----------------------------------------------------------------------------------------
 export const toInitInput = (prompt: InitInputCursor): string => {
     for (const part of init_input_segments.segment(prompt.userInput)) {

@@ -17,8 +17,7 @@ import {toTitleText} from "@/component/widget/article/_function/to-title-text";
 // rehype-sections에서 같은 지점의 목차 묶음 생성
 // 이름 생략, 빈 이름, 서식, 속성은 빌드 실패
 // Note, Details 제목과 같은 계약
-// 다음 part나 문서 끝 전의 ## 절 필수
-// 목차 묶음 누락 방지
+// 다음 part나 문서 끝 전의 ## 절 필수, 목차 묶음 누락 방지
 // ----------------------------------------------------------------------------------------
 export const remarkParts = () => (tree: Root, file: VFile) => {
     const source = String(file.value);
@@ -44,7 +43,7 @@ export const remarkParts = () => (tree: Root, file: VFile) => {
             file.fail(`${copy_error_directive_syntax}: ${node.name} ${copy_error_part_attribute} ${attribute}`, node);
         }
 
-        // 속성 정규화 이전의 표기. 빈 중괄호 거부
+        // 속성 정규화 이전의 표기 검사, 빈 중괄호 거부
         if (/\}\s*$/.test(source.slice(node.position?.start.offset, node.position?.end.offset))) {
             file.fail(`${copy_error_directive_syntax}: ${node.name} ${copy_error_part_attribute_syntax}`, node);
         }

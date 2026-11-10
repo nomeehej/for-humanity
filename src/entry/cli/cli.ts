@@ -20,7 +20,7 @@ const main = defineCommand({
     default: command_default,
 
     // ----------------------------------------------------------------------------------------
-    // Citty의 미지정 옵션 허용을 제한하는 CLI 입력 경계
+    // Citty의 미지정 옵션 허용 제한 CLI 입력 경계
     // ----------------------------------------------------------------------------------------
     setup: (context) => {
         if (context.rawArgs[0] === "init") {
@@ -80,7 +80,7 @@ const main = defineCommand({
     },
 });
 
-// 수신 옵션으로 시작한 기본 dev 명령을 Citty의 하위 명령 선택 전에 정규화
+// 수신 옵션으로 시작한 기본 dev 명령, Citty의 하위 명령 선택 전 정규화
 const rawArgs = process.argv.slice(2);
 
 await runMain(main, {rawArgs: rawArgs[0] === "--host" || rawArgs[0]?.startsWith("--host=") ? [command_default, ...rawArgs] : rawArgs});

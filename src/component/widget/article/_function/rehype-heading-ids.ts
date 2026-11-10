@@ -8,16 +8,17 @@ import type {DocHeading} from "@/type/doc-heading";
 // ----------------------------------------------------------------------------------------
 // 제목 id와 목차 수집
 //
-// 같은 제목은 -1, -2 접미사
-// 작성한 제목 텍스트를 그대로 사용
-// 작성한 id는 유지, 자동 id는 문서 안의 작성 id와 겹치지 않는 다음 접미사
+// 같은 제목은 `-1`, `-2` 접미사
+// 작성한 제목 텍스트 그대로 사용
+// 작성한 id는 유지
+// 자동 id는 문서 안의 작성 id와 겹치지 않는 다음 접미사
 // ----------------------------------------------------------------------------------------
 export const rehypeHeadingIds = () => (tree: Root, file: VFile) => {
     const slugger = new Slugger();
     const headings: DocHeading[] = [];
     const written = new Set<string>();
 
-    // 원시 HTML의 작성 id 선수집. 뒤에 나오는 작성 id와의 중복도 방지
+    // 원시 HTML의 작성 id 선수집, 뒤에 나오는 작성 id와 중복 방지
     visit(tree, "element", (node) => {
         if (typeof node.properties.id === "string") {
             written.add(node.properties.id);

@@ -7,7 +7,9 @@ import type {FxEnhance} from "@/component/widget/fx/_type/enhance";
 // ----------------------------------------------------------------------------------------
 // sandbox iframe의 shim이 보낸 콘솔 한 줄 검증
 //
-// id: 그림 안의 실행 순번, 그림 사이와 실행 사이 구분은 event.source 창 확인
+// 그림 사이와 실행 사이 구분은 event.source 창 확인
+//
+// id: 그림 안의 실행 순번
 // line: 출력 한 줄
 // ----------------------------------------------------------------------------------------
 const runMessageSchema = object({
@@ -16,14 +18,14 @@ const runMessageSchema = object({
 });
 
 // ----------------------------------------------------------------------------------------
-// 실행 상자 그림
+// 실행 상자 그림 enhance
 //
-// 바로 앞 코드 블록의 sandbox iframe 실행, 콘솔 출력 표시
-// 앞 형제가 pre거나 pre code를 담은 상자일 때만 적용
+// 바로 앞 코드 블록의 sandbox iframe 실행
+// 콘솔 출력 표시
+// 앞 형제가 pre 또는 pre code 포함 상자일 때만 적용
 // 실행마다 새 id와 새 iframe
 // 그 iframe에서 온 같은 id의 메시지만 출력
-// data-wait(ms) 뒤 iframe 제거
-// 기본 fx_run_wait_ms
+// data-wait(ms) 뒤 iframe 제거, 기본값 fx_run_wait_ms
 // 해제는 signal의 abort에서 iframe과 생성 요소 제거
 // ----------------------------------------------------------------------------------------
 export const enhanceRun: FxEnhance = (params) => {
@@ -34,7 +36,7 @@ export const enhanceRun: FxEnhance = (params) => {
 
     const sibling = params.root.previousElementSibling;
 
-    // Shiki 코드 블록은 pre code를 담은 상자
+    // Shiki 코드 블록은 pre code 포함 상자
     const source = sibling?.matches("pre") ? sibling.querySelector("code") : sibling?.querySelector("pre code");
     const initial = source?.textContent.replace(/\n$/, "");
 

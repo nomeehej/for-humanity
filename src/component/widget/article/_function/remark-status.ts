@@ -8,7 +8,7 @@ import {status_candidate_pattern, status_date_pattern} from "@/component/widget/
 import type {ResolvedSiteConfig} from "@/type/site-config";
 
 // ----------------------------------------------------------------------------------------
-// 상태 표지로 바꿀 설정 문구
+// 상태 표지 변환 대상 설정 문구
 //
 // status: 사이트 설정의 문구와 색 종류, 날짜 포함 여부
 // ----------------------------------------------------------------------------------------
@@ -19,7 +19,7 @@ interface StatusOptions {
 // ----------------------------------------------------------------------------------------
 // 설정 문구의 상태 표지 변환
 //
-// 괄호 제거
+// 문구 앞뒤 괄호 제거
 // 제목, 링크 안의 문구 제외
 // 미등록 날짜 문구는 파일 경고, rehype-report에서 출력
 // ----------------------------------------------------------------------------------------
@@ -57,7 +57,7 @@ export const remarkStatus = (options: StatusOptions) => {
             [
                 status_candidate_pattern,
                 (match: string, info: RegExpMatchObject) => {
-                    // 치환된 텍스트에 position 부재. 위치가 남은 가까운 조상 기준
+                    // 치환된 텍스트에 position 없음, position이 있는 가장 가까운 조상 기준
                     file.message(
                         `${copy_warn_unknown_status}: ${match}`,
                         info.stack.findLast((node) => node.position !== undefined),

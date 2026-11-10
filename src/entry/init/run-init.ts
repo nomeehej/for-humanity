@@ -17,7 +17,7 @@ import {toErrorMessage} from "@/util/error/to-error-message";
 import {logger} from "@/util/logger/logger";
 
 // ----------------------------------------------------------------------------------------
-// 사이트 설정을 실행하지 않는 프로젝트 초기화 진입점
+// 사이트 설정 실행 없는 프로젝트 초기화 진입점
 // ----------------------------------------------------------------------------------------
 export const runInit = async (input: ParsedArgs<typeof init_args>) => {
     try {

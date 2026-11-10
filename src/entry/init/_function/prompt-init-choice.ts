@@ -6,7 +6,7 @@ import {toInitPanel} from "@/entry/init/_function/to-init-panel";
 import type {InitPromptParams, InitPromptSelection} from "@/entry/init/_type/init-prompt";
 
 // ----------------------------------------------------------------------------------------
-// 추천값 선택과 직접 입력을 같은 박스 안에서 수집하는 경계
+// 같은 박스 안 추천값 선택과 직접 입력 수집 경계
 // ----------------------------------------------------------------------------------------
 export const promptInitChoice = async <T>(params: InitPromptParams<T>): Promise<T> => {
     const custom = params.custom ?? init_prompt_defaults.custom;

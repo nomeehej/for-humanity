@@ -63,7 +63,7 @@ export const toPreviewConfig = (params: PreviewParams): InlineConfig => {
                         server.middlewares.use((request, response, next) => {
                             response.removeHeader("Cache-Control");
 
-                            // Vite의 HTML 경로 변환 이후 남은 폴더 주소, 끝 슬래시 없이도 index.html 조회
+                            // 끝 슬래시 없이도 index.html 조회, Vite의 HTML 경로 변환 이후 남은 폴더 주소 대상
                             if (request.url !== undefined && request.url.split("?")[0] === request.originalUrl?.slice(params.basePath.length - 1).split("?")[0]) {
                                 request.url = request.url.replace(/\/?(?=\?|$)/, "/index.html");
                             }
@@ -82,7 +82,7 @@ export const toPreviewConfig = (params: PreviewParams): InlineConfig => {
                                 const url = request.url.split(/[?#]/)[0];
                                 const path = join(params.outDir, decodeURIComponent(url));
 
-                                // Vite의 후속 HTML 응답 대상, 생성된 문서의 정상 응답 유지
+                                // 생성된 문서의 정상 응답 유지, Vite의 후속 HTML 응답 대상
                                 if (url.endsWith(".html") && !isOutsideRoot(relative(params.outDir, path)) && existsSync(path)) {
                                     next();
 

@@ -14,12 +14,13 @@ import {z} from "zod";
 // ----------------------------------------------------------------------------------------
 // 패키지 설치 검증
 //
-// 별도 소비 프로젝트에 압축 파일 설치 후 CLI, 브라우저, 공개 타입, 빌드 출력 확인
+// 별도 소비 프로젝트에 압축 파일 설치
+// CLI, 브라우저, 공개 타입, 빌드 출력 확인
 // ----------------------------------------------------------------------------------------
 const [directory] = process.argv.slice(2);
 
 // ----------------------------------------------------------------------------------------
-// 독립 폴더의 CLI 실행을 동시에 기다리는 비동기 실행
+// 독립 폴더의 CLI 동시 실행용 비동기 execFile
 //
 // 실패 시 거부 오류에 stdout, stderr 포함
 // ----------------------------------------------------------------------------------------
@@ -32,7 +33,7 @@ if (directory === undefined) {
 const artifactDirectory = resolve(directory);
 const pack = packReportSchema.parse(JSON.parse(await readFile(join(artifactDirectory, "pack.json"), "utf8")));
 
-// Windows 임시 폴더의 8.3 축약 경로를 전체 경로로 정규화, Vite 파일 접근 계약 준수
+// Windows 임시 폴더의 8.3 축약 경로는 전체 경로로 정규화, Vite 파일 접근 계약 준수
 const consumer = await realpath(await mkdtemp(join(tmpdir(), "for-humanity-consumer-")));
 
 try {
@@ -72,7 +73,7 @@ try {
 
     await writeFile(configPath, config);
 
-    // Windows의 npm.cmd 대신 Node 배포본에 포함된 CLI를 직접 실행
+    // Windows의 npm.cmd 대신 Node 배포본 포함 CLI 직접 실행
     execFileSync(
         process.platform === "win32" ? process.execPath : "npm",
         [
@@ -96,7 +97,7 @@ try {
     assert.equal(execFileSync(process.execPath, [join(packageRoot, "dist/cli.js"), "--version"], {cwd: consumer, encoding: "utf8"}).trim(), pack.version);
     assert.match(execFileSync(process.execPath, [join(packageRoot, "dist/cli.js"), "build", "--help"], {cwd: consumer, encoding: "utf8"}), /USAGE.*for-humanity build/);
 
-    // 저장소 별칭, 개발 의존성이 없는 소비자에서 공개 선언과 중첩 입력 타입 검증
+    // 저장소 별칭과 개발 의존성이 없는 소비자에서 공개 선언과 중첩 입력 타입 검증
     const compiler = resolve("node_modules/typescript/bin/tsc");
 
     await writeFile(
@@ -106,7 +107,8 @@ try {
 
     execFileSync(process.execPath, [compiler, "--project", "tsconfig.json"], {cwd: consumer, stdio: "inherit"});
 
-    // 잘못된 설정 일곱 개는 폴더별 동시 검사, node_modules는 소비 프로젝트 것 공유
+    // 잘못된 설정 일곱 개는 폴더별 동시 검사
+    // node_modules는 소비 프로젝트와 공유
     await Promise.all(
         [{port: "4321"}, {host: 9999}, {basePath: false}, {navigation: [false]}, {status: [{phrase: "Reviewed", kind: "unknown"}]}, {titel: "Typo"}, {content: {root: false}}].map(
             async (invalid, index) => {
@@ -154,7 +156,8 @@ try {
         ["https://docs.example.org/", "https://docs.example.org/guide/", "https://docs.example.org/guide/agents/", "https://docs.example.org/guide/options/"].toSorted(),
     );
 
-    // 내부판의 별도 폴더 출력과 내부 문서 포함, 공개 출력의 내부 자료 미포함 유지
+    // 내부판의 별도 폴더 출력과 내부 문서 포함
+    // 공개 출력의 내부 자료 미포함 유지
     execFileSync(process.execPath, [join(packageRoot, "dist/cli.js"), "build", "--private", "."], {cwd: consumer, stdio: "inherit"});
 
     const privateOutput = join(consumer, "content/dist-private");
@@ -234,7 +237,8 @@ try {
         );
     }
 
-    // 설치 CLI의 실제 브라우저 동작과 종료 검증, 설정과 문서는 검사 후 복원
+    // 설치 CLI의 실제 브라우저 동작과 종료 검증
+    // 설정과 문서는 검사 후 복원
     for (const command of ["dev", "preview"] as const) {
         const reservation = createServer();
 
@@ -417,7 +421,8 @@ try {
     execFileSync(process.execPath, [join(packageRoot, "dist/cli.js"), "build", "."], {cwd: consumer, stdio: "inherit"});
     assert.ok(!(await readdir(join(output, "_fh"))).includes("mermaid"), "removing all diagrams must remove the previous runtime assets");
 
-    // 설치된 기본형의 빈 폴더 보존, 기본 경로와 사용자 경로의 실제 빌드
+    // 설치된 기본형의 빈 폴더 보존
+    // 기본 경로와 사용자 경로의 실제 빌드
     for (const file of ["template/content/private/.gitkeep", "template/content/asset/.gitkeep"]) {
         assert.equal(await readFile(join(packageRoot, file), "utf8"), "");
     }
@@ -455,7 +460,7 @@ try {
     assert.ok(!(await readdir(join(starter, "knowledge/dist"))).some((file) => file === "private" || file === "internal"));
 
     // 설치 번들의 init 진입점과 패키지 상대 템플릿, 생성 결과의 실제 빌드
-    // 배포 방식 다섯은 각자 폴더, 동시 실행
+    // 배포 방식 다섯은 각자 폴더에서 동시 실행
     await Promise.all(
         [
             {deploy: "none", manager: "npm", content: "content"},
