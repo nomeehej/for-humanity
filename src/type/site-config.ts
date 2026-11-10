@@ -136,88 +136,41 @@ export const siteConfigSchema = z.object({
 // ----------------------------------------------------------------------------------------
 export type ResolvedSiteConfig = z.infer<typeof siteConfigSchema>;
 
-// 예외: 공개 설정 타입은 JSDoc 유지, dist/type/site-config.d.ts로 배포되어 편집기의 필드 설명으로 표시
-/**
- * 작성자가 지정하는 사이트 설정, 기본값 적용 전 입력
- */
+// ----------------------------------------------------------------------------------------
+// 작성자가 지정하는 사이트 설정, 기본값 적용 전 입력
+//
+// content: 기본 content/public, content/private 구조의 경로 변경
+// title: 사이드바 이름과 탭 제목, 생략 시 for humanity
+// description: 홈의 검색 결과와 링크 미리보기 설명, 문서 페이지는 문서의 label 사용
+// lang: 문서 언어 태그, 기본값 ko, 예: en, en-US
+// locales: 번역 언어별 설정, 키는 문서 폴더 이름이자 URL 접두, 예: {ko: {}}
+// basePath: 배포할 하위 경로, 기본값 /, 예: /project/
+// url: 공개 HTTP(S) 루트 주소, 지정 시 크롤러 파일, 대표 주소, 링크 미리보기 태그 생성
+// image: 링크 미리보기 이미지의 문서 루트 기준 경로, PNG, JPEG, GIF, WebP, url과 함께 사용
+// statusImage: 상태 화면 이미지의 문서 루트 기준 경로, SVG, PNG, JPEG, GIF, WebP, AVIF
+// port: dev와 preview 포트, 1부터 65535까지 정수, 기본값 4321
+// host: dev와 preview 수신 주소, true는 LAN 전체, false와 생략은 localhost
+// cursorFace: 데스크톱 커서 얼굴 표시, 기본값 false
+// linkTarget: 본문 링크의 열림 위치, new-tab(기본값) 또는 same-tab, hash 링크는 현재 탭
+// navigation: 탐색 묶음의 표시 순서, 문자열 또는 중첩 이름 경로
+// status: 상태 표지 목록, 빈 배열 지정 시 상태 표지 미표시
+// refs: 참조 칩 접두 목록, 생략 시 칩 없음
+// ----------------------------------------------------------------------------------------
 export interface SiteConfig {
-    /**
-     * 기본 content/public, content/private 구조의 경로 변경
-     */
     content?: z.input<typeof siteConfigSchema>["content"];
-
-    /**
-     * 사이드바 이름과 탭 제목, 생략 시 for humanity
-     */
     title?: z.input<typeof siteConfigSchema>["title"];
-
-    /**
-     * 홈 페이지의 검색 결과와 링크 미리보기 설명, 문서 페이지는 각 문서의 label 사용
-     */
     description?: z.input<typeof siteConfigSchema>["description"];
-
-    /**
-     * 문서 언어 태그, 기본값 ko. 예: en, en-US
-     */
     lang?: z.input<typeof siteConfigSchema>["lang"];
-
-    /**
-     * 번역 언어별 설정. 키는 문서 루트 아래 폴더 이름이자 URL 접두, 예: {ko: {description: "한국어 안내"}}
-     */
     locales?: z.input<typeof siteConfigSchema>["locales"];
-
-    /**
-     * 배포할 하위 경로, 기본값 /. 예: /project/
-     */
     basePath?: z.input<typeof siteConfigSchema>["basePath"];
-
-    /**
-     * 공개 HTTP(S) 루트 주소, 지정 시 robots.txt, sitemap.xml, 대표 주소, 링크 미리보기 태그 생성
-     */
     url?: z.input<typeof siteConfigSchema>["url"];
-
-    /**
-     * 링크 미리보기 이미지의 문서 루트 기준 경로. PNG, JPEG, GIF, WebP, url과 함께 사용
-     */
     image?: z.input<typeof siteConfigSchema>["image"];
-
-    /**
-     * 상태 화면 이미지의 문서 루트 기준 경로, SVG, PNG, JPEG, GIF, WebP, AVIF
-     */
     statusImage?: z.input<typeof siteConfigSchema>["statusImage"];
-
-    /**
-     * dev와 preview 포트, 1부터 65535까지 정수, 기본값 4321
-     */
     port?: z.input<typeof siteConfigSchema>["port"];
-
-    /**
-     * dev와 preview 수신 주소, true는 LAN 전체, false와 생략은 localhost
-     */
     host?: z.input<typeof siteConfigSchema>["host"];
-
-    /**
-     * 데스크톱 커서 얼굴 표시, 기본값 false
-     */
     cursorFace?: z.input<typeof siteConfigSchema>["cursorFace"];
-
-    /**
-     * 본문 링크가 열리는 자리, new-tab 또는 same-tab. 기본값 new-tab, 같은 문서의 hash 링크는 늘 현재 탭
-     */
     linkTarget?: z.input<typeof siteConfigSchema>["linkTarget"];
-
-    /**
-     * 탐색 묶음의 표시 순서, 문자열 또는 중첩 이름 경로
-     */
     navigation?: z.input<typeof siteConfigSchema>["navigation"];
-
-    /**
-     * 상태 표지 목록, 빈 배열 지정 시 상태 표지 미표시
-     */
     status?: z.input<typeof siteConfigSchema>["status"];
-
-    /**
-     * 참조 칩 접두 목록, 생략 시 칩 없음
-     */
     refs?: z.input<typeof siteConfigSchema>["refs"];
 }

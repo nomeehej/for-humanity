@@ -80,7 +80,7 @@ public은 라이브러리를 설치하고 사용하는 독자를 위한 안내�
 - Language: 제목과 짧은 라벨은 영어 우선, 본문과 설명은 한국어([Authoring](authoring.md#language))
 - Commits: 영어 동사로 시작, AI 도움을 받은 제목의 마지막은 ` | aa`, 저장소 루트 `AGENTS.md`와 `CLAUDE.md`
 
-주석 앞에는 빈 줄을 둡니다. 블록, 객체, 배열, JSX의 첫 줄과 연속 주석은 예외입니다. 선언 설명은 선언 바로 위 `//` 상자로 씁니다. 상자는 대시 88개 줄 사이에 제목, 설명, 정의 목록을 차례로 둡니다. 직접 선언한 타입과 스키마의 필드 설명은 본문 안이 아니라 상자의 정의 목록에 `필드: 설명` 한 줄로 적습니다. 본문의 의도와 절차 설명은 `//` 한 줄을 사용합니다. 공개 설정 타입 `SiteConfig`만 JSDoc을 유지합니다. 선언 파일로 배포되어 편집기의 필드 설명이 되기 때문입니다. 테스트의 GIVEN, WHEN, THEN은 [테스트 작성 기준](https://github.com/nomeehej/for-humanity/blob/main/test/README.md)에 따라 `// GIVEN 설명` 한 줄로 쓰고, unit 테스트와 step 안에는 붙이지 않습니다.
+주석 앞에는 빈 줄을 둡니다. 블록, 객체, 배열, JSX의 첫 줄과 연속 주석은 예외입니다. 선언 설명은 선언 바로 위 `//` 상자로 씁니다. 상자는 대시 88개 줄 사이에 제목, 설명, 정의 목록을 차례로 둡니다. 직접 선언한 타입과 스키마의 필드 설명은 본문 안이 아니라 상자의 정의 목록에 `필드: 설명` 한 줄로 적습니다. 본문의 의도와 절차 설명은 `//` 한 줄을 사용합니다. 테스트의 GIVEN, WHEN, THEN은 [테스트 작성 기준](https://github.com/nomeehej/for-humanity/blob/main/test/README.md)에 따라 `// GIVEN 설명` 한 줄로 쓰고, unit 테스트와 step 안에는 붙이지 않습니다.
 
 ### Lint coverage
 

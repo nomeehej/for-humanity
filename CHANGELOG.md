@@ -7,6 +7,7 @@
 - Add `build --private`, which writes a site with the public and the private documents together to `content/dist-private`. It is the same site `dev` shows, without the crawler files, canonical URL and link preview tags, and with `noindex` on every page. Deploy it only behind the access control of your hosting. The public `build` output is unchanged. See [Private site](https://for-humanity.fyi/deployment/#private-site).
 - Add `preview --private`, which serves `content/dist-private` locally so that you can check the private site before deploying it.
 - `init` adds the `dist-private` folder to `.gitignore` next to `dist`.
+- The `SiteConfig` type no longer shows field descriptions in the editor. The source comments moved to a plain comment block that declaration files do not carry. [Settings](https://for-humanity.fyi/settings/) describes every field.
 
 ## 0.32.0 — 2026-11-06
 
