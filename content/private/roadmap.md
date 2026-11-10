@@ -22,7 +22,7 @@ order: 40
 | 7     | [Writing skill](#writing-skill)           | Planned | 검토 가능한 문서를 쓰는 에이전트 스킬 |
 | 8     | [Subpath deployment](#subpath-deployment) | Done | 하위 URL 경로의 정적 배포             |
 | 9     | [Vite integration](#vite-integration) | Done | 패키지 빌드, 사용자 dev와 preview 통합 |
-| 10    | [Server features](#server-features) | Planned | 편집 링크, GitHub 로그인과 제한 문서, 화면 편집 |
+| 10    | [Server features](#server-features) | Planned | 편집 링크, 내부판 빌드, 내장 로그인, 화면 편집 |
 | 11    | [Locales](#locales) | Done | 기본 언어 루트와 `/<code>/` 번역 문서 |
 
 각 단계의 체크박스는 작업 완료와 검증 후 Markdown 원본에서 갱신.
@@ -93,7 +93,7 @@ Node 22.12.0과 24.3.0에서 설치 패키지의 공개 타입, build, dev, prev
 
 `0.13.0`의 공개 검증은 Ubuntu와 Windows CI, 패키지 설치 검사로 수행합니다. 결과는 [CI 실행 기록](https://github.com/nomeehej/for-humanity/actions/workflows/ci.yml)과 [GitHub Release](https://github.com/nomeehej/for-humanity/releases/tag/v0.13.0)에서 확인합니다. Node 지원 범위, 버전, 태그의 일치 기준은 [Releases](release-policy.md), 공개 절차는 [Maintenance](https://github.com/nomeehej/for-humanity/blob/main/content/private/maintenance.md#packaging-and-release)를 따릅니다.
 
-검색, 로그인, 제한 문서는 아래 [Search](#search)와 [Server features](#server-features)에서 진행합니다.
+검색, 내부판, 로그인은 아래 [Search](#search)와 [Server features](#server-features)에서 진행합니다.
 
 각 단계는 `pnpm test`, `pnpm check`, `pnpm build`, `git diff --check` 통과 후 별도 커밋으로 남깁니다. 번들, 브라우저, 개발 서버 변경 단계에서는 관련 Playwright 검사와 설치 패키지 검사도 실행합니다.
 완료 기준: 기존 정적 출력 계약을 유지하면서 저장소와 설치 패키지의 개발과 정적 미리보기가 Vite로 실행되고, 별도 파일 감시, SSE, esbuild 실행 코드와 Hono 정적 미리보기 서버가 제거된 상태.
@@ -163,28 +163,29 @@ prototype의 첫 버전 `0.1.0`은 `dev`, `build`, `preview`를 지원. `init`�
 
 ## Server features
 
-정적 출력을 그대로 두고 필요한 프로젝트만 켜는 확장. 문서 원본은 Git 저장소의 Markdown, 신원과 권한은 문서 저장소의 GitHub 권한, 편집의 저장은 커밋. 이 단계들에는 DB가 없습니다. 구조와 결정은 [Server design](server-design.md).
+정적 출력을 그대로 두고 필요한 프로젝트만 켜는 확장. 문서 원본은 Git 저장소의 Markdown. 내부 문서는 따로 빌드한 내부판에만 넣고 사이트 전체를 접근 제어 뒤에 둡니다. 접근 제어는 호스팅의 것을 먼저 쓰고, 내장 로그인은 접근 제어가 없는 호스팅을 위한 선택입니다. 이 단계들에는 DB가 없습니다. 구조와 결정은 [Server design](server-design.md).
 검색은 서버가 필요 없어 [Search](#search) 단계에서 따로 진행합니다.
 
 1. 편집 링크: `repository` 설정과 문서 아래 GitHub 웹 편집기 링크. 서버 없음
-2. 제한 문서와 로그인: `content/restricted`를 `dist-restricted`로 분리하고, GitHub App 로그인 뒤 저장소 읽기 권한이 있는 사용자에게만 제공. 비공개 저장소 전용
-3. 화면 편집: Markdown 소스 편집기와 서버 미리보기, 저장은 그 사용자의 커밋. 편집 링크와 브랜치 미리보기 배포로 부족할 때 시작
+2. 내부판 빌드: `build --private`이 공개 문서와 내부 문서를 `dist-private`에 따로 출력. 호스팅의 접근 제어 뒤에 배포. 서버 없음
+3. 내장 로그인: `serve`가 내부판 전체를 GitHub App 로그인 뒤에 두고 저장소 읽기 권한이 있는 사용자에게만 제공. 비공개 저장소 전용. 접근 제어가 없는 호스팅의 요구가 있을 때 시작
+4. 화면 편집: Markdown 소스 편집기와 서버 미리보기, 저장은 그 사용자의 커밋. 편집 링크와 브랜치 미리보기 배포로 부족할 때 시작
 
 - [ ] `repository` 설정(저장소, 브랜치, 저장소 안 프로젝트 경로)과 문서별 원본 경로
 - [ ] 문서 아래 편집 링크와 문서별, 사이트별 숨김
-- [ ] 제한 폴더 수집, `/restricted/` URL, `dist-restricted` 출력, `/restricted/_fh/media/` 자원, 참조 방향 검사
-- [ ] 공개 출력의 HTML, 그림, 첨부, 탐색, 사이트맵, 검색 인덱스에서 제한 문서 제외 검증
-- [ ] GitHub App 로그인, 저장소 권한과 공개 여부 확인, 서명 쿠키 세션과 만료
-- [ ] 공통 Hono 서버 앱과 `for-humanity serve`, 가짜 GitHub 서버로 로그인, 권한, 캐시 규칙 검사
-- [ ] Cloudflare Workers 진입점과 제한 출력 제공, `init`의 서버 설정
-- [ ] GitHub App 만들기 명령과 저장소 설치 안내
+- [ ] `build --private`과 `dist-private` 출력, `url` 출력 제외와 `noindex`, `preview --private`
+- [ ] 옵션 없는 `build` 출력의 불변과 공개 출력의 내부 문서 제외 검증(HTML, 그림, 첨부, 탐색, 사이트맵, 검색 인덱스)
+- [ ] 내부판의 Cloudflare Access 배포 절차 확인과 Deployment 안내
 - [ ] 편집 링크와 브랜치 미리보기 배포를 쓰는 기본 편집 흐름 안내
-- [ ] 3단계: 편집 화면, 서버 미리보기, 커밋 저장과 sha 충돌 검사
+- [ ] 내장 로그인: GitHub App 로그인, 저장소 권한과 공개 여부 확인, 서명 쿠키 세션과 만료
+- [ ] 내장 로그인: 공통 Hono 서버 앱과 `for-humanity serve`, 가짜 GitHub 서버로 로그인, 권한, 캐시 규칙 검사
+- [ ] 내장 로그인: GitHub App 만들기 명령과 저장소 설치 안내
+- [ ] 화면 편집: 편집 화면, 서버 미리보기, 커밋 저장과 sha 충돌 검사
 
-사용자가 GitHub App, 배포 환경, 비밀값을 소유하고 운영합니다. 비밀값은 서버 환경 변수에서만 읽고 HTML, 브라우저 번들, 설정 출력에 넣지 않습니다. 정적 전용 사용자는 서버 진입점을 가져오지 않습니다.
+사용자가 호스팅의 접근 제어, GitHub App, 배포 환경, 비밀값을 소유하고 운영합니다. 비밀값은 서버 환경 변수에서만 읽고 HTML, 브라우저 번들, 설정 출력에 넣지 않습니다. 정적 전용 사용자는 서버 진입점을 가져오지 않습니다.
 댓글, 조회수 같은 런타임 상태는 미계획입니다. 요청이 생기면 문서 경로를 키로 쓰는 별도 저장소로 설계합니다.
-개발, 미리보기, 운영의 실행 방식과 플랫폼별 책임은 [Development, preview and production](https://github.com/nomeehej/for-humanity/blob/main/content/private/architecture.md#development-preview-and-production). 운영 배포에는 `dev`나 `preview` 대신 `serve` 또는 Workers 진입점을 사용합니다.
-완료 기준: 비공개 저장소의 문서 프로젝트를 Node와 Cloudflare Workers에 배포하고, 로그인하지 않은 요청, 권한 없는 사용자, 읽기 권한 사용자의 응답과 공개 출력의 제외를 실제 요청으로 검증할 수 있음.
+개발, 미리보기, 운영의 실행 방식과 플랫폼별 책임은 [Development, preview and production](https://github.com/nomeehej/for-humanity/blob/main/content/private/architecture.md#development-preview-and-production). 운영 배포에는 `dev`나 `preview` 대신 정적 호스팅이나 `serve`를 사용합니다.
+완료 기준: 비공개 저장소의 문서 프로젝트에서 내부판을 접근 제어 뒤에 배포하고, 허용되지 않은 요청이 모든 주소에서 막히는 것과 공개 출력의 제외를 실제 요청으로 검증할 수 있음. 내장 로그인은 시작할 때 Node에서 로그인하지 않은 요청, 권한 없는 사용자, 읽기 권한 사용자의 응답을 검증.
 
 ## Search
 
