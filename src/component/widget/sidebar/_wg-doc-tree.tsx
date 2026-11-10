@@ -4,18 +4,14 @@ import type {NavigationData, NavigationGroup} from "@/component/widget/sidebar/_
 import {WgDocList} from "@/component/widget/sidebar/_wg-doc-list";
 import "./_wg-doc-tree.css";
 
-/**
- * 서버, 브라우저가 공유하는 문서 트리
- */
+// ----------------------------------------------------------------------------------------
+// 서버, 브라우저가 공유하는 문서 트리
+//
+// groups: 본문을 제외한 읽는 순서의 문서 묶음
+// basePath: 트리 전체에 적용할 배포 경로
+// ----------------------------------------------------------------------------------------
 export interface WgDocTreeProps {
-    /**
-     * 본문을 제외한 읽는 순서의 문서 묶음
-     */
     groups: NavigationGroup[];
-
-    /**
-     * 트리 전체에 적용할 배포 경로
-     */
     basePath: NavigationData["basePath"];
 }
 

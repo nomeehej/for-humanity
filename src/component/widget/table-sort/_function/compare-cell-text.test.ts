@@ -1,9 +1,10 @@
 import {describe, expect, test} from "vitest";
 import {toCellComparator} from "@/component/widget/table-sort/_function/compare-cell-text";
 
-/**
- * 머리글 정렬의 칸 글 비교(src/component/widget/table-sort/_function/compare-cell-text.ts) 검증
- */
+// ----------------------------------------------------------------------------------------
+// 머리글 정렬의 칸 글 비교(src/component/widget/table-sort/_function/compare-cell-text.ts)
+//   검증
+// ----------------------------------------------------------------------------------------
 describe("표 정렬", () => {
     describe("칸 글 비교", () => {
         test("숫자가 든 글은 자릿수가 아니라 값 순서로 정렬한다", () => {

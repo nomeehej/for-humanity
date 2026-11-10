@@ -1,13 +1,13 @@
 import {fx_range_default_max, fx_range_default_min} from "@/component/widget/fx/_constant/fx";
 import type {FxEnhance} from "@/component/widget/fx/_type/enhance";
 
-/**
- * 슬라이더 그림의 값 비율 --fx-v, data-value 반영, output 갱신과 fx:input 발송
- *
- *   - min, max 속성이 없으면 HTML 기본값
- *   - data-unit은 output 값 뒤의 단위
- *   - 해제는 signal의 abort에서 --fx-v와 data-value 제거, output 글자 유지
- */
+// ----------------------------------------------------------------------------------------
+// 슬라이더 그림의 값 비율 --fx-v, data-value 반영, output 갱신과 fx:input 발송
+//
+// min, max 속성이 없으면 HTML 기본값
+// data-unit은 output 값 뒤의 단위
+// 해제는 signal의 abort에서 --fx-v와 data-value 제거, output 글자 유지
+// ----------------------------------------------------------------------------------------
 export const enhanceRange: FxEnhance = (params) => {
     // 이미 해제된 signal은 abort 이벤트 없음, 복원 불가
     if (params.signal.aborted) {
@@ -21,11 +21,11 @@ export const enhanceRange: FxEnhance = (params) => {
         return;
     }
 
-    /**
-     * 현재 값의 --fx-v, data-value, output 반영, fx:input 발송
-     *
-     *   - max가 min 이하면 비율 0
-     */
+    // ----------------------------------------------------------------------------------------
+    // 현재 값의 --fx-v, data-value, output 반영, fx:input 발송
+    //
+    // max가 min 이하면 비율 0
+    // ----------------------------------------------------------------------------------------
     const show = () => {
         const min = input.min === "" ? fx_range_default_min : Number(input.min);
         const max = input.max === "" ? fx_range_default_max : Number(input.max);

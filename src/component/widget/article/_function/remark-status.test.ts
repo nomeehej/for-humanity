@@ -3,9 +3,9 @@ import {VFile} from "vfile";
 import {describe, expect, test} from "vitest";
 import {remarkStatus} from "@/component/widget/article/_function/remark-status";
 
-/**
- * 상태 표지 변환(src/component/widget/article/_function/remark-status.ts) 검증
- */
+// ----------------------------------------------------------------------------------------
+// 상태 표지 변환(src/component/widget/article/_function/remark-status.ts) 검증
+// ----------------------------------------------------------------------------------------
 describe("상태 표지", () => {
     describe("표지 종류", () => {
         test.each([

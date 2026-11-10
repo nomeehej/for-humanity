@@ -6,33 +6,22 @@ import type {DocContent} from "@/type/doc-content";
 import type {SiteAssets} from "@/type/site-assets";
 import type {ResolvedSiteConfig} from "@/type/site-config";
 
-/**
- * / 첫 화면과 /<code>/ 번역 홈 입력. 문서 폴더 README의 본문과 목차
- */
+// ----------------------------------------------------------------------------------------
+// / 첫 화면과 /<code>/ 번역 홈 입력
+//
+// 문서 폴더 README의 본문과 목차
+//
+// site: 검증된 사이트 설정
+// docs: 사이드바의 전체 문서
+// assets: HTML 머리의 공통 자원
+// home: README 렌더링 결과, 파일이 없으면 작성 안내
+// locale: 번역 홈의 언어 설정, 기본 언어 홈은 생략
+// ----------------------------------------------------------------------------------------
 export interface PgHomeProps {
-    /**
-     * 검증된 사이트 설정
-     */
     site: ResolvedSiteConfig;
-
-    /**
-     * 사이드바의 전체 문서
-     */
     docs: Doc[];
-
-    /**
-     * HTML 머리의 공통 자원
-     */
     assets: SiteAssets;
-
-    /**
-     * README 렌더링 결과. 파일이 없으면 작성 안내
-     */
     home?: DocContent;
-
-    /**
-     * 번역 홈의 언어 설정. 기본 언어 홈은 생략
-     */
     locale?: ResolvedSiteConfig["locales"][number];
 }
 

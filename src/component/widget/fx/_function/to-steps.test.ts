@@ -1,9 +1,9 @@
 import {describe, expect, test} from "vitest";
 import {toSteps} from "@/component/widget/fx/_function/to-steps";
 
-/**
- * 단계 범위 표기(src/component/widget/fx/_function/to-steps.ts) 검증
- */
+// ----------------------------------------------------------------------------------------
+// 단계 범위 표기(src/component/widget/fx/_function/to-steps.ts) 검증
+// ----------------------------------------------------------------------------------------
 describe("단계 범위", () => {
     test("하나, 구간, 끝까지, 처음부터 표기를 공백으로 이어 쓴다", () => {
         expect([...toSteps("3", 5)]).toEqual([3]);

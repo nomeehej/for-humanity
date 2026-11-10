@@ -4,12 +4,14 @@ import type {VFile} from "vfile";
 import {copy_error_directive_syntax, copy_error_part_heading} from "@/component/widget/article/_constant/copy";
 import {section_heading_depth} from "@/component/widget/article/_constant/section";
 
-/**
- * Note, Details 안의 원시 HTML h1, h2 거부. Markdown #, ##과 같은 부품 계약
- *
- *   - Markdown 제목은 remark-blocks 담당
- *   - 원시 HTML 제목은 rehype-raw 해석 뒤 검사. 오류 위치는 그 제목의 줄
- */
+// ----------------------------------------------------------------------------------------
+// Note, Details 안의 원시 HTML h1, h2 거부
+//
+// Markdown #, ##과 같은 부품 계약
+// Markdown 제목은 remark-blocks 담당
+// 원시 HTML 제목은 rehype-raw 해석 뒤 검사
+// 오류 위치는 그 제목의 줄
+// ----------------------------------------------------------------------------------------
 export const rehypeBlocks = () => (tree: Root, file: VFile) => {
     visit(tree, "element", (node) => {
         const classes = node.properties.className;

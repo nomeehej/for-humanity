@@ -4,29 +4,20 @@ import "./wg-article.css";
 // 본문 CSS 뒤. .fx__captions > li가 같은 특이도의 본문 li 여백을 이김
 import "@/style/authoring/fx.css";
 
-/**
- * Markdown HTML과 본문 부품의 공통 표현 입력
- *
- *   - remark, rehype 플러그인은 _function 소유
- */
+// ----------------------------------------------------------------------------------------
+// Markdown HTML과 본문 부품의 공통 표현 입력
+//
+// remark, rehype 플러그인은 _function 소유
+//
+// html: 머리를 포함한 렌더링 완료 HTML
+// head: README가 없을 때의 안내 머리
+// head.title: 문서 h1 제목
+// head.lead: 제목 아래 소개, 선택
+// ----------------------------------------------------------------------------------------
 export interface WgArticleProps {
-    /**
-     * 머리를 포함한 렌더링 완료 HTML
-     */
     html?: string;
-
-    /**
-     * README가 없을 때의 안내 머리
-     */
     head?: {
-        /**
-         * 문서 h1 제목
-         */
         title: string;
-
-        /**
-         * 제목 아래 소개. 선택
-         */
         lead?: string;
     };
 }

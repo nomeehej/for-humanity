@@ -4,22 +4,24 @@ import {copy_doc_dates} from "@/component/widget/article/_constant/copy";
 import {section_heading_depth} from "@/component/widget/article/_constant/section";
 import type {ResolvedSiteConfig} from "@/type/site-config";
 
-/**
- * 문서 머리의 기본 언어
- */
+// ----------------------------------------------------------------------------------------
+// 문서 머리의 기본 언어
+//
+// lang: 번역 문서가 아닌 페이지의 언어, 날짜 라벨 선택
+// ----------------------------------------------------------------------------------------
 interface HeadOptions {
-    /**
-     * 번역 문서가 아닌 페이지의 언어. 날짜 라벨 선택
-     */
     lang: ResolvedSiteConfig["lang"];
 }
 
-/**
- * name 제목, label 글머리, 작성 날짜와 첫 절 앞 본문의 공통 머리. README는 원문의 h1 사용
- *
- *   - label은 제목과 다를 때만 제목 아래 한 줄로 표시. 사이드바 툴팁과 미리보기 설명과 같은 문장
- *   - 날짜 라벨은 페이지 언어가 한국어면 한국어, 그 밖은 영어. 날짜는 적은 그대로
- */
+// ----------------------------------------------------------------------------------------
+// name 제목, label 글머리, 작성 날짜와 첫 절 앞 본문의 공통 머리
+//
+// README는 원문의 h1 사용
+// label은 제목과 다를 때만 제목 아래 한 줄로 표시
+// 사이드바 툴팁과 미리보기 설명과 같은 문장
+// 날짜 라벨은 페이지 언어가 한국어면 한국어, 그 밖은 영어
+// 날짜는 적은 그대로
+// ----------------------------------------------------------------------------------------
 export const rehypeHead = (options: HeadOptions) => (tree: Root, file: VFile) => {
     const frontmatter = file.data.fh?.frontmatter;
     const firstSection = tree.children.findIndex((node) => node.type === "element" && node.tagName === `h${section_heading_depth.section}`);

@@ -10,21 +10,21 @@ import {assertContentPath} from "@/util/file/assert-content-path";
 import {toContentId} from "@/util/file/to-content-id";
 import {toDecodedPath} from "@/util/file/to-decoded-path";
 
-/**
- * 상대 문서 링크 해석 기준
- */
+// ----------------------------------------------------------------------------------------
+// 상대 문서 링크 해석 기준
+//
+// scope: 링크 대상을 해석하고 공개 범위를 검사할 문서 범위
+// ----------------------------------------------------------------------------------------
 interface LinkOptions {
-    /**
-     * 링크 대상을 해석하고 공개 범위를 검사할 문서 범위
-     */
     scope: ContentScope;
 }
 
-/**
- * 상대 Markdown 링크의 사이트 URL 변환, 쿼리와 해시 원문 유지
- *
- *   - 외부, 절대 URL과 같은 페이지의 해시 링크 유지. 없는 파일은 터미널 경고
- */
+// ----------------------------------------------------------------------------------------
+// 상대 Markdown 링크의 사이트 URL 변환, 쿼리와 해시 원문 유지
+//
+// 외부, 절대 URL과 같은 페이지의 해시 링크 유지
+// 없는 파일은 터미널 경고
+// ----------------------------------------------------------------------------------------
 export const remarkLinks = (options: LinkOptions) => (tree: Root, file: VFile) => {
     visit(tree, (node) => {
         if (node.type !== "link" && node.type !== "definition") {

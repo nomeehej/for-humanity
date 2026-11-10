@@ -3,22 +3,23 @@ import {createStore} from "zustand/vanilla";
 import {storage_scroll_key, storage_version} from "@/store/navigation/_constant/storage";
 import {type NavigationScrollState, navigationScrollStateSchema} from "@/store/navigation/navigation-state";
 
-/**
- * 브라우저 저장소의 지연 조회 경계. 차단 환경과 테스트의 메모리 저장소 지원
- */
+// ----------------------------------------------------------------------------------------
+// 브라우저 저장소의 지연 조회 경계
+//
+// 차단 환경과 테스트의 메모리 저장소 지원
+//
+// session: 같은 탭 안에서만 복원할 스크롤 위치
+// ----------------------------------------------------------------------------------------
 interface NavigationStoresParams {
-    /**
-     * 같은 탭 안에서만 복원할 스크롤 위치
-     */
     session: () => StateStorage;
 }
 
-/**
- * 페이지별 브라우저 탐색 스토어
- *
- *   - 브라우저 진입점에서만 생성, 서버 요청 간 상태 공유 금지
- *   - 읽기 오류는 persist에서 처리, 쓰기 오류는 메모리 상태 유지
- */
+// ----------------------------------------------------------------------------------------
+// 페이지별 브라우저 탐색 스토어
+//
+// 브라우저 진입점에서만 생성, 서버 요청 간 상태 공유 금지
+// 읽기 오류는 persist에서 처리, 쓰기 오류는 메모리 상태 유지
+// ----------------------------------------------------------------------------------------
 export const toNavigationStores = (params: NavigationStoresParams) => {
     const storage = createJSONStorage<NavigationScrollState>(() => {
         return {

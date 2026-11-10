@@ -4,31 +4,28 @@ import {toButton} from "@/component/widget/fx/_function/to-button";
 import {toRunDocument} from "@/component/widget/fx/_function/to-run-document";
 import type {FxEnhance} from "@/component/widget/fx/_type/enhance";
 
-/**
- * sandbox iframe의 shim이 보낸 콘솔 한 줄 검증
- */
+// ----------------------------------------------------------------------------------------
+// sandbox iframe의 shim이 보낸 콘솔 한 줄 검증
+//
+// id: 그림 안의 실행 순번, 그림 사이와 실행 사이 구분은 event.source 창 확인
+// line: 출력 한 줄
+// ----------------------------------------------------------------------------------------
 const runMessageSchema = object({
-    /**
-     * 그림 안의 실행 순번
-     *
-     *   - 그림 사이와 실행 사이 구분은 event.source 창 확인
-     */
     id: string(),
-
-    /**
-     * 출력 한 줄
-     */
     line: string(),
 });
 
-/**
- * 실행 상자 그림. 바로 앞 코드 블록의 sandbox iframe 실행, 콘솔 출력 표시
- *
- *   - 앞 형제가 pre거나 pre code를 담은 상자일 때만 적용
- *   - 실행마다 새 id와 새 iframe. 그 iframe에서 온 같은 id의 메시지만 출력
- *   - data-wait(ms) 뒤 iframe 제거. 기본 fx_run_wait_ms
- *   - 해제는 signal의 abort에서 iframe과 생성 요소 제거
- */
+// ----------------------------------------------------------------------------------------
+// 실행 상자 그림
+//
+// 바로 앞 코드 블록의 sandbox iframe 실행, 콘솔 출력 표시
+// 앞 형제가 pre거나 pre code를 담은 상자일 때만 적용
+// 실행마다 새 id와 새 iframe
+// 그 iframe에서 온 같은 id의 메시지만 출력
+// data-wait(ms) 뒤 iframe 제거
+// 기본 fx_run_wait_ms
+// 해제는 signal의 abort에서 iframe과 생성 요소 제거
+// ----------------------------------------------------------------------------------------
 export const enhanceRun: FxEnhance = (params) => {
     // 이미 해제된 signal은 abort 이벤트 없음, 복원 불가
     if (params.signal.aborted) {
@@ -53,18 +50,22 @@ export const enhanceRun: FxEnhance = (params) => {
     let id = 0;
     let timer = 0;
 
-    /**
-     * 진행 중인 실행 종료. 대기 타이머 해제, iframe 제거
-     */
+    // ----------------------------------------------------------------------------------------
+    // 진행 중인 실행 종료
+    //
+    // 대기 타이머 해제, iframe 제거
+    // ----------------------------------------------------------------------------------------
     const finish = () => {
         window.clearTimeout(timer);
         frame?.remove();
         frame = null;
     };
 
-    /**
-     * 입력 상자의 코드 실행. 이전 실행 종료, 출력 초기화 뒤 새 iframe 추가
-     */
+    // ----------------------------------------------------------------------------------------
+    // 입력 상자의 코드 실행
+    //
+    // 이전 실행 종료, 출력 초기화 뒤 새 iframe 추가
+    // ----------------------------------------------------------------------------------------
     const run = () => {
         finish();
         output.textContent = "";

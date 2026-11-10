@@ -7,18 +7,14 @@ import type {ResolvedSiteConfig} from "@/type/site-config";
 import {toSitePath} from "@/util/url/to-site-path";
 import "./wg-cursor-face.css";
 
-/**
- * SSR 기본 장식과 브라우저 DOM 연결을 구분하는 입력
- */
+// ----------------------------------------------------------------------------------------
+// SSR 기본 장식과 브라우저 DOM 연결을 구분하는 입력
+//
+// ready: 브라우저 진입점에서만 참, ref와 전역 이벤트 연결 조건
+// basePath: 커서 이미지의 배포 경로
+// ----------------------------------------------------------------------------------------
 export interface WgCursorFaceProps {
-    /**
-     * 브라우저 진입점에서만 참. ref와 전역 이벤트 연결 조건
-     */
     ready: boolean;
-
-    /**
-     * 커서 이미지의 배포 경로
-     */
     basePath: ResolvedSiteConfig["basePath"];
 }
 
@@ -27,30 +23,32 @@ export const WgCursorFace = (props: WgCursorFaceProps) => {
     const mediaRef = useRef<MediaQueryList | null>(null);
     const positionRef = useRef({x: 0, y: 0, frame: 0, hasPointer: false});
 
-    /**
-     * 화면 이탈, 터치 전환에서 예약된 이동까지 취소
-     */
+    // ----------------------------------------------------------------------------------------
+    // 화면 이탈, 터치 전환에서 예약된 이동까지 취소
+    // ----------------------------------------------------------------------------------------
     const handleCursorHide = () => {
         cancelAnimationFrame(positionRef.current.frame);
         positionRef.current.frame = 0;
         faceRef.current?.classList.remove("wg_cursorFace__root--visible");
     };
 
-    /**
-     * 비활성 전환에서만 장식 숨김, 새 마우스 이동은 취소 없음
-     *
-     *   - 마지막 좌표는 유지, 복원 여부는 다음 문서의 표시 조건으로 판정
-     *   - Windows Chromium은 새로고침 직전 이 조건을 잠시 비활성으로 전환
-     */
+    // ----------------------------------------------------------------------------------------
+    // 비활성 전환에서만 장식 숨김, 새 마우스 이동은 취소 없음
+    //
+    // 마지막 좌표는 유지, 복원 여부는 다음 문서의 표시 조건으로 판정
+    // Windows Chromium은 새로고침 직전 이 조건을 잠시 비활성으로 전환
+    // ----------------------------------------------------------------------------------------
     const handleCursorMediaChange = () => {
         if (!mediaRef.current?.matches) {
             handleCursorHide();
         }
     };
 
-    /**
-     * 화면 갱신마다 한 번만 반영. translate 위치 변경으로 본문 재배치 방지
-     */
+    // ----------------------------------------------------------------------------------------
+    // 화면 갱신마다 한 번만 반영
+    //
+    // translate 위치 변경으로 본문 재배치 방지
+    // ----------------------------------------------------------------------------------------
     const renderCursorFace = () => {
         if (positionRef.current.frame !== 0) {
             return;
@@ -72,9 +70,11 @@ export const WgCursorFace = (props: WgCursorFaceProps) => {
         });
     };
 
-    /**
-     * 클릭, 텍스트 선택 중에도 장식 유지. 실제 마우스 입력만 좌표 반영
-     */
+    // ----------------------------------------------------------------------------------------
+    // 클릭, 텍스트 선택 중에도 장식 유지
+    //
+    // 실제 마우스 입력만 좌표 반영
+    // ----------------------------------------------------------------------------------------
     const handleDocumentPointer = (event: PointerEvent) => {
         if (!mediaRef.current?.matches || event.pointerType !== "mouse") {
             positionRef.current.hasPointer = false;
@@ -89,18 +89,18 @@ export const WgCursorFace = (props: WgCursorFaceProps) => {
         renderCursorFace();
     };
 
-    /**
-     * 새 마우스 이동 없이 화면 가장자리의 좌표 재계산
-     */
+    // ----------------------------------------------------------------------------------------
+    // 새 마우스 이동 없이 화면 가장자리의 좌표 재계산
+    // ----------------------------------------------------------------------------------------
     const handleCursorResize = () => {
         if (faceRef.current?.classList.contains("wg_cursorFace__root--visible")) {
             renderCursorFace();
         }
     };
 
-    /**
-     * 같은 탭의 마지막 마우스 좌표 전달, 포커스 이탈의 일시 숨김과 무관
-     */
+    // ----------------------------------------------------------------------------------------
+    // 같은 탭의 마지막 마우스 좌표 전달, 포커스 이탈의 일시 숨김과 무관
+    // ----------------------------------------------------------------------------------------
     const handlePageHide = () => {
         if (!positionRef.current.hasPointer) {
             return;
@@ -113,9 +113,11 @@ export const WgCursorFace = (props: WgCursorFaceProps) => {
         }
     };
 
-    /**
-     * 첫 진입, BFCache 복귀의 저장 좌표 1회 소비. 외부 저장 값은 검증 후 사용
-     */
+    // ----------------------------------------------------------------------------------------
+    // 첫 진입, BFCache 복귀의 저장 좌표 1회 소비
+    //
+    // 외부 저장 값은 검증 후 사용
+    // ----------------------------------------------------------------------------------------
     const handlePageShow = () => {
         try {
             const stored = sessionStorage.getItem(position_storage_key);
@@ -148,9 +150,11 @@ export const WgCursorFace = (props: WgCursorFaceProps) => {
         }
     };
 
-    /**
-     * 첫 페인트 전 좌표 복원. 해제 시 전역 이벤트와 예약 프레임 함께 정리
-     */
+    // ----------------------------------------------------------------------------------------
+    // 첫 페인트 전 좌표 복원
+    //
+    // 해제 시 전역 이벤트와 예약 프레임 함께 정리
+    // ----------------------------------------------------------------------------------------
     useLayoutEffect(() => {
         if (!props.ready) {
             return;

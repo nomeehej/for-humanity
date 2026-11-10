@@ -2,9 +2,10 @@ import type {Element, Root} from "hast";
 import {describe, expect, test} from "vitest";
 import {rehypeLinkTarget} from "@/component/widget/article/_function/rehype-link-target";
 
-/**
- * 본문 링크의 새 탭 target(src/component/widget/article/_function/rehype-link-target.ts) 검증
- */
+// ----------------------------------------------------------------------------------------
+// 본문 링크의 새 탭 target(src/component/widget/article/_function/rehype-link-target.ts)
+//   검증
+// ----------------------------------------------------------------------------------------
 describe("본문 링크의 새 탭", () => {
     const toTree = (properties: Element["properties"]): Root => {
         return {

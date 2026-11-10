@@ -12,18 +12,16 @@ import {isRestoringNavigation} from "@/util/dom/is-restoring-navigation";
 import {revealHashTarget} from "@/util/dom/reveal-hash-target";
 import "./wg-shell-controls.css";
 
-/**
- * 브라우저 셸 컨트롤 입력. 사이드바, 커서 장식, 다이어그램 연결, 표 정렬, 그림 조작부, 제목 강조는 셸 소유
- */
+// ----------------------------------------------------------------------------------------
+// 브라우저 셸 컨트롤 입력
+//
+// 사이드바, 커서 장식, 다이어그램 연결, 표 정렬, 그림 조작부, 제목 강조는 셸 소유
+//
+// data: 서버가 정리한 문서 목록, 현재 페이지 목차, 커서 장식 사용 여부
+// stores: 브라우저 진입점만 제공, 없으면 저장소와 전역 DOM 미사용, 커서 장식 미연결
+// ----------------------------------------------------------------------------------------
 export interface WgShellControlsProps {
-    /**
-     * 서버가 정리한 문서 목록, 현재 페이지 목차, 커서 장식 사용 여부
-     */
     data: WgSidebarProps["data"];
-
-    /**
-     * 브라우저 진입점만 제공. 없으면 저장소와 전역 DOM 미사용, 커서 장식 미연결
-     */
     stores?: WgSidebarProps["stores"];
 }
 
@@ -34,9 +32,9 @@ export const WgShellControls = (props: WgShellControlsProps) => {
     const lifetimeRef = useRef<AbortController | null>(null);
     const userScrolledRef = useRef(false);
 
-    /**
-     * 다음 앵커 이동과 해제에서 이전 강조, 도착 감시, 타이머 함께 정리
-     */
+    // ----------------------------------------------------------------------------------------
+    // 다음 앵커 이동과 해제에서 이전 강조, 도착 감시, 타이머 함께 정리
+    // ----------------------------------------------------------------------------------------
     const clearHeadingHighlight = () => {
         clearTimeout(timerRef.current);
         timerRef.current = 0;
@@ -46,19 +44,23 @@ export const WgShellControls = (props: WgShellControlsProps) => {
         headingRef.current = null;
     };
 
-    /**
-     * 본문 스크롤 도착 후 강조 유지 시간 재시작
-     *
-     *   - 제약: document 구독은 본문 스크롤의 scrollend만 수신. 요소의 scrollend는 버블링 없음
-     */
+    // ----------------------------------------------------------------------------------------
+    // 본문 스크롤 도착 후 강조 유지 시간 재시작
+    //
+    // 요소의 scrollend는 버블링 없음
+    //
+    // 제약: document 구독은 본문 스크롤의 scrollend만 수신
+    // ----------------------------------------------------------------------------------------
     const handleHighlightArrival = () => {
         clearTimeout(timerRef.current);
         timerRef.current = window.setTimeout(clearHeadingHighlight, heading_highlight_hold_ms);
     };
 
-    /**
-     * 도착 제목만 강조. 같은 해시 재클릭도 유지 시간 재시작
-     */
+    // ----------------------------------------------------------------------------------------
+    // 도착 제목만 강조
+    //
+    // 같은 해시 재클릭도 유지 시간 재시작
+    // ----------------------------------------------------------------------------------------
     const highlightHeading = (target: HTMLElement | null) => {
         clearHeadingHighlight();
         headingRef.current = target === null ? null : target.querySelector<HTMLElement>(".wg_article__headingText");
@@ -73,9 +75,9 @@ export const WgShellControls = (props: WgShellControlsProps) => {
         document.addEventListener("scrollend", handleHighlightArrival, {once: true, signal: arrivalRef.current.signal});
     };
 
-    /**
-     * 탐색 DOM 재생성 후에도 같은 해시의 접힌 Details 공개 유지
-     */
+    // ----------------------------------------------------------------------------------------
+    // 탐색 DOM 재생성 후에도 같은 해시의 접힌 Details 공개 유지
+    // ----------------------------------------------------------------------------------------
     const handleHashClick = (event: MouseEvent) => {
         const link = findHashLink(event);
 
@@ -90,9 +92,9 @@ export const WgShellControls = (props: WgShellControlsProps) => {
         }
     };
 
-    /**
-     * 해시 변경 시 접힌 대상 공개, 네이티브 스크롤과 강조 적용
-     */
+    // ----------------------------------------------------------------------------------------
+    // 해시 변경 시 접힌 대상 공개, 네이티브 스크롤과 강조 적용
+    // ----------------------------------------------------------------------------------------
     const handleHashChange = () => {
         const target = revealHashTarget(location.hash);
 
@@ -100,21 +102,24 @@ export const WgShellControls = (props: WgShellControlsProps) => {
         highlightHeading(target);
     };
 
-    /**
-     * 첫 사용자 입력. 초기 앵커 보정 중단, 부드러운 절 이동 활성화
-     */
+    // ----------------------------------------------------------------------------------------
+    // 첫 사용자 입력
+    //
+    // 초기 앵커 보정 중단, 부드러운 절 이동 활성화
+    // ----------------------------------------------------------------------------------------
     const handleUserScroll = () => {
         userScrolledRef.current = true;
         document.documentElement.classList.add("wg_shell__document--smoothScroll");
     };
 
-    /**
-     * 초기 폰트 로드, 다이어그램 렌더, 그림 조작부 추가 후 앵커 보정. 해제된 인스턴스와 사용자 이동에 개입하지 않음
-     *
-     *   - 새로고침, 뒤로가기는 브라우저의 이전 위치 복원 사용
-     *   - 사용자 입력 이후의 렌더 완료는 접은 Details를 다시 열지 않음
-     *   - 부드러운 절 이동은 보정 후 활성화, 복원 진입은 첫 사용자 입력까지 즉시 스크롤 유지
-     */
+    // ----------------------------------------------------------------------------------------
+    // 초기 폰트 로드, 다이어그램 렌더, 그림 조작부 추가 후 앵커 보정
+    //
+    // 해제된 인스턴스와 사용자 이동에 개입하지 않음
+    // 새로고침, 뒤로가기는 브라우저의 이전 위치 복원 사용
+    // 사용자 입력 이후의 렌더 완료는 접은 Details를 다시 열지 않음
+    // 부드러운 절 이동은 보정 후 활성화, 복원 진입은 첫 사용자 입력까지 즉시 스크롤 유지
+    // ----------------------------------------------------------------------------------------
     const handlePageLoad = async () => {
         if (isRestoringNavigation() || userScrolledRef.current) {
             return;
@@ -138,9 +143,11 @@ export const WgShellControls = (props: WgShellControlsProps) => {
         document.documentElement.classList.add("wg_shell__document--smoothScroll");
     };
 
-    /**
-     * 셸은 본문 앞에서 마운트. 본문 파싱 이후에만 초기 접힘 대상 조회
-     */
+    // ----------------------------------------------------------------------------------------
+    // 셸은 본문 앞에서 마운트
+    //
+    // 본문 파싱 이후에만 초기 접힘 대상 조회
+    // ----------------------------------------------------------------------------------------
     const handleBodyReady = () => {
         revealHashTarget(location.hash);
 
@@ -149,9 +156,11 @@ export const WgShellControls = (props: WgShellControlsProps) => {
         }
     };
 
-    /**
-     * 본문 이벤트의 설치, 정리는 셸이 소유. SSR에서는 DOM에 접근하지 않음
-     */
+    // ----------------------------------------------------------------------------------------
+    // 본문 이벤트의 설치, 정리는 셸이 소유
+    //
+    // SSR에서는 DOM에 접근하지 않음
+    // ----------------------------------------------------------------------------------------
     useLayoutEffect(() => {
         const lifetime = new AbortController();
 

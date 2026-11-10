@@ -19,13 +19,13 @@ import {section_heading_depth} from "@/component/widget/article/_constant/sectio
 import {hasBlockContent} from "@/component/widget/article/_function/remark-blocks/_has-block-content";
 import {toTitleText} from "@/component/widget/article/_function/to-title-text";
 
-/**
- * Note, Details의 제목, 본문, 속성, 닫힘 계약
- *
- *   - label은 첫 자식, summary는 Details의 첫 요소
- *   - part는 문서 최상위의 ::part[...] 한 줄만 허용
- *   - 원문 위치는 오류 기준
- */
+// ----------------------------------------------------------------------------------------
+// Note, Details의 제목, 본문, 속성, 닫힘 계약
+//
+// label은 첫 자식, summary는 Details의 첫 요소
+// part는 문서 최상위의 ::part[...] 한 줄만 허용
+// 원문 위치는 오류 기준
+// ----------------------------------------------------------------------------------------
 export const remarkBlocks = () => (tree: Root, file: VFile) => {
     const source = String(file.value);
 

@@ -2,9 +2,9 @@ import type {Element, Root} from "hast";
 import {describe, expect, test} from "vitest";
 import {rehypeRefs} from "@/component/widget/article/_function/rehype-refs";
 
-/**
- * 참조 칩 class(src/component/widget/article/_function/rehype-refs.ts) 검증
- */
+// ----------------------------------------------------------------------------------------
+// 참조 칩 class(src/component/widget/article/_function/rehype-refs.ts) 검증
+// ----------------------------------------------------------------------------------------
 describe("참조 칩", () => {
     const refs = [
         {prefix: "Q", color: "violet"},

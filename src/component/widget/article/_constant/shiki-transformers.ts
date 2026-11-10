@@ -8,13 +8,14 @@ import {
 import type {ElementContent} from "hast";
 import type {ShikiTransformer} from "shiki";
 
-/**
- * 코드 메타의 줄 번호, 상태, 파일 제목 생성
- *
- *   - 메타 부재는 진입점에서만 확인, 상태 판정은 코드와 제목에 공유
- *   - 코드 상자의 색상은 소유 CSS에서 지정, 토큰별 Shiki 색상은 유지
- *   - 예외: ShikiTransformer.root의 호출 컨텍스트로 pre와 언어 조회, this 보존
- */
+// ----------------------------------------------------------------------------------------
+// 코드 메타의 줄 번호, 상태, 파일 제목 생성
+//
+// 메타 부재는 진입점에서만 확인, 상태 판정은 코드와 제목에 공유
+// 코드 상자의 색상은 소유 CSS에서 지정, 토큰별 Shiki 색상은 유지
+//
+// 예외: ShikiTransformer.root의 호출 컨텍스트로 pre와 언어 조회, this 보존
+// ----------------------------------------------------------------------------------------
 const codeMetadata: ShikiTransformer = {
     name: "for-humanity:code-metadata",
     root(root) {
@@ -73,9 +74,9 @@ const codeMetadata: ShikiTransformer = {
     },
 };
 
-/**
- * 코드 메타와 줄 지시문의 Shiki 변환기 순서
- */
+// ----------------------------------------------------------------------------------------
+// 코드 메타와 줄 지시문의 Shiki 변환기 순서
+// ----------------------------------------------------------------------------------------
 export const shikiTransformers: ShikiTransformer[] = [
     transformerNotationHighlight({matchAlgorithm: "v3"}),
     transformerNotationErrorLevel({matchAlgorithm: "v3"}),

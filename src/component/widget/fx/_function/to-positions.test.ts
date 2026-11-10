@@ -1,9 +1,9 @@
 import {describe, expect, test} from "vitest";
 import {toPositions} from "@/component/widget/fx/_function/to-positions";
 
-/**
- * 단계별 위치 표기(src/component/widget/fx/_function/to-positions.ts) 검증
- */
+// ----------------------------------------------------------------------------------------
+// 단계별 위치 표기(src/component/widget/fx/_function/to-positions.ts) 검증
+// ----------------------------------------------------------------------------------------
 describe("단계별 위치", () => {
     test("세미콜론으로 이은 단계와 좌표를 차례로 읽는다", () => {
         expect(toPositions("1:0 0;4:120 40")).toEqual([

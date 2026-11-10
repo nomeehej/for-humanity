@@ -4,18 +4,16 @@ import {toPagePath} from "@/util/url/to-page-path";
 import {toSitePath} from "@/util/url/to-site-path";
 import "./_wg-doc-list.css";
 
-/**
- * 한 단계의 문서 목록과 하위 묶음. 재귀에서도 같은 탐색 표현 유지
- */
+// ----------------------------------------------------------------------------------------
+// 한 단계의 문서 목록과 하위 묶음
+//
+// 재귀에서도 같은 탐색 표현 유지
+//
+// group: 현재 단계의 문서와 하위 묶음
+// basePath: 재귀 목록 전체에 적용할 배포 경로
+// ----------------------------------------------------------------------------------------
 export interface WgDocListProps {
-    /**
-     * 현재 단계의 문서와 하위 묶음
-     */
     group: NavigationGroup;
-
-    /**
-     * 재귀 목록 전체에 적용할 배포 경로
-     */
     basePath: NavigationData["basePath"];
 }
 

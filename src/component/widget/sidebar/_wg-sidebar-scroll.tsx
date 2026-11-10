@@ -2,38 +2,22 @@ import clsx from "clsx";
 import {type Child, type DOMAttributes, type RefObject, useLayoutEffect, useRef, useState} from "hono/jsx";
 import {overflow_slack_px} from "@/component/widget/sidebar/_constant/overflow";
 
-/**
- * 탐색 좌표를 제어하는 부모와 넘침 표시를 소유하는 스크롤 영역의 경계
- */
+// ----------------------------------------------------------------------------------------
+// 탐색 좌표를 제어하는 부모와 넘침 표시를 소유하는 스크롤 영역의 경계
+//
+// portRef: 배치별 좌표 복원과 저장에 필요한 실제 스크롤 요소
+// kind: 문서 목록과 현재 페이지 목차의 독립된 스크롤 수명
+// ready: JavaScript가 연결된 뒤에만 손잡이를 넘침 표시로 대체
+// children: 탐색 링크를 포함한 영역 내용
+// onClick: 이동 직전 좌표 보존과 모바일 모달 닫기
+// onScroll: 실제 스크롤 좌표가 바뀔 때 부모 저장소에 반영
+// ----------------------------------------------------------------------------------------
 export interface WgSidebarScrollProps {
-    /**
-     * 배치별 좌표 복원과 저장에 필요한 실제 스크롤 요소
-     */
     portRef: RefObject<HTMLDivElement | null>;
-
-    /**
-     * 문서 목록과 현재 페이지 목차의 독립된 스크롤 수명
-     */
     kind: "documents" | "outline";
-
-    /**
-     * JavaScript가 연결된 뒤에만 손잡이를 넘침 표시로 대체
-     */
     ready: boolean;
-
-    /**
-     * 탐색 링크를 포함한 영역 내용
-     */
     children: Child;
-
-    /**
-     * 이동 직전 좌표 보존과 모바일 모달 닫기
-     */
     onClick?: DOMAttributes["onClick"];
-
-    /**
-     * 실제 스크롤 좌표가 바뀔 때 부모 저장소에 반영
-     */
     onScroll?: () => void;
 }
 
@@ -41,9 +25,9 @@ export const WgSidebarScroll = (props: WgSidebarScrollProps) => {
     const [overflow, setOverflow] = useState({above: false, below: false});
     const frameRef = useRef(0);
 
-    /**
-     * 소수 픽셀 반올림을 제외한 실제 남은 내용만 위, 아래 흐림으로 표시
-     */
+    // ----------------------------------------------------------------------------------------
+    // 소수 픽셀 반올림을 제외한 실제 남은 내용만 위, 아래 흐림으로 표시
+    // ----------------------------------------------------------------------------------------
     const measureOverflow = () => {
         frameRef.current = 0;
 
@@ -57,26 +41,28 @@ export const WgSidebarScroll = (props: WgSidebarScrollProps) => {
         setOverflow((state) => (state.above === above && state.below === below ? state : {above, below}));
     };
 
-    /**
-     * 연속 스크롤과 관찰자 알림은 프레임당 한 번 측정
-     */
+    // ----------------------------------------------------------------------------------------
+    // 연속 스크롤과 관찰자 알림은 프레임당 한 번 측정
+    // ----------------------------------------------------------------------------------------
     const handleOverflowMeasure = () => {
         if (frameRef.current === 0) {
             frameRef.current = requestAnimationFrame(measureOverflow);
         }
     };
 
-    /**
-     * 네이티브 좌표는 즉시 저장, 시각적 넘침만 프레임 단위 갱신
-     */
+    // ----------------------------------------------------------------------------------------
+    // 네이티브 좌표는 즉시 저장, 시각적 넘침만 프레임 단위 갱신
+    // ----------------------------------------------------------------------------------------
     const handlePortScroll: DOMAttributes["onScroll"] = (_event) => {
         props.onScroll?.();
         handleOverflowMeasure();
     };
 
-    /**
-     * 영역과 내용의 크기 함께 추적. Hono 최초 마운트의 분리된 프래그먼트 측정은 연결 직후 실행
-     */
+    // ----------------------------------------------------------------------------------------
+    // 영역과 내용의 크기 함께 추적
+    //
+    // Hono 최초 마운트의 분리된 프래그먼트 측정은 연결 직후 실행
+    // ----------------------------------------------------------------------------------------
     useLayoutEffect(() => {
         if (!props.ready || props.portRef.current === null) {
             return;

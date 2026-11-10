@@ -2,9 +2,9 @@ import {describe, expect, test} from "vitest";
 import {storage_scroll_key} from "@/store/navigation/_constant/storage";
 import {toNavigationStores} from "@/store/navigation/to-navigation-stores";
 
-/**
- * 세션 저장소의 읽기와 쓰기를 메모리에서 제공하는 테스트 준비
- */
+// ----------------------------------------------------------------------------------------
+// 세션 저장소의 읽기와 쓰기를 메모리에서 제공하는 테스트 준비
+// ----------------------------------------------------------------------------------------
 const toMemoryStorage = () => {
     const session = new Map<string, string>();
 

@@ -1,9 +1,9 @@
 import {describe, expect, test} from "vitest";
 import {toRunDocument} from "@/component/widget/fx/_function/to-run-document";
 
-/**
- * 실행 상자의 srcdoc(src/component/widget/fx/_function/to-run-document.ts) 검증
- */
+// ----------------------------------------------------------------------------------------
+// 실행 상자의 srcdoc(src/component/widget/fx/_function/to-run-document.ts) 검증
+// ----------------------------------------------------------------------------------------
 describe("실행 문서", () => {
     test("콘솔 shim 뒤에 사용자 코드를 두고 id를 전달한다", () => {
         const html = toRunDocument({id: "abc", code: "console.log(1)"});

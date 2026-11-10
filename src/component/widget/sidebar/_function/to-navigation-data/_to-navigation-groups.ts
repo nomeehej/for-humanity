@@ -3,44 +3,30 @@ import {toNavigationDocs} from "@/component/widget/sidebar/_function/to-navigati
 import type {NavigationGroup} from "@/component/widget/sidebar/_type/navigation-data";
 import type {Doc} from "@/type/doc";
 
-/**
- * 같은 부모의 문서를 다음 경로 단계로 묶는 재귀 입력
- */
+// ----------------------------------------------------------------------------------------
+// 같은 부모의 문서를 다음 경로 단계로 묶는 재귀 입력
+//
+// docs: 부모 경로에 속한 문서
+// children: 검증된 부모 id별 문서, 자손을 각 단계에서 다시 수집하지 않음
+// path: 부모까지의 경로, 최상위는 빈 배열
+// positions: 전체 경로의 JSON 키와 navigation 위치
+// unlistedPosition: 미지정 경로를 지정한 묶음 뒤에 배치하는 위치
+// current: 현재 문서 식별자, 홈이면 생략
+// ----------------------------------------------------------------------------------------
 interface NavigationGroupsParams {
-    /**
-     * 부모 경로에 속한 문서
-     */
     docs: readonly Doc[];
-
-    /**
-     * 검증된 부모 id별 문서. 자손을 각 단계에서 다시 수집하지 않음
-     */
     children: ReadonlyMap<Doc["data"]["parent"], Doc[]>;
-
-    /**
-     * 부모까지의 경로. 최상위는 빈 배열
-     */
     path: NavigationGroup["path"];
-
-    /**
-     * 전체 경로의 JSON 키와 navigation 위치
-     */
     positions: ReadonlyMap<string, number>;
-
-    /**
-     * 미지정 경로를 지정한 묶음 뒤에 배치하는 위치
-     */
     unlistedPosition: number;
-
-    /**
-     * 현재 문서 식별자, 홈이면 생략
-     */
     current?: string;
 }
 
-/**
- * 각 단계의 직접 문서와 하위 묶음 분리. 고정된 깊이 제한 없이 구성
- */
+// ----------------------------------------------------------------------------------------
+// 각 단계의 직접 문서와 하위 묶음 분리
+//
+// 고정된 깊이 제한 없이 구성
+// ----------------------------------------------------------------------------------------
 export const toNavigationGroups = (params: NavigationGroupsParams): NavigationGroup[] => {
     return [
         ...Map.groupBy(
