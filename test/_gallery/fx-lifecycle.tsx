@@ -6,9 +6,11 @@ let mounted: ReturnType<typeof createRoot>;
 
 window.fxEnhanced = 0;
 
-/**
- * 공개 번들 밖에서 그림 위젯의 마운트와 해제만 노출. onEnhanced 호출은 fxEnhanced에 셈
- */
+// ----------------------------------------------------------------------------------------
+// 공개 번들 밖에서 그림 위젯의 마운트와 해제만 노출
+//
+// onEnhanced 호출은 fxEnhanced에 셈
+// ----------------------------------------------------------------------------------------
 window.fxFixture = {
     mount: () => {
         mounted = createRoot(document.createElement("div"));
