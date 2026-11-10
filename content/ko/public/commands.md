@@ -105,7 +105,7 @@ pnpm exec for-humanity preview --host
 
 `--private`은 `0.33.0`부터 지원합니다.
 
-`build --private`은 공개 문서와 내부 문서를 함께 담은 사이트를 생성합니다. `dev`가 보여 주는 사이트와 같습니다. 출력은 `content/dist-private`에 생성되고 `content/dist`는 그대로 둡니다.
+`build --private`은 공개 문서와 내부 문서를 함께 담은 사이트(내부판)를 생성합니다. `dev`가 보여 주는 사이트와 같습니다. 출력은 `content/dist-private`에 생성됩니다. `content/dist`는 바뀌지 않습니다.
 
 ```sh
 pnpm exec for-humanity build --private

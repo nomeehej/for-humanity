@@ -148,6 +148,8 @@ TinaCMS는 정적 admin SPA, 토큰과 로그인과 색인 DB를 가진 백엔�
 1. 내부판 빌드: `--private` 옵션, `dist-private` 출력, `url` 출력 제외와 `noindex`, 예약 폴더, `preview --private`. 공개판 출력이 바뀌지 않는 검사와 누출 검사를 먼저 고정한다.
 2. 배포 안내: Cloudflare Access 절차를 실제 배포로 확인한 뒤 Deployment에 적는다. 공개 문서의 `private` 설명을 넓어진 뜻에 맞춘다.
 
+1은 구현했다. 옵션 없는 `build`의 출력은 공식 사이트 문서로 변경 전후를 비교해 파일 141개가 바이트 단위로 같았다. 2는 Deployment에 원칙과 Worker 설정 예시를 적었고 `private` 설명도 맞췄다. Cloudflare Access의 절차는 Cloudflare 문서 링크로만 안내했다. 실제 배포로 확인한 뒤 순서를 적는 일이 남았다.
+
 ## 3단계: 내장 로그인
 
 접근 제어가 없는 호스팅에 내부판을 올려야 하거나, 독자를 저장소 권한으로 정하려는 프로젝트가 실제로 있을 때 시작한다. 서버가 내부판 전체를 GitHub 로그인 뒤에 둔다. 입력은 2단계의 `dist-private` 그대로다.

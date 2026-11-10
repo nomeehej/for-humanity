@@ -124,7 +124,7 @@ export default {
 ```
 
 이 경우 홈은 `knowledge/README.md`, 문서는 `knowledge/published`와 `knowledge/internal`, 출력은 `knowledge/dist`입니다. 설정 파일은 계속 프로젝트 루트에 둡니다.
-공개 문서 `published/guide.md`의 URL은 `/guide/`입니다. 내부 문서 `internal/plan.md`의 URL은 `dev`와 내부판에서 `/private/plan/`입니다.
+공개 문서 `published/guide.md`의 URL은 `/guide/`입니다. 내부 문서 `internal/plan.md`의 URL은 `dev`와 `build --private`의 사이트에서 `/private/plan/`입니다.
 
 경로는 프로젝트 내부의 상대 경로를 사용합니다. `content.root: "."`도 가능하지만 public과 private은 서로 다른 하위 폴더여야 합니다. 두 경로는 같을 수 없고 한쪽이 다른 쪽 안에 들어갈 수도 없습니다.
 `..`, `dist`, `dist-private`, `.git`, `node_modules`가 포함된 경로는 사용할 수 없습니다. `dist-private`은 `0.33.0`부터 예약합니다. 공개 폴더와 내부 폴더 자체를 symlink로 지정할 수 없습니다. symlink로 프로젝트 밖이나 예약 폴더를 가리킬 수도 없습니다.

@@ -205,7 +205,7 @@ Pages에서 문서 프로젝트의 Git 저장소를 연결하고 Framework prese
 
 `build --private`은 `0.33.0`부터 지원합니다.
 
-`build --private`은 공개 문서와 내부 문서를 함께 담은 두 번째 사이트를 `content/dist-private`에 생성합니다. 이 사이트는 공개 사이트와 다른 주소에 배포합니다. 사이트 전체를 호스팅의 접근 제어 뒤에 둡니다. for-humanity는 독자를 로그인시키지 않습니다.
+`build --private`은 공개 문서와 내부 문서를 함께 담은 두 번째 사이트(내부판)를 `content/dist-private`에 생성합니다. 이 사이트는 공개 사이트와 다른 주소에 배포합니다. 사이트 전체를 호스팅의 접근 제어 뒤에 둡니다. for-humanity는 독자를 로그인시키지 않습니다.
 
 | Setting | Value |
 | --- | --- |
