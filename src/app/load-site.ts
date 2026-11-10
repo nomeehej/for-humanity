@@ -32,43 +32,24 @@ import {toAssetPath} from "@/util/file/to-asset-path";
 import {toFontCss} from "@/util/font/to-font-css";
 import {toSitePath} from "@/util/url/to-site-path";
 
-/**
- * 개발과 정적 출력이 공유하는 문서 준비 입력
- */
+// ----------------------------------------------------------------------------------------
+// 개발과 정적 출력이 공유하는 문서 준비 입력
+//
+// root: Markdown과 로컬 참조의 절대 루트
+// includePrivate: 개발 실행과 내부판 빌드의 내부 문서 포함, 생략 시 공개 출력
+// noindex: 내부판 빌드의 모든 페이지 검색 색인 제외, 생략 시 색인 허용
+// kitRoot: 배포 번들과 내장 자원의 패키지 루트
+// site: 시작 시 검증한 사이트 설정
+// browser: 개발 실행기의 브라우저 진입점, 생략 시 배포 번들 사용
+// stylePaths: 개발 실행기의 소스 스타일 URL, 생략 시 내용 지문 포함 배포 CSS 사용
+// ----------------------------------------------------------------------------------------
 export interface SiteParams {
-    /**
-     * Markdown과 로컬 참조의 절대 루트
-     */
     root: string;
-
-    /**
-     * 개발 실행과 내부판 빌드의 내부 문서 포함, 생략 시 공개 출력
-     */
     includePrivate?: boolean;
-
-    /**
-     * 내부판 빌드의 모든 페이지 검색 색인 제외, 생략 시 색인 허용
-     */
     noindex?: boolean;
-
-    /**
-     * 배포 번들과 내장 자원의 패키지 루트
-     */
     kitRoot: string;
-
-    /**
-     * 시작 시 검증한 사이트 설정
-     */
     site: ResolvedSiteConfig;
-
-    /**
-     * 개발 실행기의 브라우저 진입점, 생략 시 배포 번들 사용
-     */
     browser?: SiteAssets["browser"];
-
-    /**
-     * 개발 실행기의 소스 스타일 URL, 생략 시 내용 지문을 붙인 배포 CSS 사용
-     */
     stylePaths?: SiteAssets["stylePaths"];
 }
 

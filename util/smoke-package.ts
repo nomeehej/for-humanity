@@ -150,7 +150,7 @@ try {
         ["https://docs.example.org/", "https://docs.example.org/guide/", "https://docs.example.org/guide/agents/", "https://docs.example.org/guide/options/"].toSorted(),
     );
 
-    // 내부판은 별도 폴더에 내부 문서 포함, 공개 출력은 내부 자료 없이 유지
+    // 내부판의 별도 폴더 출력과 내부 문서 포함, 공개 출력의 내부 자료 미포함 유지
     execFileSync(process.execPath, [join(packageRoot, "dist/cli.js"), "build", "--private", "."], {cwd: consumer, stdio: "inherit"});
 
     const privateOutput = join(consumer, "content/dist-private");

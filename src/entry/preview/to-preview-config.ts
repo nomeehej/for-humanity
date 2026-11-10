@@ -10,33 +10,20 @@ import {copy_error_missing_build} from "@/entry/preview/_constant/copy";
 import type {ResolvedSiteConfig} from "@/type/site-config";
 import {isOutsideRoot} from "@/util/file/is-outside-root";
 
-/**
- * 정적 미리보기 실행 입력
- */
+// ----------------------------------------------------------------------------------------
+// 정적 미리보기 실행 입력
+//
+// root: 출력 폴더 포함 문서 루트
+// outDir: 제공할 빌드 출력 폴더의 절대 경로, 공개판 dist 또는 내부판 dist-private
+// port: 사용할 HTTP 포트, 0은 운영체제 배정
+// host: 루프백, LAN 전체 또는 특정 인터페이스의 수신 주소
+// basePath: 미리보기 URL의 배포 경로
+// ----------------------------------------------------------------------------------------
 interface PreviewParams {
-    /**
-     * 출력 폴더를 포함한 문서 루트
-     */
     root: SiteParams["root"];
-
-    /**
-     * 제공할 빌드 출력 폴더의 절대 경로. 공개판 dist 또는 내부판 dist-private
-     */
     outDir: string;
-
-    /**
-     * 사용할 HTTP 포트, 0은 운영체제 배정
-     */
     port: ResolvedSiteConfig["port"];
-
-    /**
-     * 루프백, LAN 전체 또는 특정 인터페이스의 수신 주소
-     */
     host: ResolvedSiteConfig["host"];
-
-    /**
-     * 미리보기 URL의 배포 경로
-     */
     basePath: ResolvedSiteConfig["basePath"];
 }
 

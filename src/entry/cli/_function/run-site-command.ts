@@ -15,27 +15,18 @@ import {siteConfigSchema} from "@/type/site-config";
 import {toErrorMessage} from "@/util/error/to-error-message";
 import {logger} from "@/util/logger/logger";
 
-/**
- * 사이트 명령 실행 입력
- */
+// ----------------------------------------------------------------------------------------
+// 사이트 명령 실행 입력
+//
+// command: Citty가 선택한 사이트 명령
+// args: 기본 문서 경로 적용 Citty 인자
+// args.host: dev와 preview의 일회성 수신 주소, 생략 시 설정 파일 사용
+// args.private: build와 preview의 내부판 출력 선택, 생략 시 공개판
+// ----------------------------------------------------------------------------------------
 interface CliCommandParams {
-    /**
-     * Citty가 선택한 사이트 명령
-     */
     command: "dev" | "build" | "preview";
-
-    /**
-     * 기본 문서 경로를 적용한 Citty 인자
-     */
     args: ParsedArgs<typeof command_args> & {
-        /**
-         * dev와 preview의 일회성 수신 주소, 생략 시 설정 파일 사용
-         */
         host?: ParsedArgs<typeof command_server_args>["host"];
-
-        /**
-         * build와 preview의 내부판 출력 선택, 생략 시 공개판
-         */
         private?: ParsedArgs<typeof command_build_args>["private"];
     };
 }
@@ -79,7 +70,7 @@ export const runSiteCommand = async (params: CliCommandParams) => {
             root: project.root,
             kitRoot,
 
-            // 내부판의 배포 주소는 공개 주소와 별개, 공개 주소 기준 출력 제외
+            // 내부판은 공개 주소 기준 출력 제외, 배포 주소가 공개 주소와 별개
             site: params.args.private === true ? {...project.site, url: undefined} : project.site,
             includePrivate: params.args.private,
             noindex: params.args.private,

@@ -3,14 +3,15 @@
  */
 export const content_default = {root: "content", public: "public", private: "private"};
 
-/**
- * 공개판의 정적 출력 폴더. 문서 루트 기준
- */
+// ----------------------------------------------------------------------------------------
+// 정적 출력 폴더
+//
+// 문서 루트 기준
+//
+// content_output_dir: 공개판 출력
+// content_private_output_dir: 내부 문서 포함 내부판 출력
+// ----------------------------------------------------------------------------------------
 export const content_output_dir = "dist";
-
-/**
- * 내부 문서를 포함한 내부판의 정적 출력 폴더. 문서 루트 기준
- */
 export const content_private_output_dir = "dist-private";
 
 /**

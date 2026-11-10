@@ -80,7 +80,7 @@ public은 라이브러리를 설치하고 사용하는 독자를 위한 안내�
 - Language: 제목과 짧은 라벨은 영어 우선, 본문과 설명은 한국어([Authoring](authoring.md#language))
 - Commits: 영어 동사로 시작, AI 도움을 받은 제목의 마지막은 ` | aa`, 저장소 루트 `AGENTS.md`와 `CLAUDE.md`
 
-주석 앞에는 빈 줄을 둡니다. 블록, 객체, 배열, JSX의 첫 줄과 연속 주석은 예외입니다. 선언 설명은 여러 줄 JSDoc, 본문의 의도와 절차 설명은 `//`를 사용합니다. JSDoc의 본문은 제목 다음 빈 줄과 들여쓴 목록으로 작성하고, 직접 선언한 타입과 스키마에는 헤더와 필드 설명을 남깁니다. 테스트의 GIVEN, WHEN, THEN은 [테스트 작성 기준](https://github.com/nomeehej/for-humanity/blob/main/test/README.md)에 따른 별도 블록을 사용합니다.
+주석 앞에는 빈 줄을 둡니다. 블록, 객체, 배열, JSX의 첫 줄과 연속 주석은 예외입니다. 선언 설명은 여러 줄 JSDoc, 본문의 의도와 절차 설명은 `//`를 사용합니다. 2026-11-10부터 새로 쓰거나 고치는 선언의 설명은 선언 위 `//` 상자로 쓰고 필드는 상자의 정의 목록에 적습니다. 그 밖의 기존 선언은 아직 여러 줄 JSDoc입니다. JSDoc의 본문은 제목 다음 빈 줄과 들여쓴 목록으로 작성하고, 직접 선언한 타입과 스키마에는 헤더와 필드 설명을 남깁니다. 테스트의 GIVEN, WHEN, THEN은 [테스트 작성 기준](https://github.com/nomeehej/for-humanity/blob/main/test/README.md)에 따른 별도 블록을 사용합니다.
 
 ### Lint coverage
 
