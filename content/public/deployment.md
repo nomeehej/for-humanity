@@ -244,7 +244,15 @@ pnpm exec for-humanity build --private
 pnpm exec wrangler deploy --config wrangler.private.jsonc
 ```
 
-Protect that Worker with Cloudflare Access, then connect its address. Access can cover the Custom Domain, the `workers.dev` address, the preview URLs and the static assets of a Worker together. For the steps, see [Cloudflare Access for Workers](https://developers.cloudflare.com/workers/configuration/cloudflare-access/).
+Protect that Worker with Cloudflare Access before it has an address. Access can cover the Custom Domain, the `workers.dev` address, the preview URLs and the static assets of a Worker together. The order below was checked with the `workers.dev` address and the preview URLs of the private Worker of the official site. For the dashboard steps, see [Cloudflare Access for Workers](https://developers.cloudflare.com/workers/configuration/cloudflare-access/).
+
+1. Deploy with the configuration above. The Worker exists, and no address serves it.
+2. Turn on Cloudflare Access for the Worker in the dashboard, and add the people to allow to its policy.
+3. Open an address in the configuration file. Set `workers_dev` and `preview_urls` to `true`, or add a Custom Domain, and deploy again. A value changed only in the dashboard is overwritten by the next deployment.
+4. Without signing in, request the home page, a private document and a file under `/_fh/` on every address you opened. Each request must redirect to the Access sign-in page.
+5. Sign in with an allowed account and check that the public and the private documents both appear.
+
+To turn Access off, first close the addresses again and deploy.
 With Workers Builds, connect the same repository to both Workers and give each one its own build and deploy commands.
 On a server you run yourself, put Basic authentication or an authentication proxy in front of the folder.
 

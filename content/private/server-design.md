@@ -148,7 +148,7 @@ TinaCMS는 정적 admin SPA, 토큰과 로그인과 색인 DB를 가진 백엔�
 1. 내부판 빌드: `--private` 옵션, `dist-private` 출력, `url` 출력 제외와 `noindex`, 예약 폴더, `preview --private`. 공개판 출력이 바뀌지 않는 검사와 누출 검사를 먼저 고정한다.
 2. 배포 안내: Cloudflare Access 절차를 실제 배포로 확인한 뒤 Deployment에 적는다. 공개 문서의 `private` 설명을 넓어진 뜻에 맞춘다.
 
-1은 구현했다. 옵션 없는 `build`의 출력은 공식 사이트 문서로 변경 전후를 비교해 파일 141개가 바이트 단위로 같았다. 2는 Deployment에 원칙과 Worker 설정 예시를 적었고 `private` 설명도 맞췄다. Cloudflare Access의 절차는 Cloudflare 문서 링크로만 안내했다. 실제 배포로 확인한 뒤 순서를 적는 일이 남았다.
+1은 구현했다. 옵션 없는 `build`의 출력은 공식 사이트 문서로 변경 전후를 비교해 파일 141개가 바이트 단위로 같았다. 2는 Deployment에 원칙과 Worker 설정 예시를 적었고 `private` 설명도 맞췄다. Cloudflare Access의 순서는 2026-11-10에 공식 저장소의 내부판 Worker로 확인한 대로 적었다. 대시보드 화면의 절차는 Cloudflare 문서 링크로 안내한다.
 
 ## 3단계: 내장 로그인
 
@@ -306,7 +306,7 @@ dev는 지금처럼 Vite 서버 하나다. 내부 문서는 로그인 없이 보
 
 2단계의 호스팅:
 
-- Cloudflare Access가 Worker의 Custom Domain, `workers.dev`, 미리보기 주소, 정적 자산을 모두 막는지. 2026-11-10에 공식 저장소의 내부판 Worker에서 `workers.dev`와 버전 주소, 정적 자산이 로그인 주소로 302 이동하는 것을 확인했다. Custom Domain과 로그인 뒤의 화면은 아직 확인하지 않았다.
+- Cloudflare Access가 Worker의 Custom Domain, `workers.dev`, 미리보기 주소, 정적 자산을 모두 막는지. 2026-11-10에 공식 저장소의 내부판 Worker에서 `workers.dev`와 버전 주소, 정적 자산이 로그인 주소로 302 이동하는 것을 확인했다. 허용한 이메일로 로그인한 화면에서 공개 문서와 내부 문서가 함께 보이는 것도 같은 날 확인했다. Custom Domain은 아직 확인하지 않았다.
 - 새 Worker를 주소 없이 배포한 뒤 Access를 켜고 주소를 붙이는 순서가 되는지. 같은 날 이 순서로 진행했고 주소를 연 직후의 첫 요청부터 로그인을 요구했다.
 - Access의 무료 요금제가 허용하는 사용자 수.
 

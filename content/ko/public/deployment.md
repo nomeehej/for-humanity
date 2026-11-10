@@ -244,7 +244,15 @@ pnpm exec for-humanity build --private
 pnpm exec wrangler deploy --config wrangler.private.jsonc
 ```
 
-그 Worker를 Cloudflare Access로 보호한 뒤 주소를 연결합니다. Access는 Worker의 Custom Domain, `workers.dev` 주소, 미리보기 URL, 정적 자산을 함께 보호할 수 있습니다. 절차는 [Cloudflare Access for Workers](https://developers.cloudflare.com/workers/configuration/cloudflare-access/)를 참고합니다.
+그 Worker에 주소가 생기기 전에 Cloudflare Access로 보호합니다. Access는 Worker의 Custom Domain, `workers.dev` 주소, 미리보기 URL, 정적 자산을 함께 보호할 수 있습니다. 아래 순서는 공식 사이트의 내부판 Worker에서 `workers.dev` 주소와 미리보기 URL로 확인했습니다. 대시보드 화면의 절차는 [Cloudflare Access for Workers](https://developers.cloudflare.com/workers/configuration/cloudflare-access/)를 참고합니다.
+
+1. 위 설정으로 배포합니다. Worker는 생기지만 어떤 주소로도 열리지 않습니다.
+2. 대시보드에서 그 Worker의 Cloudflare Access를 켜고 허용할 사람을 정책에 넣습니다.
+3. 설정 파일에서 주소를 엽니다. `workers_dev`와 `preview_urls`를 `true`로 바꾸거나 Custom Domain을 추가한 뒤 다시 배포합니다. 대시보드에서만 바꾼 값은 다음 배포가 덮어씁니다.
+4. 연 주소마다 로그인하지 않은 상태로 홈, 내부 문서, `/_fh/` 아래 파일을 요청합니다. 모든 요청이 Access 로그인 페이지로 이동해야 합니다.
+5. 허용한 계정으로 로그인해 공개 문서와 내부 문서가 함께 보이는지 확인합니다.
+
+Access를 끄려면 먼저 주소를 다시 닫고 배포합니다.
 Workers Builds를 사용하면 같은 저장소를 두 Worker에 각각 연결하고 빌드 명령과 배포 명령을 따로 지정합니다.
 직접 운영하는 서버에서는 폴더 앞에 Basic 인증이나 인증 프록시를 둡니다.
 
