@@ -1,8 +1,8 @@
-/*
- * 공통 토큰의 단일 출처, --app-종류-쓰임
- * 사용 기준: content/private/design.md, 테마 분기는 color-scheme에 한정
- * 폭 기준 1360px, 1024px, 640px, 양쪽 탐색과 본문 배치
- */
+/* ------------------------------------------------------------------------------------- */
+/* 공통 토큰의 단일 출처, --app-종류-쓰임 */
+/* 사용 기준: content/private/design.md, 테마 분기는 color-scheme에 한정 */
+/* 폭 기준 1360px, 1024px, 640px, 양쪽 탐색과 본문 배치 */
+/* ------------------------------------------------------------------------------------- */
 
 :root {
     /* 시스템의 밝은, 어두운 설정 그대로 적용 */
@@ -68,13 +68,17 @@
     --app-color-ref-amber: var(--app-color-unverified);
     --app-color-ref-amber-soft: var(--app-color-unverified-soft);
 
-    /*
-     * 내장 글꼴, CLI는 @font-face와 자원 URL 생성
-     * 본문은 한글과 영문 모두 IBM Plex Sans KR, 코드의 영문, 숫자, 기호는 Monoplex KR, 사이트 이름 Architects Daughter
-     * 코드 맨 앞의 IBM Plex Sans KR Hangul은 같은 파일의 한글 unicode-range만 담당, 영문 폭 0.528em 고정폭은 다음 순서의 Monoplex KR
-     * 코드 블록의 한글은 비례폭이라 영문 2칸에 맞지 않음. 코드의 한글은 대부분 주석이라 본문과 같은 모양을 우선
-     * 본문의 Monoplex KR은 IBM Plex Sans KR에 없는 글자의 대체, 글꼴을 못 받은 첫 표시는 시스템 산세리프
-     */
+    /* ------------------------------------------------------------------------------------- */
+    /* 내장 글꼴, CLI는 @font-face와 자원 URL 생성 */
+    /* 본문은 한글과 영문 모두 IBM Plex Sans KR, 코드의 영문, 숫자, 기호는 Monoplex KR, */
+    /*   사이트 이름 Architects Daughter */
+    /* 코드 맨 앞의 IBM Plex Sans KR Hangul은 같은 파일의 한글 unicode-range만 담당, 영문 폭 */
+    /*   0.528em 고정폭은 다음 순서의 Monoplex KR */
+    /* 코드 블록의 한글은 비례폭이라 영문 2칸에 맞지 않음 */
+    /* 코드의 한글은 대부분 주석이라 본문과 같은 모양을 우선 */
+    /* 본문의 Monoplex KR은 IBM Plex Sans KR에 없는 글자의 대체, 글꼴을 못 받은 첫 표시는 */
+    /*   시스템 산세리프 */
+    /* ------------------------------------------------------------------------------------- */
     --app-font-mono: "IBM Plex Sans KR Hangul", "Monoplex KR", ui-monospace, monospace;
     --app-font-body: "IBM Plex Sans KR", "Monoplex KR", system-ui, sans-serif;
     --app-font-brand: "Architects Daughter", var(--app-font-body);

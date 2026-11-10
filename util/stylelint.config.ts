@@ -27,7 +27,7 @@ const toOwnClassPattern = (scope: "pg" | "wg" | "ui") => {
 };
 
 // ----------------------------------------------------------------------------------------
-// 이름을 정하지 않는 라이브러리 클래스
+// 이름 지정 없는 라이브러리 클래스
 //
 // 소유 root 아래에서만 선택
 // Shiki의 코드 줄 표기, Mermaid의 공유 툴팁
@@ -41,7 +41,8 @@ const own_markup_patterns = [
     // 최상위 상태 선택자 금지
     /^\.[\w-]+:(hover|focus|focus-visible|focus-within|active|enabled|disabled|checked|visited)/,
 
-    // 소유 마크업의 요소 선택자 금지. 생성 마크업은 이유를 적은 예외
+    // 소유 마크업의 요소 선택자 금지
+    // 생성 마크업은 이유 주석이 있는 예외
     /^&\s*[>+~]?\s*[a-z]/,
 ];
 
@@ -55,16 +56,20 @@ const toDisallowedSelectors = (foreignScopes: RegExp[]): [RegExp[], {splitList: 
 export default {
     extends: ["stylelint-config-standard"],
 
-    // 더 이상 필요 없는 disable 주석 검출. 예외 주석이 실제 위반에만 남도록 유지
+    // 불필요한 disable 주석 검출, 예외 주석은 실제 위반에만 유지
     reportNeedlessDisables: true,
 
     // 외부 글꼴 CSS 제외
     ignoreFiles: ["src/asset/**/*.css"],
     rules: {
-        // @media 내부 클래스 깊이 0. 상태 중첩 1단계 허용
+        // 줄마다 닫은 주석 상자 허용. 앞 줄이 주석이면 빈 줄 없이 연결
+        "comment-empty-line-before": ["always", {except: ["first-nested"], ignore: ["after-comment", "stylelint-commands"]}],
+
+        // @media 내부 클래스 깊이 0
+        // 상태 중첩 1단계 허용
         "max-nesting-depth": [1, {ignoreAtRules: ["media", "supports", "container"]}],
 
-        // 전역 keyframes 이름에 소유자 명시. 수정자 구분자와 혼동 방지
+        // 전역 keyframes 이름에 소유자 명시, 수정자 구분자와 혼동 방지
         "keyframes-name-pattern": "^(pg|wg|ui)_[a-z][a-zA-Z0-9]*__[a-z][a-zA-Z0-9]*$",
 
         // 쉼표 목록 이후의 단독 중복 선언 포함
@@ -73,7 +78,8 @@ export default {
         // !important: 전역 움직임 줄이기만 허용
         "declaration-no-important": true,
 
-        // 지역 CSS 변수 선언 금지. var() 소비 허용
+        // 지역 CSS 변수 선언 금지
+        // var() 소비 허용
         "property-disallowed-list": ["/^--/"],
 
         // 소유 마크업의 상태는 수정자 클래스
@@ -106,7 +112,8 @@ export default {
             },
         },
         {
-            // 전역 스타일과 그림 작성 어휘는 소유 클래스 문법 제외. 작성 어휘의 --fx-* 공개 변수 선언 허용
+            // 전역 스타일과 그림 작성 어휘는 소유 클래스 문법 제외
+            // 작성 어휘의 --fx-* 공개 변수 선언 허용
             files: ["src/style/**/*.css", "src/*.css"],
             rules: {
                 "selector-class-pattern": null,
@@ -118,7 +125,8 @@ export default {
             },
         },
         {
-            // 그림 작성 어휘. 전역 !important 예외 밖이고 소유 클래스 이름은 쓰지 않음
+            // 그림 작성 어휘는 전역 !important 예외 밖
+            // 소유 클래스 이름 사용 금지
             files: ["src/style/authoring/**/*.css"],
             rules: {
                 "declaration-no-important": true,
@@ -135,7 +143,8 @@ export default {
                 // 컴포넌트 클래스의 선언은 소유 CSS에 한정
                 "selector-disallowed-list": [/\.(pg|wg|ui)_/],
 
-                // var() 소비까지 검사. 외부 변수 소비 파일 제외
+                // var() 소비까지 검사
+                // 외부 변수 소비 파일 제외
                 "custom-property-pattern": "^app-[a-z0-9-]+$",
             },
         },
