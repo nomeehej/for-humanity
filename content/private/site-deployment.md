@@ -68,6 +68,7 @@ Workers의 Builds에 저장소를 연결하고 다음 값을 지정합니다.
 HTML에는 `public, max-age=0, must-revalidate, no-transform`, `/_fh/*`에는 `public, max-age=31536000, immutable`을 적용합니다.
 내용 지문이 붙은 자원은 내용 변경 시 URL도 바뀝니다. `_headers`는 Workers 정적 자산에서 직접 해석합니다.
 헤더 계약은 [Headers](https://developers.cloudflare.com/workers/static-assets/headers/)를 참고합니다.
+2026-11-10에 확인한 공식 사이트의 응답에는 이 헤더가 없습니다. `/_fh/` 아래 CSS와 HTML이 모두 `public, max-age=0, must-revalidate`로 옵니다. 같은 출력 폴더를 로컬 `wrangler dev`로 열면 두 헤더가 모두 나옵니다. Workers Builds가 `pnpm build:site`의 헤더 복사까지 실행하는지 대시보드의 빌드 명령과 빌드 로그를 확인해야 합니다.
 로컬 `preview`도 없는 문서에 생성된 화면과 HTTP 404를 반환합니다. 플랫폼의 경로 정규화와 헤더는 `wrangler dev` 또는 배포 주소에서 확인합니다.
 상태 화면 이미지는 `statusImage`로 교체합니다. 기본 이미지는 favicon의 얼굴과 같은 색, 윤곽, 눈을 유지한 슬픈 표정이며 favicon과 커서 이미지는 유지합니다.
 
