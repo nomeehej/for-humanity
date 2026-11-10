@@ -5,24 +5,20 @@ import type {ContentScope} from "@/type/content-scope";
 import {hasReservedFolder} from "@/util/file/has-reserved-folder";
 import {isOutsideRoot} from "@/util/file/is-outside-root";
 
-/**
- * 문서 참조의 공개 범위 검증 입력
- */
+// ----------------------------------------------------------------------------------------
+// 문서 참조의 공개 범위 검증 입력
+//
+// scope: 렌더 회차의 문서 범위
+// path: 검증할 파일이나 폴더의 절대 경로
+// ----------------------------------------------------------------------------------------
 interface ContentPathParams {
-    /**
-     * 렌더 회차의 문서 범위
-     */
     scope: ContentScope;
-
-    /**
-     * 검증할 파일이나 폴더의 절대 경로
-     */
     path: string;
 }
 
-/**
- * 파일 경로와 symlink 대상의 공개 범위 검사
- */
+// ----------------------------------------------------------------------------------------
+// 파일 경로와 symlink 대상의 공개 범위 검사
+// ----------------------------------------------------------------------------------------
 export const assertContentPath = (params: ContentPathParams) => {
     for (const path of [resolve(params.path), ...(existsSync(params.path) ? [realpathSync(params.path)] : [])]) {
         const location = relative(params.scope.root, path);

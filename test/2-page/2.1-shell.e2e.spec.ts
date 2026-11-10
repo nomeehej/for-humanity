@@ -9,11 +9,11 @@ test.use({
     },
 });
 
-/**
- * 페이지 셸의 head(src/component/widget/shell/wg-shell.tsx) 검증
- *
- *   - 설치 번들과 저장소 소스 개발의 같은 HTML 계약
- */
+// ----------------------------------------------------------------------------------------
+// 페이지 셸의 head(src/component/widget/shell/wg-shell.tsx) 검증
+//
+// 설치 번들과 저장소 소스 개발의 같은 HTML 계약
+// ----------------------------------------------------------------------------------------
 test.describe("페이지 셸", () => {
     for (const scenario of [
         {caseId: "SHL-006", name: "설치 번들의 head", source: false},

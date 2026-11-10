@@ -1,11 +1,11 @@
 import {fileURLToPath} from "node:url";
 import type {InlineConfig} from "vite";
 
-/**
- * 제품과 브라우저 fixture의 동기 Hono DOM 번들 설정
- *
- *   - 스타일은 서버 번들에서 수집, 브라우저 번들에서는 중복 제외
- */
+// ----------------------------------------------------------------------------------------
+// 제품과 브라우저 fixture의 동기 Hono DOM 번들 설정
+//
+// 스타일은 서버 번들에서 수집, 브라우저 번들에서는 중복 제외
+// ----------------------------------------------------------------------------------------
 export const toBrowserConfig = (entry: string): InlineConfig => {
     return {
         configFile: false,

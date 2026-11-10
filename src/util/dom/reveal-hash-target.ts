@@ -1,10 +1,11 @@
 import {toHashId} from "@/util/dom/to-hash-id";
 
-/**
- * 접힌 내용의 해시 대상과 상위 Details 공개. 대상 id가 없으면 없음
- *
- *   - 초기 접속, 문서 안 링크, 해시 변경에 동일 적용
- */
+// ----------------------------------------------------------------------------------------
+// 접힌 내용의 해시 대상과 상위 Details 공개
+//
+// 대상 id가 없으면 없음
+// 초기 접속, 문서 안 링크, 해시 변경에 동일 적용
+// ----------------------------------------------------------------------------------------
 export const revealHashTarget = (hash: string): HTMLElement | null => {
     const id = toHashId(hash);
     const target = id === undefined ? null : document.getElementById(id);

@@ -6,24 +6,20 @@ import {type PreviewServer, preview} from "vite";
 import {describe, expect} from "vitest";
 import {toPreviewConfig} from "@/entry/preview/to-preview-config";
 
-/**
- * 실제 HTTP 요청으로 확인하는 정적 미리보기
- */
+// ----------------------------------------------------------------------------------------
+// 실제 HTTP 요청으로 확인하는 정적 미리보기
+//
+// previewServer: 케이스마다 시작하고 종료하는 Vite preview
+// previewUrl: 운영체제가 배정한 로컬 접속 주소
+// ----------------------------------------------------------------------------------------
 interface PreviewFixture {
-    /**
-     * 케이스마다 시작하고 종료하는 Vite preview
-     */
     previewServer: PreviewServer;
-
-    /**
-     * 운영체제가 배정한 로컬 접속 주소
-     */
     previewUrl: string;
 }
 
-/**
- * 임시 루트의 빌드 결과를 제공하는 미리보기 서버 fixture
- */
+// ----------------------------------------------------------------------------------------
+// 임시 루트의 빌드 결과를 제공하는 미리보기 서버 fixture
+// ----------------------------------------------------------------------------------------
 const test = base.extend<PreviewFixture>({
     previewServer: async ({root}, use) => {
         await mkdir(join(root, "dist/guide/nested"), {recursive: true});
@@ -58,9 +54,9 @@ const test = base.extend<PreviewFixture>({
     },
 });
 
-/**
- * 정적 미리보기(src/entry/preview/to-preview-config.ts) 검증
- */
+// ----------------------------------------------------------------------------------------
+// 정적 미리보기(src/entry/preview/to-preview-config.ts) 검증
+// ----------------------------------------------------------------------------------------
 describe("정적 미리보기", () => {
     describe("서버 시작", () => {
         test("[PRV-001] 빌드 결과가 없으면 서버를 시작하지 않고 빌드 안내와 종료 코드 1을 반환한다", ({root}) => {

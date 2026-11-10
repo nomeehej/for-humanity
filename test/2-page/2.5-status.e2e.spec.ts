@@ -11,9 +11,9 @@ test.use({
 
 test.use({basePath: "/project/", javaScriptEnabled: false});
 
-/**
- * 빌드된 상태 화면(src/page/status, src/component/ui/status)의 실제 브라우저 검증
- */
+// ----------------------------------------------------------------------------------------
+// 빌드된 상태 화면(src/page/status, src/component/ui/status)의 실제 브라우저 검증
+// ----------------------------------------------------------------------------------------
 test.describe("상태 화면", () => {
     for (const layout of [
         {caseId: "STA-007", name: "데스크톱 밝은 테마", options: {viewport: {width: 1600, height: 1000}, colorScheme: "light" as const}},

@@ -10,9 +10,9 @@ import {loadSite} from "@/app/load-site";
 import {asset_style_path} from "@/constant/asset";
 import {siteConfigSchema} from "@/type/site-config";
 
-/**
- * README 홈(src/app/_function/read-home.ts, src/page/home) 검증
- */
+// ----------------------------------------------------------------------------------------
+// README 홈(src/app/_function/read-home.ts, src/page/home) 검증
+// ----------------------------------------------------------------------------------------
 describe("홈", () => {
     describe("README 홈", () => {
         test("[HOM-001] 루트 README는 홈으로 렌더하고 중첩 문서의 홈 링크를 해석한다", async ({scope}) => {

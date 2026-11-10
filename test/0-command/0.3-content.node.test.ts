@@ -6,9 +6,10 @@ import {describe, expect} from "vitest";
 import {loadSite} from "@/app/load-site";
 import {siteConfigSchema} from "@/type/site-config";
 
-/**
- * 공개, 내부 문서 범위(src/app/load-site.ts, src/app/_function/to-site-image-path.ts, src/util/file/assert-content-path.ts) 검증
- */
+// ----------------------------------------------------------------------------------------
+// 공개, 내부 문서 범위(src/app/load-site.ts, src/app/_function/to-site-image-path.ts,
+//   src/util/file/assert-content-path.ts) 검증
+// ----------------------------------------------------------------------------------------
 describe("공개와 내부 문서", () => {
     describe("공개 빌드", () => {
         test("[CNT-001] 기본 프로젝트 빌드는 공개 URL을 유지하고 내부 본문과 자원을 제외한다", {timeout: 45000}, async ({root}) => {

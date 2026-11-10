@@ -3,11 +3,11 @@ import {join} from "node:path";
 import type {Plugin} from "vite";
 import {z} from "zod";
 
-/**
- * 실제 번들 모듈의 전체 라이선스와 NOTICE 동봉
- *
- *   - 제약: Vite 기본 license 출력은 첫 라이선스 파일만 포함, 추가 고지 수집 필요
- */
+// ----------------------------------------------------------------------------------------
+// 실제 번들 모듈의 전체 라이선스와 NOTICE 동봉
+//
+// 제약: Vite 기본 license 출력은 첫 라이선스 파일만 포함, 추가 고지 수집 필요
+// ----------------------------------------------------------------------------------------
 export const toNoticesPlugin = (): Plugin => {
     return {
         name: "for-humanity:notices",

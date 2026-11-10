@@ -9,29 +9,24 @@ import {preview} from "vite";
 import {font_display_strategy} from "@/constant/font";
 import {toPreviewConfig} from "@/entry/preview/to-preview-config";
 
-/**
- * 브라우저에서 수집한 자원 요청과 실행 오류, 케이스별 격리
- */
+// ----------------------------------------------------------------------------------------
+// 브라우저에서 수집한 자원 요청과 실행 오류, 케이스별 격리
+//
+// requests: 실제 요청한 자원 URL
+// errors: 처리되지 않은 페이지 오류
+// consoleErrors: console.error에 기록한 메시지
+// ----------------------------------------------------------------------------------------
 interface BrowserRuntime {
-    /**
-     * 실제 요청한 자원 URL
-     */
     requests: string[];
-
-    /**
-     * 처리되지 않은 페이지 오류
-     */
     errors: string[];
-
-    /**
-     * console.error에 기록한 메시지
-     */
     consoleErrors: string[];
 }
 
-/**
- * 워커마다 격리한 실제 CLI 출력과 빈 포트의 로컬 서버. 브라우저 상태는 케이스마다 격리
- */
+// ----------------------------------------------------------------------------------------
+// 워커마다 격리한 실제 CLI 출력과 빈 포트의 로컬 서버
+//
+// 브라우저 상태는 케이스마다 격리
+// ----------------------------------------------------------------------------------------
 export const test = base.extend<{runtime: BrowserRuntime}, {mermaidSite: string}>({
     mermaidSite: [
         // biome-ignore lint/correctness/noEmptyPattern: Playwright가 구조분해 매개변수로 fixture 의존성을 조회

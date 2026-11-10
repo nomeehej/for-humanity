@@ -2,9 +2,9 @@ import type {Page} from "@playwright/test";
 import {z} from "zod";
 import {storage_scroll_key} from "@/store/navigation/_constant/storage";
 
-/**
- * 브라우저 저장 원문에서 단언에 사용할 위치 추출
- */
+// ----------------------------------------------------------------------------------------
+// 브라우저 저장 원문에서 단언에 사용할 위치 추출
+// ----------------------------------------------------------------------------------------
 export const readNavigationScroll = async (page: Page) => {
     const serialized = await page.evaluate((key) => sessionStorage.getItem(key), storage_scroll_key);
 

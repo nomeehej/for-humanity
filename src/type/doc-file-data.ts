@@ -3,27 +3,19 @@ import type {DocAnchor} from "@/type/doc-anchor";
 import type {DocData} from "@/type/doc-data";
 import type {DocOutline} from "@/type/doc-outline";
 
-/**
- * 문서 처리 중간 계약. read-docs의 머리말과 rehype의 제목, 절 정보
- */
+// ----------------------------------------------------------------------------------------
+// 문서 처리 중간 계약
+//
+// read-docs의 머리말과 rehype의 제목, 절 정보
+//
+// frontmatter: 일반 문서의 검증된 머리말, README 홈은 생략
+// locale: 번역 문서의 언어 코드, 기본 언어 문서와 README 홈은 생략
+// anchors: 다른 문서의 제목을 가리키는 링크, read-docs 가 전체 수집 뒤 검증
+// ids: 문서 안 요소의 id, 제목의 자동 id와 원시 HTML에 쓴 id, hash 링크의 대상
+// ----------------------------------------------------------------------------------------
 export interface DocFileData extends DocOutline {
-    /**
-     * 일반 문서의 검증된 머리말. README 홈은 생략
-     */
     frontmatter?: DocData;
-
-    /**
-     * 번역 문서의 언어 코드. 기본 언어 문서와 README 홈은 생략
-     */
     locale?: ContentLocale["code"];
-
-    /**
-     * 다른 문서의 제목을 가리키는 링크. read-docs 가 전체 수집 뒤 검증
-     */
     anchors: DocAnchor[];
-
-    /**
-     * 문서 안 요소의 id. 제목의 자동 id와 원시 HTML에 쓴 id. hash 링크의 대상
-     */
     ids: Set<string>;
 }

@@ -8,9 +8,9 @@ import {asset_style_path} from "@/constant/asset";
 import {docDataSchema} from "@/type/doc-data";
 import {siteConfigSchema} from "@/type/site-config";
 
-/**
- * 페이지 셸 HTML(src/component/widget/shell/wg-shell.tsx) 검증
- */
+// ----------------------------------------------------------------------------------------
+// 페이지 셸 HTML(src/component/widget/shell/wg-shell.tsx) 검증
+// ----------------------------------------------------------------------------------------
 describe("페이지 셸", () => {
     describe("head", () => {
         test("[SHL-001] head 자원의 중복을 제거하고 스타일 순서와 글꼴 선요청을 유지한다", async () => {

@@ -7,15 +7,15 @@ import {loadBrowserScript} from "@test/_fixture/load-browser-script";
 import {preview} from "vite";
 import {toPreviewConfig} from "@/entry/preview/to-preview-config";
 
-/**
- * 네 종류의 그림과 그림 아래 제목을 둔 영어 문서
- *
- *   - 단계: data-on 세 형식, data-hl, data-pos, 캡션 셋
- *   - 탭: data-labels와 data-steps
- *   - 작성자 스크립트가 fx:step을 받고 fx:goto를 보내는 단계 그림
- *   - 슬라이더, 실행 상자, custom의 data-icon 버튼
- *   - hash 진입을 볼 그림 아래 제목과 화면보다 긴 본문
- */
+// ----------------------------------------------------------------------------------------
+// 네 종류의 그림과 그림 아래 제목을 둔 영어 문서
+//
+// 단계: data-on 세 형식, data-hl, data-pos, 캡션 셋
+// 탭: data-labels와 data-steps
+// 작성자 스크립트가 fx:step을 받고 fx:goto를 보내는 단계 그림
+// 슬라이더, 실행 상자, custom의 data-icon 버튼
+// hash 진입을 볼 그림 아래 제목과 화면보다 긴 본문
+// ----------------------------------------------------------------------------------------
 const figures_document = [
     "---",
     "name: Figures",
@@ -95,9 +95,11 @@ const figures_document = [
     "",
 ].join("\n");
 
-/**
- * 워커마다 격리한 실제 CLI 출력과 빈 포트의 로컬 서버. /lifecycle/은 셸 번들 대신 갤러리 스크립트
- */
+// ----------------------------------------------------------------------------------------
+// 워커마다 격리한 실제 CLI 출력과 빈 포트의 로컬 서버
+//
+// /lifecycle/은 셸 번들 대신 갤러리 스크립트
+// ----------------------------------------------------------------------------------------
 export const test = base.extend<Record<never, never>, {fxSite: string}>({
     fxSite: [
         // biome-ignore lint/correctness/noEmptyPattern: Playwright가 구조분해 매개변수로 fixture 의존성을 조회

@@ -4,26 +4,22 @@ import {copy_error_locale_id, copy_error_markdown_outside, copy_error_private_id
 import type {ContentScope} from "@/type/content-scope";
 import {isOutsideRoot} from "@/util/file/is-outside-root";
 
-/**
- * 원본 문서의 사이트 식별자 변환 입력
- */
+// ----------------------------------------------------------------------------------------
+// 원본 문서의 사이트 식별자 변환 입력
+//
+// scope: 공개, 내부, 번역 문서의 경로 기준
+// path: Markdown 원본의 절대 경로
+// ----------------------------------------------------------------------------------------
 interface ContentIdParams {
-    /**
-     * 공개, 내부, 번역 문서의 경로 기준
-     */
     scope: ContentScope;
-
-    /**
-     * Markdown 원본의 절대 경로
-     */
     path: string;
 }
 
-/**
- * 폴더 이름과 독립적인 공개 URL, 내부 문서의 private 접두사, 번역 문서의 언어 코드 접두사
- *
- *   - 문서 루트의 README는 빈 id, 번역 폴더의 README는 언어 코드 하나
- */
+// ----------------------------------------------------------------------------------------
+// 폴더 이름과 독립적인 공개 URL, 내부 문서의 private 접두사, 번역 문서의 언어 코드 접두사
+//
+// 문서 루트의 README는 빈 id, 번역 폴더의 README는 언어 코드 하나
+// ----------------------------------------------------------------------------------------
 export const toContentId = (params: ContentIdParams) => {
     if (relative(params.scope.root, params.path).toLowerCase() === "readme.md") {
         return "";

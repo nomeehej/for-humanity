@@ -10,9 +10,11 @@ test.use({
 
 test.use({viewport: {width: 1920, height: 600}});
 
-/**
- * 문서 탐색 셸(src/component/widget/shell-controls) 검증. 갤러리에서 마운트한 셸
- */
+// ----------------------------------------------------------------------------------------
+// 문서 탐색 셸(src/component/widget/shell-controls) 검증
+//
+// 갤러리에서 마운트한 셸
+// ----------------------------------------------------------------------------------------
 test.describe("문서 탐색", () => {
     test.describe("셸 컴포넌트 수명", () => {
         test("[NAV-014] 반복 마운트와 해제에서 구독과 타이머를 정리한다", {tag: "@high"}, async ({page}) => {
@@ -56,9 +58,9 @@ test.describe("문서 탐색", () => {
 
             const initialListeners = await page.evaluate(() => window.shellListeners.length);
 
-            /**
-             * 시작 위치 이후 설치하고 해제하지 않은 셸 소유 전역 구독
-             */
+            // ----------------------------------------------------------------------------------------
+            // 시작 위치 이후 설치하고 해제하지 않은 셸 소유 전역 구독
+            // ----------------------------------------------------------------------------------------
             const readActiveListeners = (start: number) => {
                 return page.evaluate((from) => {
                     return window.shellListeners

@@ -7,9 +7,10 @@ import {readHome} from "@/app/_function/read-home";
 import {toProcessor} from "@/app/_function/to-processor/to-processor";
 import {siteConfigSchema} from "@/type/site-config";
 
-/**
- * 코드 블록과 스니펫(src/component/widget/article/_constant/shiki-transformers.ts, src/app/_function/to-processor/_remark-snippets.ts) 검증
- */
+// ----------------------------------------------------------------------------------------
+// 코드 블록과 스니펫(src/component/widget/article/_constant/shiki-transformers.ts,
+//   src/app/_function/to-processor/_remark-snippets.ts) 검증
+// ----------------------------------------------------------------------------------------
 describe("코드 블록", () => {
     describe("코드 표기", () => {
         test("[COD-001] 코드 줄 표기와 메타 정보가 강조와 줄 번호로 표시된다", async ({scope}) => {

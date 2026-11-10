@@ -1,9 +1,9 @@
 import {toBrowserConfig} from "@tool/to-browser-config";
 import {build, mergeConfig} from "vite";
 
-/**
- * 제품과 같은 설정으로 fixture 번들 생성, 디스크 출력 미포함
- */
+// ----------------------------------------------------------------------------------------
+// 제품과 같은 설정으로 fixture 번들 생성, 디스크 출력 미포함
+// ----------------------------------------------------------------------------------------
 export const loadBrowserScript = async (entry: string) => {
     const result = await build(mergeConfig(toBrowserConfig(entry), {logLevel: "error", build: {write: false}}));
 

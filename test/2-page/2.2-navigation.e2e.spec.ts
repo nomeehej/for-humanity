@@ -11,29 +11,22 @@ test.use({
     },
 });
 
-/**
- * 탐색 배치 검사 한 건
- */
+// ----------------------------------------------------------------------------------------
+// 탐색 배치 검사 한 건
+//
+// caseId: 케이스 번호
+// name: 화면 크기와 표시 환경의 이름
+// options: 브라우저 컨텍스트의 화면, 테마, 입력, 스크립트 설정
+// ----------------------------------------------------------------------------------------
 interface LayoutCase {
-    /**
-     * 케이스 번호
-     */
     caseId: string;
-
-    /**
-     * 화면 크기와 표시 환경의 이름
-     */
     name: string;
-
-    /**
-     * 브라우저 컨텍스트의 화면, 테마, 입력, 스크립트 설정
-     */
     options: BrowserContextOptions & {viewport: ViewportSize};
 }
 
-/**
- * 배치 경계 1360px, 1024px의 양쪽과 휴대폰, 어두운 테마, 강제 색상, 스크립트 없음
- */
+// ----------------------------------------------------------------------------------------
+// 배치 경계 1360px, 1024px의 양쪽과 휴대폰, 어두운 테마, 강제 색상, 스크립트 없음
+// ----------------------------------------------------------------------------------------
 const navigation_layouts: LayoutCase[] = [
     {caseId: "NAV-001", name: "와이드 1920px", options: {viewport: {width: 1920, height: 600}}},
     {caseId: "NAV-002", name: "와이드 경계 1360px 어두운 테마", options: {viewport: {width: 1360, height: 600}, colorScheme: "dark"}},
@@ -48,9 +41,10 @@ const navigation_layouts: LayoutCase[] = [
 
 test.use({viewport: {width: 1920, height: 600}});
 
-/**
- * 문서 탐색 화면(src/component/widget/sidebar, src/component/widget/shell-controls, src/component/widget/cursor-face) 검증
- */
+// ----------------------------------------------------------------------------------------
+// 문서 탐색 화면(src/component/widget/sidebar, src/component/widget/shell-controls,
+//   src/component/widget/cursor-face) 검증
+// ----------------------------------------------------------------------------------------
 test.describe("문서 탐색", () => {
     for (const layout of navigation_layouts) {
         test.describe(`레이아웃 ${layout.name}`, () => {
@@ -207,9 +201,9 @@ test.describe("문서 탐색", () => {
 
                     let frames = 0;
 
-                    /**
-                     * 최초 프레임부터 적용한 탐색 위치 수집
-                     */
+                    // ----------------------------------------------------------------------------------------
+                    // 최초 프레임부터 적용한 탐색 위치 수집
+                    // ----------------------------------------------------------------------------------------
                     const sample = () => {
                         const documents = document.querySelector<HTMLElement>('[data-sidebar-scroll="documents"]');
                         const outline = document.querySelector<HTMLElement>('[data-sidebar-scroll="outline"]');
@@ -655,9 +649,9 @@ test.describe("문서 탐색", () => {
             await page.addInitScript(() => {
                 window.readingFrames = [];
 
-                /**
-                 * 최초 프레임부터 적용한 본문 위치 수집
-                 */
+                // ----------------------------------------------------------------------------------------
+                // 최초 프레임부터 적용한 본문 위치 수집
+                // ----------------------------------------------------------------------------------------
                 const sample = () => {
                     window.readingFrames.push(scrollY);
 

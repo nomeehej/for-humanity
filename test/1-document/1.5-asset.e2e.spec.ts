@@ -8,11 +8,12 @@ test.use({
     },
 });
 
-/**
- * 그림 상자의 화면 폭별 크기(src/component/widget/article/_function/rehype-figures.ts, wg-article.css) 검증
- *
- *   - 공식 문서 Images의 너비 560 예시 SVG
- */
+// ----------------------------------------------------------------------------------------
+// 그림 상자의 화면 폭별 크기(src/component/widget/article/_function/rehype-figures.ts,
+//   wg-article.css) 검증
+//
+// 공식 문서 Images의 너비 560 예시 SVG
+// ----------------------------------------------------------------------------------------
 test.describe("문서 자원", () => {
     for (const layout of [
         {caseId: "AST-020", name: "휴대폰 390px 터치", options: {viewport: {width: 390, height: 844}, isMobile: true, hasTouch: true}, scroll: true},

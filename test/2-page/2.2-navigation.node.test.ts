@@ -13,9 +13,9 @@ import {asset_style_path} from "@/constant/asset";
 import {siteConfigSchema} from "@/type/site-config";
 import {toScriptJson} from "@/util/json/to-script-json";
 
-/**
- * 탐색 자료와 문서 트리(src/component/widget/sidebar/_function/to-navigation-data) 검증
- */
+// ----------------------------------------------------------------------------------------
+// 탐색 자료와 문서 트리(src/component/widget/sidebar/_function/to-navigation-data) 검증
+// ----------------------------------------------------------------------------------------
 describe("문서 탐색", () => {
     describe("탐색 자료", () => {
         test("[NAV-021] 탐색 데이터는 본문을 제외하고 작성한 이름을 안전하게 전달한다", async ({scope}) => {

@@ -4,9 +4,9 @@ import {join} from "node:path";
 import {test} from "@test/_fixture/temp-root";
 import {describe, expect} from "vitest";
 
-/**
- * TypeScript 설정 파일의 빌드 반영(src/app/_function/read-site-config.ts) 검증
- */
+// ----------------------------------------------------------------------------------------
+// TypeScript 설정 파일의 빌드 반영(src/app/_function/read-site-config.ts) 검증
+// ----------------------------------------------------------------------------------------
 describe("사이트 설정", () => {
     describe("설정 파일", () => {
         test("[CFG-001] TypeScript 설정의 제목과 탐색 순서가 빌드에 반영된다", async ({root}) => {

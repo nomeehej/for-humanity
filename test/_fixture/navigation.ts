@@ -8,9 +8,9 @@ import {range} from "es-toolkit/math";
 import {preview} from "vite";
 import {toPreviewConfig} from "@/entry/preview/to-preview-config";
 
-/**
- * 워커별 실제 CLI 사이트, 각 테스트는 독립 브라우저 컨텍스트 사용
- */
+// ----------------------------------------------------------------------------------------
+// 워커별 실제 CLI 사이트, 각 테스트는 독립 브라우저 컨텍스트 사용
+// ----------------------------------------------------------------------------------------
 export const test = base.extend<Record<never, never>, {navigationSite: string}>({
     navigationSite: [
         // biome-ignore lint/correctness/noEmptyPattern: Playwright가 구조분해 매개변수로 fixture 의존성을 조회

@@ -7,12 +7,13 @@ import {loadBrowserScript} from "@test/_fixture/load-browser-script";
 import {preview} from "vite";
 import {toPreviewConfig} from "@/entry/preview/to-preview-config";
 
-/**
- * 정렬 대상 표와 대상이 아닌 표를 함께 둔 문서. 첫 표만 버튼이 붙음
- *
- *   - 순번, 같은 이름이 둘인 글자, 숫자가 섞인 글, 빈 칸이 든 날짜 열
- *   - 본문 한 줄, 머리글 링크, 머리 행 없는 원시 HTML, 병합 칸의 원시 HTML
- */
+// ----------------------------------------------------------------------------------------
+// 정렬 대상 표와 대상이 아닌 표를 함께 둔 문서
+//
+// 첫 표만 버튼이 붙음
+// 순번, 같은 이름이 둘인 글자, 숫자가 섞인 글, 빈 칸이 든 날짜 열
+// 본문 한 줄, 머리글 링크, 머리 행 없는 원시 HTML, 병합 칸의 원시 HTML
+// ----------------------------------------------------------------------------------------
 const table_document = [
     "---",
     "name: Tables",
@@ -50,9 +51,11 @@ const table_document = [
     "",
 ].join("\n");
 
-/**
- * 워커마다 격리한 실제 CLI 출력과 빈 포트의 로컬 서버. /lifecycle/은 셸 번들 대신 갤러리 스크립트
- */
+// ----------------------------------------------------------------------------------------
+// 워커마다 격리한 실제 CLI 출력과 빈 포트의 로컬 서버
+//
+// /lifecycle/은 셸 번들 대신 갤러리 스크립트
+// ----------------------------------------------------------------------------------------
 export const test = base.extend<Record<never, never>, {tableSortSite: string}>({
     tableSortSite: [
         // biome-ignore lint/correctness/noEmptyPattern: Playwright가 구조분해 매개변수로 fixture 의존성을 조회

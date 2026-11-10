@@ -3,9 +3,11 @@ import {join, resolve} from "node:path";
 import {packReportSchema} from "@tool/_type/pack-report";
 import {packageMetadataSchema} from "@tool/_type/package-metadata";
 
-/*
- * 릴리스 태그의 공개 준비. 버전, README, 변경 기록, 압축 파일 검증 후 릴리스 노트 생성
- */
+// ----------------------------------------------------------------------------------------
+// 릴리스 태그의 공개 준비
+//
+// 버전, README, 변경 기록, 압축 파일 검증 후 릴리스 노트 생성
+// ----------------------------------------------------------------------------------------
 const [tag, directory] = process.argv.slice(2);
 
 if (tag === undefined || !/^v(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)$/.test(tag) || directory === undefined) {

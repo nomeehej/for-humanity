@@ -6,9 +6,9 @@ import {readDocs} from "@/app/_function/read-docs";
 import {toProcessor} from "@/app/_function/to-processor/to-processor";
 import {siteConfigSchema} from "@/type/site-config";
 
-/**
- * 문서 수집, 주소, 부모 관계(src/app/_function/read-docs.ts) 검증
- */
+// ----------------------------------------------------------------------------------------
+// 문서 수집, 주소, 부모 관계(src/app/_function/read-docs.ts) 검증
+// ----------------------------------------------------------------------------------------
 describe("문서", () => {
     describe("문서 주소", () => {
         test("[DOC-001] 첫 글자가 같은 문서도 서로 다른 주소를 유지한다", async ({scope}) => {

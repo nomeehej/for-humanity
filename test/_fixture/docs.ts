@@ -7,9 +7,11 @@ import {preview} from "vite";
 import {toPreviewConfig} from "@/entry/preview/to-preview-config";
 import type {ResolvedSiteConfig} from "@/type/site-config";
 
-/**
- * 워커별 공식 문서 사이트. 저장소 content의 공개 입력을 임시 폴더에서 실제 CLI로 빌드
- */
+// ----------------------------------------------------------------------------------------
+// 워커별 공식 문서 사이트
+//
+// 저장소 content의 공개 입력을 임시 폴더에서 실제 CLI로 빌드
+// ----------------------------------------------------------------------------------------
 export const test = base.extend<Record<never, never>, {docsSite: string; basePath: ResolvedSiteConfig["basePath"]}>({
     basePath: ["/", {option: true, scope: "worker"}],
     docsSite: [

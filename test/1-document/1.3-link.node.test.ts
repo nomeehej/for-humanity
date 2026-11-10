@@ -9,9 +9,11 @@ import {asset_style_path} from "@/constant/asset";
 import {siteConfigSchema} from "@/type/site-config";
 import {logger} from "@/util/logger/logger";
 
-/**
- * 문서 링크, 가름, 목차(src/component/widget/article/_function의 remark-links.ts, remark-parts.ts, rehype-heading-ids.ts, rehype-sections와 src/app/_function/to-processor/_rehype-content-links.ts) 검증
- */
+// ----------------------------------------------------------------------------------------
+// 문서 링크, 가름, 목차(src/component/widget/article/_function의 remark-links.ts,
+//   remark-parts.ts, rehype-heading-ids.ts, rehype-sections와
+//   src/app/_function/to-processor/_rehype-content-links.ts) 검증
+// ----------------------------------------------------------------------------------------
 describe("문서 링크와 목차", () => {
     describe("상대 링크", () => {
         test("[LNK-001] 상대 Markdown 링크는 쿼리와 앵커를 보존한다", async ({scope}) => {

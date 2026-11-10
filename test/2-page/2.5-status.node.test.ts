@@ -10,9 +10,9 @@ import {loadSite} from "@/app/load-site";
 import {PgStatus} from "@/page/status/pg-status";
 import {siteConfigSchema} from "@/type/site-config";
 
-/**
- * 상태 화면의 HTTP 응답, 이미지와 정적 출력(src/app/load-site.ts) 검증
- */
+// ----------------------------------------------------------------------------------------
+// 상태 화면의 HTTP 응답, 이미지와 정적 출력(src/app/load-site.ts) 검증
+// ----------------------------------------------------------------------------------------
 describe("상태 화면", () => {
     describe("없는 문서", () => {
         test("[STA-001] 없는 문서는 배포 경로의 홈 링크와 검색 제외 안내를 포함한 404 화면을 반환한다", async ({scope}) => {

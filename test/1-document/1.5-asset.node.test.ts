@@ -8,9 +8,10 @@ import {toProcessor} from "@/app/_function/to-processor/to-processor";
 import {siteConfigSchema} from "@/type/site-config";
 import {logger} from "@/util/logger/logger";
 
-/**
- * 문서 자원 수집(src/app/_function/to-processor/_rehype-assets.ts)과 그림 상자(src/component/widget/article/_function/rehype-figures.ts) 검증
- */
+// ----------------------------------------------------------------------------------------
+// 문서 자원 수집(src/app/_function/to-processor/_rehype-assets.ts)과 그림
+//   상자(src/component/widget/article/_function/rehype-figures.ts) 검증
+// ----------------------------------------------------------------------------------------
 describe("문서 자원", () => {
     describe("자원 수집", () => {
         test("[AST-001] Markdown과 HTML 이미지는 첨부 파일과 내용 지문 자원을 공유한다", async ({scope}) => {

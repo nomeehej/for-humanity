@@ -11,9 +11,9 @@ import {toProcessor} from "@/app/_function/to-processor/to-processor";
 import {asset_style_path} from "@/constant/asset";
 import {siteConfigSchema} from "@/type/site-config";
 
-/**
- * 크롤러 파일(src/app/_function/to-crawling-app.ts) 검증
- */
+// ----------------------------------------------------------------------------------------
+// 크롤러 파일(src/app/_function/to-crawling-app.ts) 검증
+// ----------------------------------------------------------------------------------------
 describe("크롤러 파일", () => {
     describe("응답", () => {
         test("[CRW-001] 공개 주소가 없으면 크롤러 파일을 제공하지 않는다", async () => {
