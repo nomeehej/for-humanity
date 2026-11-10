@@ -29,6 +29,11 @@ export const copy_dir_description = "Project folder";
 export const copy_private_description = "Include private documents and write to dist-private instead of dist";
 
 /**
+ * 내부판 미리보기 CLI 옵션 설명
+ */
+export const copy_preview_private_description = "Preview dist-private, the build output that includes private documents";
+
+/**
  * 내부판 빌드 성공 뒤의 배포 주의
  */
 export const copy_private_notice = "This output includes private documents. Deploy it only behind access control";

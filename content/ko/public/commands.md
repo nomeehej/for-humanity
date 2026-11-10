@@ -18,6 +18,7 @@ for-humanity <init|dev|build|preview> [project-dir]
 | `build` | 홈과 공개 문서를 `content/dist`에 생성 |
 | `build --private` | 내부 문서까지 포함한 사이트를 `content/dist-private`에 따로 생성 |
 | `preview` | 마지막 빌드 결과 확인 |
+| `preview --private` | `build --private`의 마지막 결과 확인 |
 | `--help` 또는 `-h` | 명령 도움말 |
 | `--version` 또는 `-v` | 설치 버전 |
 
@@ -108,9 +109,11 @@ pnpm exec for-humanity preview --host
 
 ```sh
 pnpm exec for-humanity build --private
+pnpm exec for-humanity preview --private
 ```
 
-내부 문서를 허용한 사람들과 사이트로 함께 읽을 때 사용합니다. `dist-private`은 사이트 전체에 접근 제어를 거는 호스팅에만 배포합니다. 자세한 내용은 [Private site](deployment.md#private-site)를 참고합니다.
+`preview --private`은 `dist-private`을 내 컴퓨터에서 제공합니다. 결과를 확인할 때 사용합니다. 접근 제어가 없으므로 로컬에서만 사용합니다.
+내부판은 내부 문서를 허용한 사람들과 사이트로 함께 읽을 때 사용합니다. `dist-private`은 사이트 전체에 접근 제어를 거는 호스팅에만 배포합니다. 자세한 내용은 [Private site](deployment.md#private-site)를 참고합니다.
 
 - `build`는 `dist`만 만들고 `build --private`은 `dist-private`만 만듭니다. 배포할 사이트에 맞는 명령을 각각 실행합니다.
 - 내부판에는 `robots.txt`, 사이트맵, canonical URL, 링크 미리보기 태그가 없습니다. `url`은 공개 사이트의 주소입니다. 모든 페이지에는 `noindex`가 들어갑니다.

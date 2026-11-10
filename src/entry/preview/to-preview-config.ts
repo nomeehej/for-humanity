@@ -1,6 +1,6 @@
 import {existsSync} from "node:fs";
 import {readFile} from "node:fs/promises";
-import {join, relative, resolve} from "node:path";
+import {join, relative} from "node:path";
 import type {InlineConfig} from "vite";
 import {http_status_not_found} from "@/app/_constant/http";
 import type {SiteParams} from "@/app/load-site";
@@ -15,9 +15,14 @@ import {isOutsideRoot} from "@/util/file/is-outside-root";
  */
 interface PreviewParams {
     /**
-     * dist 출력 폴더를 포함한 문서 루트
+     * 출력 폴더를 포함한 문서 루트
      */
     root: SiteParams["root"];
+
+    /**
+     * 제공할 빌드 출력 폴더의 절대 경로. 공개판 dist 또는 내부판 dist-private
+     */
+    outDir: string;
 
     /**
      * 사용할 HTTP 포트, 0은 운영체제 배정
@@ -39,10 +44,8 @@ interface PreviewParams {
  * 빌드된 사이트 전용 Vite 설정. 소비 프로젝트의 설정과 환경 파일 자동 로드 제외
  */
 export const toPreviewConfig = (params: PreviewParams): InlineConfig => {
-    const outDir = resolve(params.root, "dist");
-
-    if (!existsSync(join(outDir, "index.html"))) {
-        throw new Error(`${copy_error_missing_build}: ${outDir}`);
+    if (!existsSync(join(params.outDir, "index.html"))) {
+        throw new Error(`${copy_error_missing_build}: ${params.outDir}`);
     }
 
     return {
@@ -52,7 +55,7 @@ export const toPreviewConfig = (params: PreviewParams): InlineConfig => {
         root: params.root,
         publicDir: false,
         appType: "mpa",
-        build: {outDir},
+        build: {outDir: params.outDir},
         preview: {port: params.port, strictPort: true, host: params.host},
         plugins: [
             {
@@ -80,7 +83,7 @@ export const toPreviewConfig = (params: PreviewParams): InlineConfig => {
                         });
 
                         server.middlewares.use(async (request, response, next) => {
-                            if (request.url === undefined || (request.method !== "GET" && request.method !== "HEAD") || !existsSync(join(outDir, asset_not_found_path))) {
+                            if (request.url === undefined || (request.method !== "GET" && request.method !== "HEAD") || !existsSync(join(params.outDir, asset_not_found_path))) {
                                 next();
 
                                 return;
@@ -88,16 +91,16 @@ export const toPreviewConfig = (params: PreviewParams): InlineConfig => {
 
                             try {
                                 const url = request.url.split(/[?#]/)[0];
-                                const path = join(outDir, decodeURIComponent(url));
+                                const path = join(params.outDir, decodeURIComponent(url));
 
                                 // Vite의 후속 HTML 응답 대상, 생성된 문서의 정상 응답 유지
-                                if (url.endsWith(".html") && !isOutsideRoot(relative(outDir, path)) && existsSync(path)) {
+                                if (url.endsWith(".html") && !isOutsideRoot(relative(params.outDir, path)) && existsSync(path)) {
                                     next();
 
                                     return;
                                 }
 
-                                const html = await readFile(join(outDir, asset_not_found_path));
+                                const html = await readFile(join(params.outDir, asset_not_found_path));
 
                                 response.statusCode = http_status_not_found;
                                 response.setHeader("Content-Type", "text/html; charset=utf-8");

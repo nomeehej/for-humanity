@@ -77,7 +77,7 @@ export const test = base.extend<Record<never, never>, {tableSortSite: string}>({
                 await mkdir(join(root, "dist/lifecycle"));
                 await writeFile(join(root, "dist/lifecycle/index.html"), html);
 
-                const server = await preview(toPreviewConfig({root, port: 0, host: "localhost", basePath: "/"}));
+                const server = await preview(toPreviewConfig({root, outDir: join(root, "dist"), port: 0, host: "localhost", basePath: "/"}));
 
                 try {
                     const url = server.resolvedUrls?.local[0];

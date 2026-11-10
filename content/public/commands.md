@@ -18,6 +18,7 @@ for-humanity <init|dev|build|preview> [project-dir]
 | `build` | Generate the home page and public documents in `content/dist` |
 | `build --private` | Generate a separate site that also contains the private documents in `content/dist-private` |
 | `preview` | View the last build output |
+| `preview --private` | View the last output of `build --private` |
 | `--help` or `-h` | Command help |
 | `--version` or `-v` | Installed version |
 
@@ -108,9 +109,11 @@ pnpm exec for-humanity preview --host
 
 ```sh
 pnpm exec for-humanity build --private
+pnpm exec for-humanity preview --private
 ```
 
-Use it to share private documents as a site with the people you allow. Deploy `dist-private` only to hosting that puts the whole site behind access control. See [Private site](deployment.md#private-site).
+`preview --private` serves `dist-private` on your computer so that you can check the result. It has no access control, so use it only locally.
+Use the private site to share private documents with the people you allow. Deploy `dist-private` only to hosting that puts the whole site behind access control. See [Private site](deployment.md#private-site).
 
 - `build` writes only `dist`, and `build --private` writes only `dist-private`. Run each command for the site you deploy.
 - The private site has no `robots.txt`, sitemap, canonical URL or link preview tags. `url` is the address of the public site. Every page carries `noindex`.

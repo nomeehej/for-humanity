@@ -34,7 +34,7 @@ interface CliCommandParams {
         host?: ParsedArgs<typeof command_server_args>["host"];
 
         /**
-         * build의 내부판 출력 선택, 생략 시 공개판
+         * build와 preview의 내부판 출력 선택, 생략 시 공개판
          */
         private?: ParsedArgs<typeof command_build_args>["private"];
     };
@@ -60,7 +60,7 @@ export const runSiteCommand = async (params: CliCommandParams) => {
 
         if (params.command === "preview") {
             const vite = await import("vite");
-            const server = await vite.preview(toPreviewConfig({root: project.root, port: site.port, host: site.host, basePath: site.basePath}));
+            const server = await vite.preview(toPreviewConfig({root: project.root, outDir, port: site.port, host: site.host, basePath: site.basePath}));
 
             server.printUrls();
 

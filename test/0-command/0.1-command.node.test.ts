@@ -42,9 +42,12 @@ describe("CLI 명령", () => {
                 expect(help.result.stdout).toContain(help.args.length === 1 ? "COMMANDS" : "[DIR]");
                 expect(help.result.stderr).toBe("");
 
-                if (help.args[0] === "dev" || help.args[0] === "preview") {
+                if (help.args[0] === "dev") {
                     expect(help.result.stdout).toContain("--host");
                     expect(help.result.stdout).not.toContain("--private");
+                } else if (help.args[0] === "preview") {
+                    expect(help.result.stdout).toContain("--host");
+                    expect(help.result.stdout).toContain("--private");
                 } else if (help.args[0] === "build") {
                     expect(help.result.stdout).not.toContain("--host");
                     expect(help.result.stdout).toContain("--private");
@@ -136,19 +139,20 @@ describe("CLI 명령", () => {
         });
     });
 
-    describe("서버 수신 주소", () => {
+    describe("서버 명령 입력", () => {
         test.for([
-            {caseId: "CMD-004", name: "dev의 명시적 CLI 주소", command: "dev", args: ["--host", "127.0.0.1"], host: "192.0.2.1"},
-            {caseId: "CMD-005", name: "preview의 값 없는 CLI 옵션", command: "preview", args: ["--host"], host: "192.0.2.1"},
-            {caseId: "CMD-006", name: "preview의 설정 파일 주소", command: "preview", args: [], host: "127.0.0.1"},
-            {caseId: "CMD-007", name: "기본 dev 명령의 LAN 설정", command: undefined, args: [], host: true},
-            {caseId: "CMD-008", name: "기본 dev 명령의 값 없는 CLI 옵션", command: undefined, args: ["--host"], host: "192.0.2.1"},
-            {caseId: "CMD-009", name: "기본 dev 명령의 CLI 주소", command: undefined, args: ["--host", "127.0.0.1"], host: "192.0.2.1"},
-            {caseId: "CMD-010", name: "기본 dev 명령의 등호 CLI 주소", command: undefined, args: ["--host=127.0.0.1"], host: "192.0.2.1"},
+            {caseId: "CMD-004", name: "dev의 명시적 CLI 주소", command: "dev", args: ["--host", "127.0.0.1"], host: "192.0.2.1", output: "dist"},
+            {caseId: "CMD-005", name: "preview의 값 없는 CLI 옵션", command: "preview", args: ["--host"], host: "192.0.2.1", output: "dist"},
+            {caseId: "CMD-006", name: "preview의 설정 파일 주소", command: "preview", args: [], host: "127.0.0.1", output: "dist"},
+            {caseId: "CMD-007", name: "기본 dev 명령의 LAN 설정", command: undefined, args: [], host: true, output: "dist"},
+            {caseId: "CMD-008", name: "기본 dev 명령의 값 없는 CLI 옵션", command: undefined, args: ["--host"], host: "192.0.2.1", output: "dist"},
+            {caseId: "CMD-009", name: "기본 dev 명령의 CLI 주소", command: undefined, args: ["--host", "127.0.0.1"], host: "192.0.2.1", output: "dist"},
+            {caseId: "CMD-010", name: "기본 dev 명령의 등호 CLI 주소", command: undefined, args: ["--host=127.0.0.1"], host: "192.0.2.1", output: "dist"},
+            {caseId: "CMD-011", name: "preview의 내부판 옵션", command: "preview", args: ["--private"], host: "127.0.0.1", output: "dist-private"},
         ])("[$caseId] $name 입력을 적용해 HTTP 요청을 받는다", async (scenario, {root}) => {
             /**
              * GIVEN
-             * 빈 포트와 수신 주소를 지정한 최소 문서 프로젝트
+             * 빈 포트와 수신 주소를 지정한 최소 문서 프로젝트, 시나리오의 출력 폴더에만 있는 빌드 결과
              */
             const reservation = createServer();
             reservation.listen(0, "127.0.0.1");
@@ -161,9 +165,9 @@ describe("CLI 명령", () => {
 
             await new Promise<void>((resolve, reject) => reservation.close((error) => (error === undefined ? resolve() : reject(error))));
             await mkdir(join(root, "content/public"), {recursive: true});
-            await mkdir(join(root, "content/dist"));
+            await mkdir(join(root, "content", scenario.output));
             await writeFile(join(root, "content/README.md"), "# Network home\n");
-            await writeFile(join(root, "content/dist/index.html"), "<!doctype html><h1>Network home</h1>");
+            await writeFile(join(root, "content", scenario.output, "index.html"), "<!doctype html><h1>Network home</h1>");
             await writeFile(join(root, "for-humanity.config.mjs"), `export default ${JSON.stringify({port: address.port, host: scenario.host})};\n`);
 
             /**
