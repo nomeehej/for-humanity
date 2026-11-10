@@ -101,7 +101,7 @@ project/
 
 - `README.md`: 사이트 홈에 표시할 소개
 - `public`: 배포할 문서
-- `private`: 로컬에서만 읽을 문서
+- `private`: 공개 사이트에 넣지 않는 문서
 - `asset`: 공개 문서에서 사용할 이미지와 첨부
 
 `dist`는 빌드할 때 생성되므로 `.gitignore`에 `content/dist/`를 추가합니다. 폴더 이름을 바꾸는 설정은 [Settings](settings.md#content-paths)를 참고합니다.

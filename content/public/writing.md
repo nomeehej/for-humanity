@@ -35,7 +35,7 @@ Describe the first task.
 When you run `dev`, the document appears in the Guide group of the sidebar. The document address is `/guide/`.
 The `##` and `###` headings appear in the page outline. The document title is displayed from `name`, so you do not need to repeat the same `#` heading in the body.
 
-public holds documents to deploy, and private holds documents to read only locally. Other Markdown files outside these two folders are not added to the document list automatically.
+public holds documents to deploy, and private holds documents kept out of the public site. Other Markdown files outside these two folders are not added to the document list automatically.
 
 ## Home page
 

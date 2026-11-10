@@ -1,5 +1,12 @@
 # Changelog
 
+## Unreleased
+
+**Upgrade:** Existing projects remain compatible unless a folder is named `dist-private`. That name is now reserved for the private site output, like `dist`. A document folder with that name is skipped, and a `content` path with that name is rejected. Rename the folder to keep using it.
+
+- Add `build --private`, which writes a site with the public and the private documents together to `content/dist-private`. It is the same site `dev` shows, without the crawler files, canonical URL and link preview tags, and with `noindex` on every page. Deploy it only behind the access control of your hosting. The public `build` output is unchanged. See [Private site](https://for-humanity.fyi/deployment/#private-site).
+- `init` adds the `dist-private` folder to `.gitignore` next to `dist`.
+
 ## 0.32.0 — 2026-11-06
 
 **Upgrade:** Links in the body now open in a new tab by default. Set `linkTarget: "same-tab"` in `for-humanity.config.ts` to keep the previous behavior. Rebuild and redeploy to apply the Details fix.

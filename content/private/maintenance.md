@@ -127,7 +127,7 @@ CSS 규칙 본문은 타입 검사하는 `util/stylelint.config.ts`에 둡니다
 | `prepare-site.ts` | 공식 사이트의 캐시 헤더와 404 페이지를 배포 폴더에 복사 |
 | `prepare-release.ts` | 태그, 버전, README, 변경 기록, 배포 파일 확인, Release 본문 생성 |
 | `prepare-release.test.ts` | 버전 불일치, 변경 기록 누락, 이전 설치 버전, 필수 파일 누락 검사 |
-| `smoke-package.ts` | 패키지를 별도 프로젝트에 설치, 실제 dev와 preview의 브라우저와 종료, 공개 타입의 정상과 오류 입력, TS와 ESM 설정, 페이지, Mermaid, 자원, README, 크롤러 파일, 기본형과 사용자 content 경로와 내부 문서 배포 제외 확인 |
+| `smoke-package.ts` | 패키지를 별도 프로젝트에 설치, 실제 dev와 preview의 브라우저와 종료, 공개 타입의 정상과 오류 입력, TS와 ESM 설정, 페이지, Mermaid, 자원, README, 크롤러 파일, 기본형과 사용자 content 경로, 내부 문서 배포 제외와 내부판 빌드 확인 |
 
 `test/`의 구조와 작성 기준은 [테스트 안내](https://github.com/nomeehej/for-humanity/blob/main/test/README.md)를 따릅니다. 함수 검증은 소스 옆 `*.test.ts`에 두고, 나머지 검사는 사용자 흐름 순서의 영역 폴더(`0-command`, `1-document`, `2-page`, `3-server`)에 층 접미사로 둡니다. 한글 시나리오, GIVEN/WHEN/THEN, 독립 fixture를 사용하며, 모든 케이스에 영역 코드 번호를, 브라우저 케이스에는 우선순위 태그도 붙입니다.
 부품과 part 문법, 스니펫 region, 자원 형식의 빌드 오류와 링크 경고는 `1-document`의 Node 검사가 파일과 줄까지 확인합니다.

@@ -128,7 +128,7 @@ TinaCMS는 정적 admin SPA, 토큰과 로그인과 색인 DB를 가진 백엔�
 - 내부판은 `url`에 기대는 출력을 만들지 않는다. `robots.txt`, 사이트맵, canonical, 링크 미리보기 태그가 없다. `url`은 공개 사이트의 주소이고 내부판은 다른 주소에 있다. 모든 페이지에 `noindex`를 넣는다.
 - `preview --private`은 `dist-private`을 보인다. 로컬 확인용이며 접근 제어가 없다.
 - `dist-private`은 예약 폴더 목록, dev 감시 제외, `init`이 만드는 `.gitignore`에 넣는다.
-- `build --private`은 내부 문서 수와 함께, 이 폴더를 접근 제어 뒤에만 올리라고 알린다.
+- `build --private`은 성공 로그 뒤에 이 출력을 접근 제어 뒤에만 올리라고 알린다.
 
 ### 호스팅
 

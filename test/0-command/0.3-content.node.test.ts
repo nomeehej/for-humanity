@@ -257,4 +257,71 @@ describe("공개와 내부 문서", () => {
             await expect(snapshot).rejects.toThrow(scenario.error);
         });
     });
+
+    describe("내부판 빌드", () => {
+        test("[CNT-015] --private 빌드는 내부 문서를 포함한 사이트를 dist-private에 따로 출력한다", {timeout: 45000}, async ({root}) => {
+            /**
+             * GIVEN
+             * 공개 주소를 설정한 프로젝트의 공개 문서와 그림을 참조하는 내부 문서
+             */
+            await mkdir(join(root, "content/public"), {recursive: true});
+            await mkdir(join(root, "content/private/asset"), {recursive: true});
+            await writeFile(join(root, "for-humanity.config.ts"), 'export default {url: "https://example.org"};');
+            await writeFile(join(root, "content/README.md"), "# Home\n\n[Guide](public/guide.md)");
+            await writeFile(join(root, "content/public/guide.md"), "---\nname: Guide\nlabel: Public\ngroup: Guide\n---\n\nPUBLIC_BODY");
+
+            await writeFile(
+                join(root, "content/private/maintenance.md"),
+                "---\nname: INTERNAL_TITLE\nlabel: INTERNAL_LABEL\ngroup: Internal\n---\n\nINTERNAL_BODY\n\n![Secret](asset/secret.svg)",
+            );
+
+            await writeFile(join(root, "content/private/asset/secret.svg"), '<svg xmlns="http://www.w3.org/2000/svg"><text>INTERNAL_IMAGE</text></svg>');
+
+            /**
+             * WHEN
+             * 공개판 빌드 뒤 옵션을 폴더 인자 앞에 둔 내부판 빌드
+             */
+            const published = spawnSync(process.execPath, [resolve("dist/cli.js"), "build", root], {encoding: "utf8"});
+
+            const internal = spawnSync(process.execPath, [resolve("dist/cli.js"), "build", "--private", root], {
+                encoding: "utf8",
+                env: {
+                    ...process.env,
+
+                    // biome-ignore lint/style/useNamingConvention: Consola가 정의한 외부 환경 변수 이름
+                    CONSOLA_LEVEL: "3",
+                },
+            });
+
+            expect(published.status, published.stderr).toBe(0);
+            expect(internal.status, internal.stderr).toBe(0);
+
+            const output = join(root, "content/dist-private");
+            const entries = (await readdir(output, {recursive: true})).map((entry) => entry.replaceAll("\\", "/"));
+            const pages = await Promise.all(entries.filter((entry) => entry.endsWith("index.html")).map((entry) => readFile(join(output, entry), "utf8")));
+            const home = await readFile(join(output, "index.html"), "utf8");
+            const publishedEntries = await readdir(join(root, "content/dist"), {recursive: true});
+
+            /**
+             * THEN
+             * 내부 문서와 그림을 포함한 내부판, 공개 주소 기준 출력과 검색 색인 제외, 내부 자료 없는 공개판 유지
+             */
+            expect(entries).toContain("guide/index.html");
+            expect(entries).toContain("private/maintenance/index.html");
+            expect(await readFile(join(output, "private/maintenance/index.html"), "utf8")).toContain("INTERNAL_BODY");
+            expect(home).toContain("INTERNAL_TITLE");
+            expect(entries.some((entry) => /^_fh\/media\/.+\.svg$/.test(entry))).toBe(true);
+            expect(entries).not.toContain("robots.txt");
+            expect(entries).not.toContain("sitemap.xml");
+            expect(home).not.toContain("canonical");
+            expect(home).not.toContain("og:url");
+            expect(pages).toHaveLength(3);
+            expect(pages.every((page) => page.includes('<meta name="robots" content="noindex">'))).toBe(true);
+            expect(internal.stdout).toContain("dist-private");
+            expect(internal.stdout).toContain("Deploy it only behind access control");
+            expect(publishedEntries).toContain("sitemap.xml");
+            expect(publishedEntries.some((entry) => /private|secret/.test(entry))).toBe(false);
+            expect(await readFile(join(root, "content/dist/index.html"), "utf8")).not.toContain("noindex");
+        });
+    });
 });

@@ -201,11 +201,57 @@ Pages에서 문서 프로젝트의 Git 저장소를 연결하고 Framework prese
 없는 문서가 홈으로 표시되지 않도록 출력 루트에 `404.html`을 포함합니다.
 `0.20.0`부터 공통 빌드가 만든 404를 그대로 사용합니다. 이전 버전에서는 별도로 관리한 파일을 빌드 후 `content/dist`에 복사합니다. [Cloudflare의 정적 페이지 제공 규칙](https://developers.cloudflare.com/pages/configuration/serving-pages/)을 참고합니다.
 
+## Private site
+
+`build --private`은 `0.33.0`부터 지원합니다.
+
+`build --private`은 공개 문서와 내부 문서를 함께 담은 두 번째 사이트를 `content/dist-private`에 생성합니다. 이 사이트는 공개 사이트와 다른 주소에 배포합니다. 사이트 전체를 호스팅의 접근 제어 뒤에 둡니다. for-humanity는 독자를 로그인시키지 않습니다.
+
+| Setting | Value |
+| --- | --- |
+| 빌드 명령 | `pnpm exec for-humanity build --private` |
+| 출력 폴더 | `content/dist-private` |
+| 접근 제어 | 사이트 전체에 필수, 사이트를 제공하는 모든 주소에 적용 |
+
+- `dist-private`은 사이트 전체에 로그인을 요구할 수 있는 호스팅에만 배포합니다. 모든 방문자에게 제공하는 호스팅에는 올리지 않습니다.
+- 사이트가 열리기 전에 접근 제어를 켭니다. 첫 배포가 끝나면 기본 주소를 바로 공개하는 호스팅이 많습니다.
+- 공개 사이트는 바뀌지 않습니다. `build`와 `build --private`은 서로 다른 폴더에 출력합니다. `dist`에는 내부 문서가 들어가지 않습니다.
+- 내부판의 모든 페이지에는 `noindex`가 들어갑니다. 검색 엔진용 파일, canonical URL, 링크 미리보기 태그는 없습니다.
+- 접근 제어는 배포한 사이트만 가립니다. 공개 Git 저장소에 있는 내부 문서는 저장소에서 그대로 읽힙니다.
+- 문서 안의 스크립트는 외부 스크립트를 포함해 로그인한 독자의 브라우저에서 실행되므로 내부 문서를 읽을 수 있습니다. 신뢰하는 출처의 스크립트만 넣습니다.
+
+Cloudflare에서는 내부판용 Worker를 하나 더 만듭니다. 아래 설정은 배포해도 주소를 공개하지 않습니다.
+
+```json
+{
+    "$schema": "node_modules/wrangler/config-schema.json",
+    "name": "team-docs-private",
+    "compatibility_date": "2026-10-23",
+    "workers_dev": false,
+    "preview_urls": false,
+    "assets": {
+        "directory": "./content/dist-private",
+        "html_handling": "force-trailing-slash",
+        "not_found_handling": "404-page"
+    }
+}
+```
+
+```sh
+pnpm exec for-humanity build --private
+pnpm exec wrangler deploy --config wrangler.private.jsonc
+```
+
+그 Worker를 Cloudflare Access로 보호한 뒤 주소를 연결합니다. Access는 Worker의 Custom Domain, `workers.dev` 주소, 미리보기 URL, 정적 자산을 함께 보호할 수 있습니다. 절차는 [Cloudflare Access for Workers](https://developers.cloudflare.com/workers/configuration/cloudflare-access/)를 참고합니다.
+Workers Builds를 사용하면 같은 저장소를 두 Worker에 각각 연결하고 빌드 명령과 배포 명령을 따로 지정합니다.
+직접 운영하는 서버에서는 폴더 앞에 Basic 인증이나 인증 프록시를 둡니다.
+
 ## Verify the deployment
 
 - 홈과 문서의 개별 URL이 열리는지 확인합니다.
 - 그림과 글꼴이 정상으로 표시되는지 확인합니다.
 - 없는 경로와 내부 문서 경로가 `404`를 반환하는지 확인합니다.
+- 내부판은 로그아웃한 브라우저에서 사이트의 모든 주소가 로그인을 요구하는지 확인합니다.
 - 검색 엔진용 파일이 필요하면 [Crawling](crawling.md)에 따라 `url`을 설정하고 `/robots.txt`와 `/sitemap.xml`을 확인합니다.
 
 `preview`는 로컬 빌드 확인용입니다. 운영 사이트에는 빌드 결과를 정적 호스팅으로 제공합니다.

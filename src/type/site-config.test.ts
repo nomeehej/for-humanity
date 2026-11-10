@@ -262,6 +262,7 @@ describe("사이트 설정", () => {
             {public: ""},
             {public: "../outside"},
             {public: "dist"},
+            {private: "dist-private"},
             {public: "same", private: "same"},
             {public: "guide", private: "guide/internal"},
             {public: "notes/public", private: "notes"},

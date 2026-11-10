@@ -124,18 +124,19 @@ export default {
 ```
 
 In this case, the home page is `knowledge/README.md`, the documents are in `knowledge/published` and `knowledge/internal`, and the output is in `knowledge/dist`. The configuration file stays in the project root.
-The URL of the public document `published/guide.md` is `/guide/`, and the local URL of the private document `internal/plan.md` is `/private/plan/`.
+The URL of the public document `published/guide.md` is `/guide/`. The URL of the private document `internal/plan.md` is `/private/plan/` in `dev` and in the private site.
 
 Use relative paths within the project. `content.root: "."` is also possible, but public and private must be different subfolders. The two paths cannot be the same, and neither can be inside the other.
-A path that contains `..`, `dist`, `.git` or `node_modules` cannot be used. The public folder and the private folder themselves cannot be symlinks. A symlink also cannot point outside the project or to a reserved folder.
+A path that contains `..`, `dist`, `dist-private`, `.git` or `node_modules` cannot be used. `dist-private` is reserved since `0.33.0`. The public folder and the private folder themselves cannot be symlinks. A symlink also cannot point outside the project or to a reserved folder.
 
 ### Public and private content
 
 `dev` shows both kinds of documents. `build` generates only the home page and the public documents. Check the result with `preview`.
+`build --private` generates a separate site that contains both kinds in `dist-private`. See [Build the private site](commands.md#build-the-private-site).
 The build fails if the home page or a public document references a private document, image, attachment or code snippet.
 
 Keep shared assets in `content/asset` and private assets in `content/private/asset`. You can rename `asset` freely, and you only need to update the links. No separate configuration is required.
-`private` is a rule that excludes content from site deployment. It does not change the access permissions of files you pushed to a Git repository.
+`private` is a rule that excludes content from the public site. It does not change the access permissions of files you pushed to a Git repository.
 
 ## Languages
 

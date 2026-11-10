@@ -6,9 +6,10 @@ import {toSSG} from "hono/ssg";
 import {readProject} from "@/app/_function/read-project";
 import {loadSite} from "@/app/load-site";
 import {asset_not_found_path} from "@/constant/asset";
+import {content_output_dir, content_private_output_dir} from "@/constant/content";
 import {site_host_network} from "@/constant/site";
-import type {command_args, command_server_args} from "@/entry/cli/_constant/command";
-import {copy_error_project_args} from "@/entry/cli/_constant/copy";
+import type {command_args, command_build_args, command_server_args} from "@/entry/cli/_constant/command";
+import {copy_error_project_args, copy_private_notice} from "@/entry/cli/_constant/copy";
 import {toPreviewConfig} from "@/entry/preview/to-preview-config";
 import {siteConfigSchema} from "@/type/site-config";
 import {toErrorMessage} from "@/util/error/to-error-message";
@@ -31,6 +32,11 @@ interface CliCommandParams {
          * dev와 preview의 일회성 수신 주소, 생략 시 설정 파일 사용
          */
         host?: ParsedArgs<typeof command_server_args>["host"];
+
+        /**
+         * build의 내부판 출력 선택, 생략 시 공개판
+         */
+        private?: ParsedArgs<typeof command_build_args>["private"];
     };
 }
 
@@ -50,7 +56,7 @@ export const runSiteCommand = async (params: CliCommandParams) => {
         const kitRoot = fileURLToPath(new URL("../", import.meta.url));
         const project = await readProject(params.args.dir);
         const site = {...project.site, host: host ?? project.site.host};
-        const outDir = join(project.root, "dist");
+        const outDir = join(project.root, params.args.private === true ? content_private_output_dir : content_output_dir);
 
         if (params.command === "preview") {
             const vite = await import("vite");
@@ -69,7 +75,15 @@ export const runSiteCommand = async (params: CliCommandParams) => {
             return;
         }
 
-        const snapshot = await loadSite({root: project.root, kitRoot, site: project.site});
+        const snapshot = await loadSite({
+            root: project.root,
+            kitRoot,
+
+            // 내부판의 배포 주소는 공개 주소와 별개, 공개 주소 기준 출력 제외
+            site: params.args.private === true ? {...project.site, url: undefined} : project.site,
+            includePrivate: params.args.private,
+            noindex: params.args.private,
+        });
 
         // 삭제된 문서와 자원의 잔여 파일 방지
         await rm(outDir, {recursive: true, force: true});
@@ -96,6 +110,10 @@ export const runSiteCommand = async (params: CliCommandParams) => {
         logger.success(
             `${(crawling === undefined ? result.files.length : result.files.length + crawling.files.length) + 1} files, ${snapshot.files.size} assets → ${relative(process.cwd(), outDir)}`,
         );
+
+        if (params.args.private === true) {
+            logger.info(copy_private_notice);
+        }
     } catch (error) {
         logger.error(toErrorMessage(error));
         process.exitCode = 1;

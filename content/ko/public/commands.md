@@ -16,6 +16,7 @@ for-humanity <init|dev|build|preview> [project-dir]
 | `init` | 사이트 정보와 배포 방식 선택, 첫 문서와 실행 스크립트 생성 |
 | `dev` | 공개 문서와 내부 문서를 함께 확인, 변경 시 새로고침, 명령을 생략하면 실행 |
 | `build` | 홈과 공개 문서를 `content/dist`에 생성 |
+| `build --private` | 내부 문서까지 포함한 사이트를 `content/dist-private`에 따로 생성 |
 | `preview` | 마지막 빌드 결과 확인 |
 | `--help` 또는 `-h` | 명령 도움말 |
 | `--version` 또는 `-v` | 설치 버전 |
@@ -98,6 +99,23 @@ pnpm exec for-humanity dev --host 192.168.1.144
 pnpm exec for-humanity build
 pnpm exec for-humanity preview --host
 ```
+
+## Build the private site
+
+`--private`은 `0.33.0`부터 지원합니다.
+
+`build --private`은 공개 문서와 내부 문서를 함께 담은 사이트를 생성합니다. `dev`가 보여 주는 사이트와 같습니다. 출력은 `content/dist-private`에 생성되고 `content/dist`는 그대로 둡니다.
+
+```sh
+pnpm exec for-humanity build --private
+```
+
+내부 문서를 허용한 사람들과 사이트로 함께 읽을 때 사용합니다. `dist-private`은 사이트 전체에 접근 제어를 거는 호스팅에만 배포합니다. 자세한 내용은 [Private site](deployment.md#private-site)를 참고합니다.
+
+- `build`는 `dist`만 만들고 `build --private`은 `dist-private`만 만듭니다. 배포할 사이트에 맞는 명령을 각각 실행합니다.
+- 내부판에는 `robots.txt`, 사이트맵, canonical URL, 링크 미리보기 태그가 없습니다. `url`은 공개 사이트의 주소입니다. 모든 페이지에는 `noindex`가 들어갑니다.
+- 이 옵션은 명령줄에만 있습니다. 설정 파일로는 켤 수 없으므로 바꾸지 않은 배포 명령이 내부 문서를 공개하는 일은 없습니다.
+- `content/dist-private/`을 `.gitignore`에 추가합니다. 새 프로젝트는 `init`이 추가합니다.
 
 ## Help and troubleshooting
 

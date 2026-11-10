@@ -150,6 +150,16 @@ try {
         ["https://docs.example.org/", "https://docs.example.org/guide/", "https://docs.example.org/guide/agents/", "https://docs.example.org/guide/options/"].toSorted(),
     );
 
+    // 내부판은 별도 폴더에 내부 문서 포함, 공개 출력은 내부 자료 없이 유지
+    execFileSync(process.execPath, [join(packageRoot, "dist/cli.js"), "build", "--private", "."], {cwd: consumer, stdio: "inherit"});
+
+    const privateOutput = join(consumer, "content/dist-private");
+
+    assert.match(await readFile(join(privateOutput, "private/internal/index.html"), "utf8"), /INTERNAL_PACKAGE_SENTINEL/);
+    assert.match(await readFile(join(privateOutput, "index.html"), "utf8"), /<meta name="robots" content="noindex">/);
+    assert.ok(!(await readdir(privateOutput)).includes("robots.txt"));
+    assert.doesNotMatch(await readFile(join(output, "index.html"), "utf8"), /INTERNAL_PACKAGE_SENTINEL|Internal only/);
+
     const stylePath = home.match(/rel="stylesheet" href="([^"]+)"/)?.[1];
 
     assert.ok(stylePath);

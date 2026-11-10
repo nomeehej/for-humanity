@@ -4,9 +4,19 @@
 export const content_default = {root: "content", public: "public", private: "private"};
 
 /**
+ * 공개판의 정적 출력 폴더. 문서 루트 기준
+ */
+export const content_output_dir = "dist";
+
+/**
+ * 내부 문서를 포함한 내부판의 정적 출력 폴더. 문서 루트 기준
+ */
+export const content_private_output_dir = "dist-private";
+
+/**
  * 문서와 참조에서 제외하는 생성물, 저장소, 설치 폴더. 대소문자 무시
  */
-export const content_reserved_dirs: readonly string[] = ["dist", ".git", "node_modules"];
+export const content_reserved_dirs: readonly string[] = [content_output_dir, content_private_output_dir, ".git", "node_modules"];
 
 /**
  * 내부 문서 URL의 첫 경로 조각. 문서 id 생성과 공개 문서의 링크 검사가 공유

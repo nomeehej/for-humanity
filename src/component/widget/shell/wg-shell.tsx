@@ -103,6 +103,9 @@ export const WgShell = (props: WgShellProps) => {
 
             {name: "description", content: descriptionContent},
 
+            // 접근 제어 뒤에 배포하는 내부판의 검색 색인 제외
+            ...(props.assets.noindex === true ? [{name: "robots", content: "noindex"}] : []),
+
             ...(pageUrl === undefined
                 ? []
                 : [

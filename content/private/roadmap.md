@@ -173,8 +173,9 @@ prototype의 첫 버전 `0.1.0`은 `dev`, `build`, `preview`를 지원. `init`�
 
 - [ ] `repository` 설정(저장소, 브랜치, 저장소 안 프로젝트 경로)과 문서별 원본 경로
 - [ ] 문서 아래 편집 링크와 문서별, 사이트별 숨김
-- [ ] `build --private`과 `dist-private` 출력, `url` 출력 제외와 `noindex`, `preview --private`
-- [ ] 옵션 없는 `build` 출력의 불변과 공개 출력의 내부 문서 제외 검증(HTML, 그림, 첨부, 탐색, 사이트맵, 검색 인덱스)
+- [x] `build --private`과 `dist-private` 출력, `url` 출력 제외와 `noindex`
+- [ ] `preview --private`
+- [x] 옵션 없는 `build` 출력의 불변과 공개 출력의 내부 문서 제외 검증(HTML, 그림, 첨부, 탐색, 사이트맵). 검색 인덱스는 Search 단계에서 확인
 - [ ] 내부판의 Cloudflare Access 배포 절차 확인과 Deployment 안내
 - [ ] 편집 링크와 브랜치 미리보기 배포를 쓰는 기본 편집 흐름 안내
 - [ ] 내장 로그인: GitHub App 로그인, 저장소 권한과 공개 여부 확인, 서명 쿠키 세션과 만료

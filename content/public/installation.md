@@ -101,7 +101,7 @@ project/
 
 - `README.md`: the introduction shown on the site home page
 - `public`: documents to deploy
-- `private`: documents to read only locally
+- `private`: documents kept out of the public site
 - `asset`: images and attachments used by public documents
 
 `dist` is generated at build time, so add `content/dist/` to `.gitignore`. To rename the folders, see the configuration in [Settings](settings.md#content-paths).

@@ -70,6 +70,7 @@ flowchart LR
 | --- | --- | --- |
 | `dev` | 원본 문서와 소스, Vite 파일 감시, 변환, 갱신, Hono HTML 응답 | 작성과 개발 중 확인 |
 | `build` | 문서 처리와 정적 생성, `<content.root>/dist` 출력 | 배포 파일 생성 |
+| `build --private` | 내부 문서를 포함한 문서 처리와 정적 생성, `<content.root>/dist-private` 출력 | 접근 제어 뒤에 배포할 내부판 생성 |
 | `preview` | `<content.root>/dist`의 HTML, CSS, JS 제공, 원본 감시와 HMR 미사용 | 빌드 결과 확인 |
 | 정적 운영 | 호스팅 서비스가 빌드 파일 제공 | 현재 공개 문서 배포 |
 | 향후 동적 운영 | 배포 환경이 Hono 앱 실행, 인증, DB 조회, API 응답 | 서버 기능 제공 |
@@ -111,7 +112,7 @@ API를 추가해도 개발 명령 하나와 같은 HTTP 포트를 유지하는 �
 
 ### Search, identity and storage
 
-검색, 내부판, 로그인은 아직 제공하지 않습니다. 구조와 단계는 [Server design](server-design.md)에 있고, 여기에는 엔진이 지킬 원칙만 둡니다.
+내부판 빌드는 `build --private`으로 제공합니다. 검색과 로그인은 아직 제공하지 않습니다. 구조와 단계는 [Server design](server-design.md)에 있고, 여기에는 엔진이 지킬 원칙만 둡니다.
 
 | 요구사항 | 저장소와 실행 방식 |
 | --- | --- |
@@ -142,7 +143,8 @@ Consola는 빌드 결과, 문서 경고, 사이트 실행 오류의 공통 출�
 
 ### Content scope
 
-`readProject`는 프로젝트 루트 설정에서 content 경로를 해소합니다. `loadSite`는 공개 폴더와 내부 폴더를 검증하고 dev에서만 내부 문서를 포함합니다. build 기본값은 공개 문서만입니다.
+`readProject`는 프로젝트 루트 설정에서 content 경로를 해소합니다. `loadSite`는 공개 폴더와 내부 폴더를 검증하고 dev와 `build --private`에서만 내부 문서를 포함합니다. build 기본값은 공개 문서만입니다.
+`build --private`은 공개 주소 `url`을 뺀 설정으로 스냅샷을 준비합니다. 그래서 내부판에는 크롤러 파일, canonical, 링크 미리보기 태그가 없습니다. 모든 페이지의 head에는 `noindex`를 넣습니다. 출력 폴더는 CLI가 옵션으로 한 번 정하며 `build`는 `dist`, `build --private`은 `dist-private`만 지우고 다시 만듭니다.
 공개 폴더 상대 경로가 사이트 ID이며 내부 문서에는 `private/`를 붙입니다. 홈은 content 루트의 README로 별도 처리합니다. `toContentId`가 문서, 상대 링크, parent 변환에 같은 규칙을 적용합니다.
 `assertContentPath`는 참조의 원래 경로와 실제 symlink 대상을 검사합니다. Markdown, 원시 HTML, 이미지, 스니펫에서 공개 범위를 벗어나면 원본 위치가 있는 오류로 중단합니다. 공개 결과는 공개 문서만 가진 store와 그 처리 중 수집한 자원으로 생성합니다.
 
@@ -186,7 +188,7 @@ CSS와 글꼴 선언은 최초 HTML의 `<head>`에 포함합니다. JavaScript�
 
 저장소 `pnpm dev`는 `src/app`을 Vite SSR 모듈로 읽고 브라우저 TSX를 변환합니다. 서버와 브라우저 TSX는 전체 갱신, CSS는 HMR로 반영합니다. 설치 패키지의 `for-humanity dev`는 `dist/site.js`와 배포 브라우저 번들을 사용합니다. 두 실행기는 같은 개발 설정과 문서 처리 함수를 공유하며 별도 HTTP 포트를 열지 않습니다.
 
-문서 루트의 `dist`, `node_modules`, `.git`, `.cache`는 감시에서 제외합니다. 설정 파일 변경은 재시작이 필요하며 사용자 프로젝트의 Vite 설정과 환경 파일은 자동으로 읽지 않습니다. 등록 자원만 Hono가 제공하고 문서 원본과 서버 설정 파일은 직접 제공하지 않습니다. 종료 시 Vite가 HTTP, WebSocket, watcher를 닫고 문서 갱신 예약을 취소합니다.
+문서 루트의 `dist`, `dist-private`, `node_modules`, `.git`, `.cache`는 감시에서 제외합니다. 설정 파일 변경은 재시작이 필요하며 사용자 프로젝트의 Vite 설정과 환경 파일은 자동으로 읽지 않습니다. 등록 자원만 Hono가 제공하고 문서 원본과 서버 설정 파일은 직접 제공하지 않습니다. 종료 시 Vite가 HTTP, WebSocket, watcher를 닫고 문서 갱신 예약을 취소합니다.
 
 ### JSX and browser runtime
 

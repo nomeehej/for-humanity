@@ -62,7 +62,7 @@ describe("프로젝트 초기화", () => {
         const manifest: unknown = JSON.parse(await readFile(join(root, "package.json"), "utf8"));
         expect(manifest).toMatchObject({name: "existing-app", type: "commonjs", custom: {keep: true}, dependencies: {react: "19.0.0"}, scripts: {dev: "vite", build: "tsc"}});
         expect(await readFile(join(root, "package.json"), "utf8")).toContain('\n\t"name"');
-        expect(await readFile(join(root, ".gitignore"), "utf8")).toBe("node_modules\r\n# Keep this comment\r\n/handbook/dist/\r\n");
+        expect(await readFile(join(root, ".gitignore"), "utf8")).toBe("node_modules\r\n# Keep this comment\r\n/handbook/dist/\r\n/handbook/dist-private/\r\n");
         expect(await readFile(join(root, "handbook/README.md"), "utf8")).toContain("Team notes");
         expect(await readFile(join(root, "for-humanity.config.ts"), "utf8")).toContain('"handbook"');
     });

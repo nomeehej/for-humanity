@@ -16,6 +16,7 @@ for-humanity <init|dev|build|preview> [project-dir]
 | `init` | Choose the site information and deployment method, then create the first document and the run scripts |
 | `dev` | View public and private documents together, reload on change, runs when the command is omitted |
 | `build` | Generate the home page and public documents in `content/dist` |
+| `build --private` | Generate a separate site that also contains the private documents in `content/dist-private` |
 | `preview` | View the last build output |
 | `--help` or `-h` | Command help |
 | `--version` or `-v` | Installed version |
@@ -98,6 +99,23 @@ To apply it every time, set `host` in [Settings](settings.md#local-server). The 
 pnpm exec for-humanity build
 pnpm exec for-humanity preview --host
 ```
+
+## Build the private site
+
+`--private` is supported since `0.33.0`.
+
+`build --private` generates a site that contains the public documents and the private documents together. It is the same site that `dev` shows. The output goes to `content/dist-private`, and `content/dist` stays as it is.
+
+```sh
+pnpm exec for-humanity build --private
+```
+
+Use it to share private documents as a site with the people you allow. Deploy `dist-private` only to hosting that puts the whole site behind access control. See [Private site](deployment.md#private-site).
+
+- `build` writes only `dist`, and `build --private` writes only `dist-private`. Run each command for the site you deploy.
+- The private site has no `robots.txt`, sitemap, canonical URL or link preview tags. `url` is the address of the public site. Every page carries `noindex`.
+- The option exists only on the command line. A configuration file cannot turn it on, so a deployment command you did not change never publishes private documents.
+- Add `content/dist-private/` to `.gitignore`. `init` adds it for a new project.
 
 ## Help and troubleshooting
 

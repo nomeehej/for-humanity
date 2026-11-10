@@ -21,7 +21,7 @@ export const copy_error_content_root_outside = "The content root must be inside 
 /**
  * 예약 폴더 안의 content 루트 오류
  */
-export const copy_error_content_root_reserved = "The content root cannot be inside dist, .git or node_modules";
+export const copy_error_content_root_reserved = "The content root cannot be inside dist, dist-private, .git or node_modules";
 
 /**
  * 없는 content 루트 오류

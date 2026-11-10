@@ -42,9 +42,14 @@ export interface SiteParams {
     root: string;
 
     /**
-     * 개발 실행의 내부 문서 포함, 생략 시 공개 출력
+     * 개발 실행과 내부판 빌드의 내부 문서 포함, 생략 시 공개 출력
      */
     includePrivate?: boolean;
+
+    /**
+     * 내부판 빌드의 모든 페이지 검색 색인 제외, 생략 시 색인 허용
+     */
+    noindex?: boolean;
 
     /**
      * 배포 번들과 내장 자원의 패키지 루트
@@ -138,6 +143,7 @@ export const loadSite = async (params: SiteParams) => {
         browser: params.browser ?? {kind: "inline", code: readFileSync(join(params.kitRoot, "dist/browser.js"), "utf8")},
         fontCss: [mono.css, body.css, brand.css].join("\n"),
         preload: [...brand.files.keys(), ...mono.files.keys(), ...body.files.keys()],
+        noindex: params.noindex,
 
         // 링크 미리보기 이미지. 공개 주소가 있을 때만 배포
         image:

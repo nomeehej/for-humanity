@@ -48,4 +48,9 @@ export interface SiteAssets {
      * 링크 미리보기 이미지의 절대 URL. 공개 주소와 image 설정이 있을 때만
      */
     image?: string;
+
+    /**
+     * 모든 페이지의 검색 색인 제외 표시. 내부판 빌드만 지정
+     */
+    noindex?: boolean;
 }

@@ -44,8 +44,10 @@ describe("CLI 명령", () => {
 
                 if (help.args[0] === "dev" || help.args[0] === "preview") {
                     expect(help.result.stdout).toContain("--host");
+                    expect(help.result.stdout).not.toContain("--private");
                 } else if (help.args[0] === "build") {
                     expect(help.result.stdout).not.toContain("--host");
+                    expect(help.result.stdout).toContain("--private");
                 }
             }
 
@@ -76,6 +78,9 @@ describe("CLI 명령", () => {
                 ["build", "--host"],
                 ["dev", "--no-host"],
                 ["preview", "--host", "http://localhost"],
+                ["dev", "--private"],
+                ["--private"],
+                ["build", "--no-private"],
             ].map((args) => {
                 return {args, result: spawnSync(process.execPath, [cli, ...args], {cwd: root, encoding: "utf8", timeout: 5000})};
             });

@@ -50,7 +50,7 @@ export const copy_error_navigation_clash = "Duplicate navigation groups";
 /**
  * content 경로 설정의 프로젝트 밖, 예약 폴더 오류
  */
-export const copy_error_content_path = "Use a relative path inside the project; dist, node_modules and .git are not allowed";
+export const copy_error_content_path = "Use a relative path inside the project; dist, dist-private, node_modules and .git are not allowed";
 
 /**
  * 공개 문서 폴더를 content 루트로 지정한 설정 오류

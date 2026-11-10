@@ -1,6 +1,6 @@
 import {promises as fileSystem} from "node:fs";
 import {join, posix} from "node:path";
-import {content_default} from "@/constant/content";
+import {content_default, content_output_dir, content_private_output_dir} from "@/constant/content";
 import {deploy_workers} from "@/entry/init/_constant/deploy";
 import {init_copy, init_defaults, init_empty_entries} from "@/entry/init/_constant/init";
 import {readInitFile} from "@/entry/init/_function/read-init-file";
@@ -90,9 +90,11 @@ export const toInitPlan = async (params: InitPlanParams): Promise<InitPlan> => {
     const ignore = await readInitFile({root: params.project.root, path: ".gitignore"});
     const ignoreText = ignore === undefined ? "" : ignore.toString("utf8");
     const ignoreEol = ignoreText.includes("\r\n") ? "\r\n" : "\n";
-    const output = posix.join(params.options.content, "dist");
-    const ignoreLine = `/${output.replace(/[!#[\] ]/g, "\\$&")}/`;
-    const ignoreAdditions = [ignoreLine, ...(params.options.deploy === "cloudflare-workers" ? ["/.wrangler/"] : [])].filter((line) => !ignoreText.split(/\r?\n/).includes(line));
+    const output = posix.join(params.options.content, content_output_dir);
+    const ignoreLines = [output, posix.join(params.options.content, content_private_output_dir)].map((path) => `/${path.replace(/[!#[\] ]/g, "\\$&")}/`);
+    const ignoreAdditions = [...ignoreLines, ...(params.options.deploy === "cloudflare-workers" ? ["/.wrangler/"] : [])].filter(
+        (line) => !ignoreText.split(/\r?\n/).includes(line),
+    );
     const ignoreContent =
         ignoreAdditions.length === 0 ? ignoreText : `${ignoreText}${ignoreText === "" || ignoreText.endsWith("\n") ? "" : ignoreEol}${ignoreAdditions.join(ignoreEol)}${ignoreEol}`;
 

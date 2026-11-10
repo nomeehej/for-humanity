@@ -6,7 +6,7 @@ import {readProject} from "@/app/_function/read-project";
 
 describe("프로젝트 문서 루트", () => {
     describe("예약 폴더를 가리키는 심볼릭 링크", () => {
-        for (const directory of ["dist", ".git", "node_modules"]) {
+        for (const directory of ["dist", "dist-private", ".git", "node_modules"]) {
             test(`문서 루트가 심볼릭 링크로 ${directory} 안의 폴더를 가리키면 거부한다`, async ({root}) => {
                 /**
                  * GIVEN
