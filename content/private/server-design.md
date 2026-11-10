@@ -306,8 +306,8 @@ dev는 지금처럼 Vite 서버 하나다. 내부 문서는 로그인 없이 보
 
 2단계의 호스팅:
 
-- Cloudflare Access가 Worker의 Custom Domain, `workers.dev`, 미리보기 주소, 정적 자산을 모두 막는지. 문서에는 그렇게 적혀 있다.
-- 새 Worker를 주소 없이 배포한 뒤 Access를 켜고 주소를 붙이는 순서가 되는지.
+- Cloudflare Access가 Worker의 Custom Domain, `workers.dev`, 미리보기 주소, 정적 자산을 모두 막는지. 2026-11-10에 공식 저장소의 내부판 Worker에서 `workers.dev`와 버전 주소, 정적 자산이 로그인 주소로 302 이동하는 것을 확인했다. Custom Domain과 로그인 뒤의 화면은 아직 확인하지 않았다.
+- 새 Worker를 주소 없이 배포한 뒤 Access를 켜고 주소를 붙이는 순서가 되는지. 같은 날 이 순서로 진행했고 주소를 연 직후의 첫 요청부터 로그인을 요구했다.
 - Access의 무료 요금제가 허용하는 사용자 수.
 
 3단계의 GitHub와 브라우저:

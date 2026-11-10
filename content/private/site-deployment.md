@@ -98,7 +98,7 @@ pnpm deploy:private
 | --- | --- |
 | Worker name | `for-humanity-private` |
 | Static assets | `content/dist-private` |
-| `workers_dev`, `preview_urls` | `false`. Access를 켜기 전에는 주소를 열지 않음 |
+| `workers_dev`, `preview_urls` | Access를 켜기 전에는 `false`. 2026-11-10에 Access를 켠 뒤 `true`로 변경 |
 | Build command | `pnpm build:private` |
 | Deploy command | `pnpm exec wrangler deploy --config wrangler.private.jsonc` |
 
@@ -112,9 +112,10 @@ Access를 켜고 주소를 여는 순서입니다. 화면의 항목은 [Cloudfla
 2. `wrangler.private.jsonc`의 `workers_dev`를 `true`로 바꾸거나 `routes`에 Custom Domain을 추가한 뒤 `pnpm deploy:private`을 실행합니다. 주소는 대시보드가 아니라 설정 파일에서 엽니다. 다음 배포가 설정 파일의 값으로 덮어쓰기 때문입니다.
 3. 아래 항목을 확인하고 결과를 [Server design](server-design.md#구현-첫-단계에서-확인할-것)에 적습니다.
 
-- [ ] 주소가 없는 Worker에서 Access를 켤 수 있는지
-- [ ] 로그아웃한 브라우저에서 Custom Domain, `workers.dev`, 미리보기 주소가 모두 로그인을 요구하는지
-- [ ] `/_fh/` 아래 CSS와 그림 주소를 직접 열어도 로그인을 요구하는지
+- [x] 주소가 없는 Worker에서 Access를 켤 수 있는지. 2026-11-10에 주소 없이 배포한 상태에서 켰습니다.
+- [x] 로그인 없는 요청에 `workers.dev`와 버전 주소가 모두 로그인을 요구하는지. 2026-11-10에 두 주소의 홈과 내부 문서가 Access 로그인 주소로 302 이동했습니다. 인코딩한 경로, 겹친 슬래시, 대소문자가 다른 경로도 같았습니다.
+- [x] `/_fh/` 아래 CSS 주소와 `404.html`을 직접 열어도 로그인을 요구하는지. 같은 날 302 이동을 확인했습니다.
+- [ ] Custom Domain을 연결한 뒤에도 로그인을 요구하는지
 - [ ] 허용한 이메일로 로그인하면 공개 문서와 내부 문서가 함께 보이는지
 - [ ] 무료 요금제가 허용하는 사용자 수
 

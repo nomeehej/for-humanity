@@ -3,9 +3,9 @@
     "name": "for-humanity-private",
     "compatibility_date": "2026-10-23",
 
-    // 접근 제어를 켜기 전에는 어떤 주소도 열지 않음
-    "workers_dev": false,
-    "preview_urls": false,
+    // Cloudflare Access를 켠 뒤 연 주소. Access를 끄려면 먼저 둘 다 false로 배포
+    "workers_dev": true,
+    "preview_urls": true,
     "assets": {
         "directory": "./content/dist-private",
         "html_handling": "force-trailing-slash",
