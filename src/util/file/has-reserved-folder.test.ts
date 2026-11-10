@@ -10,21 +10,8 @@ describe("예약 폴더 판정", () => {
             {location: "public/distribution/a.png", expected: false},
             {location: "public/guide.md", expected: false},
         ])("$location 경로의 예약 폴더 판정은 $expected 값이다", (scenario) => {
-            /**
-             * GIVEN
-             * 구분자와 대소문자가 섞인 상대 경로
-             */
-
-            /**
-             * WHEN
-             * 예약 폴더 판정
-             */
             const result = hasReservedFolder(scenario.location);
 
-            /**
-             * THEN
-             * 구분자와 대소문자를 무시한 폴더 이름 비교 결과
-             */
             expect(result).toBe(scenario.expected);
         });
     });

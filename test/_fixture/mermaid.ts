@@ -10,10 +10,12 @@ import {font_display_strategy} from "@/constant/font";
 import {toPreviewConfig} from "@/entry/preview/to-preview-config";
 
 // ----------------------------------------------------------------------------------------
-// 브라우저에서 수집한 자원 요청과 실행 오류, 케이스별 격리
+// 브라우저에서 수집한 자원 요청과 실행 오류
+//
+// 케이스별 격리
 //
 // requests: 실제 요청한 자원 URL
-// errors: 처리되지 않은 페이지 오류
+// errors: 미처리 페이지 오류
 // consoleErrors: console.error에 기록한 메시지
 // ----------------------------------------------------------------------------------------
 interface BrowserRuntime {
@@ -78,7 +80,8 @@ export const test = base.extend<{runtime: BrowserRuntime}, {mermaidSite: string}
 
                 const html = (await readFile(join(root, "dist/guide/index.html"), "utf8"))
                     .replace(`<script>${shell}</script>`, "")
-                    // optional은 첫 페인트 전에 받지 못한 글꼴을 페이지 수명 내내 버린다. 갤러리는 받은 글꼴로 측정하도록 swap 고정
+                    // optional은 첫 페인트 전 미수신 글꼴 폐기, 페이지 수명 내내 유지
+                    // 갤러리는 수신한 글꼴로 측정, swap 고정
                     .replaceAll(`font-display: ${font_display_strategy};`, "font-display: swap;")
                     .replace("</body>", () => `<script>${fixture}</script></body>`);
 

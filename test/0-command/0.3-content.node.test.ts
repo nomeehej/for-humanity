@@ -13,10 +13,7 @@ import {siteConfigSchema} from "@/type/site-config";
 describe("공개와 내부 문서", () => {
     describe("공개 빌드", () => {
         test("[CNT-001] 기본 프로젝트 빌드는 공개 URL을 유지하고 내부 본문과 자원을 제외한다", {timeout: 45000}, async ({root}) => {
-            /**
-             * GIVEN
-             * 공개 문서, 내부 전용 이미지와 Mermaid, 수집 대상 밖의 Markdown
-             */
+            // GIVEN 공개 문서, 내부 전용 이미지와 Mermaid, 수집 대상 밖의 Markdown
             await mkdir(join(root, "content/public"), {recursive: true});
             await mkdir(join(root, "content/private/asset"), {recursive: true});
             await writeFile(join(root, "for-humanity.config.ts"), 'export default {url: "https://example.org"};');
@@ -31,10 +28,7 @@ describe("공개와 내부 문서", () => {
             await writeFile(join(root, "content/private/asset/secret.svg"), '<svg xmlns="http://www.w3.org/2000/svg"><text>INTERNAL_IMAGE</text></svg>');
             await writeFile(join(root, "content/scratch.md"), "Not a published document");
 
-            /**
-             * WHEN
-             * 프로젝트 루트에서 기본 빌드, 로컬 전체 문서 스냅샷
-             */
+            // WHEN 프로젝트 루트에서 기본 빌드, 로컬 전체 문서 스냅샷
             const result = spawnSync(process.execPath, [resolve("dist/cli.js"), "build"], {cwd: root, encoding: "utf8"});
 
             expect(result.status, result.stderr).toBe(0);
@@ -45,10 +39,7 @@ describe("공개와 내부 문서", () => {
             const local = await loadSite({root: join(root, "content"), kitRoot: resolve("."), site: siteConfigSchema.parse({}), includePrivate: true});
             const privatePage = await local.app.request("/private/maintenance/");
 
-            /**
-             * THEN
-             * 공개 출력 전체에서 내부 자료 제외, 로컬 전용 경로 제공
-             */
+            // THEN 공개 출력 전체에서 내부 자료 제외, 로컬 전용 경로 제공
             expect(html).toContain('<a href="/guide/" target="_blank" rel="noopener">Guide</a>');
             expect(entries.map((entry) => entry.replaceAll("\\", "/"))).toContain("guide/index.html");
             expect(entries.some((entry) => /private|secret|mermaid|scratch/.test(entry))).toBe(false);
@@ -69,10 +60,7 @@ describe("공개와 내부 문서", () => {
             {caseId: "CNT-007", source: '<img src="/private/secret.svg">'},
         ]) {
             test(`[${scenario.caseId}] 공개 문서의 내부 참조 ${scenario.source}는 원본 위치와 함께 실패한다`, async ({root}) => {
-                /**
-                 * GIVEN
-                 * 공개 문서에서 내부 자료로 향하는 참조
-                 */
+                // GIVEN 공개 문서에서 내부 자료로 향하는 참조
                 await mkdir(join(root, "content/public"), {recursive: true});
                 await mkdir(join(root, "content/private"), {recursive: true});
                 await writeFile(join(root, "content/public/guide.md"), `---\nname: Guide\nlabel: Guide\ngroup: Guide\n---\n\n${scenario.source}`);
@@ -81,16 +69,10 @@ describe("공개와 내부 문서", () => {
                     await writeFile(join(root, "content/private", name), "SECRET");
                 }
 
-                /**
-                 * WHEN
-                 * 실제 CLI의 정적 사이트 빌드
-                 */
+                // WHEN 실제 CLI의 정적 사이트 빌드
                 const result = spawnSync(process.execPath, [resolve("dist/cli.js"), "build", root], {encoding: "utf8"});
 
-                /**
-                 * THEN
-                 * 빌드 종료 코드, 작성 위치, 내부 참조 오류
-                 */
+                // THEN 빌드 종료 코드, 작성 위치, 내부 참조 오류
                 expect(result.status).toBe(1);
                 expect(result.stderr).toContain("guide.md:7");
                 expect(result.stderr).toMatch(/Public documents cannot (?:reference private files|link to private URLs)/);
@@ -98,26 +80,17 @@ describe("공개와 내부 문서", () => {
         }
 
         test("[CNT-008] 공개 이미지가 심볼릭 링크로 내부 파일을 가리키면 실패한다", async ({root}) => {
-            /**
-             * GIVEN
-             * 공개 경로 안의 링크가 가리키는 내부 자원
-             */
+            // GIVEN 공개 경로 안의 링크가 가리키는 내부 자원
             await mkdir(join(root, "content/public"), {recursive: true});
             await mkdir(join(root, "content/private"), {recursive: true});
             await writeFile(join(root, "content/private/secret.svg"), "SECRET");
             await symlink(join(root, "content/private/secret.svg"), join(root, "content/public/image.svg"));
             await writeFile(join(root, "content/public/guide.md"), "---\nname: Guide\nlabel: Guide\ngroup: Guide\n---\n\n![Image](image.svg)");
 
-            /**
-             * WHEN
-             * 실제 CLI의 정적 사이트 빌드
-             */
+            // WHEN 실제 CLI의 정적 사이트 빌드
             const result = spawnSync(process.execPath, [resolve("dist/cli.js"), "build", root], {encoding: "utf8"});
 
-            /**
-             * THEN
-             * 실제 파일 경로 기준의 공개 범위 위반 실패
-             */
+            // THEN 실제 파일 경로 기준의 공개 범위 위반 실패
             expect(result.status).toBe(1);
             expect(result.stderr).toContain("Public documents cannot reference private files");
         });
@@ -125,72 +98,45 @@ describe("공개와 내부 문서", () => {
 
     describe("경로 설정", () => {
         test("[CNT-009] 사용자 지정 경로에서도 공개 폴더 이름은 URL에 포함하지 않는다", async ({root}) => {
-            /**
-             * GIVEN
-             * 기본값과 다른 세 경로, 공개 문서의 상대 링크
-             */
+            // GIVEN 기본값과 다른 세 경로, 공개 문서의 상대 링크
             await mkdir(join(root, "knowledge/published/guide"), {recursive: true});
             await writeFile(join(root, "for-humanity.config.mjs"), 'export default {content: {root: "knowledge", public: "published", private: "internal"}};');
             await writeFile(join(root, "knowledge/README.md"), "# Custom\n\n[Guide](published/guide/setup.md)");
             await writeFile(join(root, "knowledge/published/guide/setup.md"), "---\nname: Setup\nlabel: Setup\ngroup: Guide\n---\n\n[Home](../../README.md)");
 
-            /**
-             * WHEN
-             * 실제 CLI의 정적 사이트 빌드
-             */
+            // WHEN 실제 CLI의 정적 사이트 빌드
             const result = spawnSync(process.execPath, [resolve("dist/cli.js"), "build", root], {encoding: "utf8"});
 
-            /**
-             * THEN
-             * 내부 폴더 없이도 빌드 성공, 공개 폴더 이름 없는 문서 링크
-             */
+            // THEN 내부 폴더 없이도 빌드 성공, 공개 폴더 이름 없는 문서 링크
             expect(result.status, result.stderr).toBe(0);
             expect(await readFile(join(root, "knowledge/dist/index.html"), "utf8")).toContain('<a href="/guide/setup/" target="_blank" rel="noopener">Guide</a>');
             expect(await readFile(join(root, "knowledge/dist/guide/setup/index.html"), "utf8")).toContain('<a href="/" target="_blank" rel="noopener">Home</a>');
         });
 
         test("[CNT-010] 공개 폴더가 없으면 루트 전체를 대신 게시하지 않는다", async ({root}) => {
-            /**
-             * GIVEN
-             * 이전 방식의 루트 문서만 존재하는 프로젝트
-             */
+            // GIVEN 이전 방식의 루트 문서만 존재하는 프로젝트
             await writeFile(join(root, "README.md"), "# Must not publish");
 
-            /**
-             * WHEN
-             * 실제 CLI의 정적 사이트 빌드
-             */
+            // WHEN 실제 CLI의 정적 사이트 빌드
             const result = spawnSync(process.execPath, [resolve("dist/cli.js"), "build", root], {encoding: "utf8"});
 
-            /**
-             * THEN
-             * 마이그레이션이 필요한 입력의 명시적 실패
-             */
+            // THEN 마이그레이션이 필요한 입력의 명시적 실패
             expect(result.status).toBe(1);
             expect(result.stderr).toContain("Content root not found");
         });
 
         test("[CNT-011] 내부 문서의 상대 부모와 링크는 사용자 지정 공개 폴더를 해소한다", async ({root}) => {
-            /**
-             * GIVEN
-             * 이름이 다른 공개 폴더의 부모를 참조하는 내부 문서
-             */
+            // GIVEN 이름이 다른 공개 폴더의 부모를 참조하는 내부 문서
             await mkdir(join(root, "published"));
             await mkdir(join(root, "internal"));
             await writeFile(join(root, "published/guide.md"), "---\nname: Guide\nlabel: Guide\ngroup: Guide\n---\n\nPublic guide");
             await writeFile(join(root, "internal/notes.md"), "---\nname: Notes\nlabel: Notes\ngroup: Guide\nparent: ../published/guide\n---\n\n[Guide](../published/guide.md)");
 
-            /**
-             * WHEN
-             * 개발 실행의 전체 문서와 파일 상대 부모 해석
-             */
+            // WHEN 개발 실행의 전체 문서와 파일 상대 부모 해석
             const local = await loadSite({root, kitRoot: resolve("."), site: siteConfigSchema.parse({content: {public: "published", private: "internal"}}), includePrivate: true});
             const response = await local.app.request("/private/notes/");
 
-            /**
-             * THEN
-             * 공개 부모의 URL과 내부 페이지 유지
-             */
+            // THEN 공개 부모의 URL과 내부 페이지 유지
             expect(response.status).toBe(200);
             expect(await response.text()).toContain('<a href="/guide/" target="_blank" rel="noopener">Guide</a>');
         });
@@ -198,29 +144,20 @@ describe("공개와 내부 문서", () => {
 
     describe("링크 미리보기 이미지", () => {
         test("[CNT-012] 미리보기 이미지는 공개 주소와 함께 내용 지문 자원으로 배포한다", async ({root}) => {
-            /**
-             * GIVEN
-             * 공개 주소와 문서 루트 기준 미리보기 이미지를 지정한 사이트
-             */
+            // GIVEN 공개 주소와 문서 루트 기준 미리보기 이미지를 지정한 사이트
             await mkdir(join(root, "public"));
             await mkdir(join(root, "asset"));
             await writeFile(join(root, "asset/preview.png"), "PREVIEW_IMAGE");
 
             const site = siteConfigSchema.parse({url: "https://docs.example.org", image: "asset/preview.png"});
 
-            /**
-             * WHEN
-             * 공개 스냅샷의 홈 응답과 og:image 주소의 자원 요청
-             */
+            // WHEN 공개 스냅샷의 홈 응답과 og:image 주소의 자원 요청
             const snapshot = await loadSite({root, kitRoot: resolve("."), site});
             const html = await (await snapshot.app.request("/")).text();
             const path = html.match(/<meta property="og:image" content="https:\/\/docs\.example\.org(\/_fh\/media\/asset\.[0-9a-f]{64}\.png)">/)?.[1];
             const image = await snapshot.app.request(String(path));
 
-            /**
-             * THEN
-             * 내용 지문 주소의 og:image, 같은 주소의 이미지 응답
-             */
+            // THEN 내용 지문 주소의 og:image, 같은 주소의 이미지 응답
             expect(path).toBeDefined();
             expect(image.status).toBe(200);
             expect(await image.text()).toBe("PREVIEW_IMAGE");
@@ -235,36 +172,24 @@ describe("공개와 내부 문서", () => {
                 error: /Public documents cannot reference private files: .*private[\\/]preview\.png/,
             },
         ])("[$caseId] 미리보기 이미지가 $condition 경로와 함께 거부한다", async (scenario, {root}) => {
-            /**
-             * GIVEN
-             * 공개 문서 폴더와 내부 폴더의 이미지, 공개 주소와 미리보기 이미지 설정
-             */
+            // GIVEN 공개 문서 폴더와 내부 폴더의 이미지, 공개 주소와 미리보기 이미지 설정
             await mkdir(join(root, "public"));
             await mkdir(join(root, "private"));
             await writeFile(join(root, "private/preview.png"), "INTERNAL_IMAGE");
 
             const site = siteConfigSchema.parse({url: "https://docs.example.org", image: scenario.image});
 
-            /**
-             * WHEN
-             * 공개 스냅샷 준비
-             */
+            // WHEN 공개 스냅샷 준비
             const snapshot = loadSite({root, kitRoot: resolve("."), site});
 
-            /**
-             * THEN
-             * 경로를 알리는 설정 오류
-             */
+            // THEN 경로를 알리는 설정 오류
             await expect(snapshot).rejects.toThrow(scenario.error);
         });
     });
 
     describe("내부판 빌드", () => {
         test("[CNT-015] --private 빌드는 내부 문서를 포함한 사이트를 dist-private에 따로 출력한다", {timeout: 45000}, async ({root}) => {
-            /**
-             * GIVEN
-             * 공개 주소를 설정한 프로젝트의 공개 문서와 그림을 참조하는 내부 문서
-             */
+            // GIVEN 공개 주소를 설정한 프로젝트의 공개 문서와 그림을 참조하는 내부 문서
             await mkdir(join(root, "content/public"), {recursive: true});
             await mkdir(join(root, "content/private/asset"), {recursive: true});
             await writeFile(join(root, "for-humanity.config.ts"), 'export default {url: "https://example.org"};');
@@ -278,10 +203,7 @@ describe("공개와 내부 문서", () => {
 
             await writeFile(join(root, "content/private/asset/secret.svg"), '<svg xmlns="http://www.w3.org/2000/svg"><text>INTERNAL_IMAGE</text></svg>');
 
-            /**
-             * WHEN
-             * 공개판 빌드 뒤 옵션을 폴더 인자 앞에 둔 내부판 빌드
-             */
+            // WHEN 공개판 빌드 뒤 옵션을 폴더 인자 앞에 둔 내부판 빌드
             const published = spawnSync(process.execPath, [resolve("dist/cli.js"), "build", root], {encoding: "utf8"});
 
             const internal = spawnSync(process.execPath, [resolve("dist/cli.js"), "build", "--private", root], {
@@ -303,10 +225,7 @@ describe("공개와 내부 문서", () => {
             const home = await readFile(join(output, "index.html"), "utf8");
             const publishedEntries = await readdir(join(root, "content/dist"), {recursive: true});
 
-            /**
-             * THEN
-             * 내부 문서와 그림을 포함한 내부판, 공개 주소 기준 출력과 검색 색인 제외, 내부 자료 없는 공개판 유지
-             */
+            // THEN 내부 문서와 그림을 포함한 내부판, 공개 주소 기준 출력과 검색 색인 제외, 내부 자료 없는 공개판 유지
             expect(entries).toContain("guide/index.html");
             expect(entries).toContain("private/maintenance/index.html");
             expect(await readFile(join(output, "private/maintenance/index.html"), "utf8")).toContain("INTERNAL_BODY");

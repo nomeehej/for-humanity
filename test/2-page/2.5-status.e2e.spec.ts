@@ -23,22 +23,13 @@ test.describe("상태 화면", () => {
             test.use(layout.options);
 
             test(`[${layout.caseId}] JavaScript 없이 중앙 안내와 이미지를 표시하고 배포 경로의 홈으로 복귀한다`, {tag: "@high"}, async ({page}) => {
-                /**
-                 * GIVEN
-                 * 하위 경로에 빌드한 사이트, 스크립트를 끈 브라우저
-                 */
+                // GIVEN 하위 경로에 빌드한 사이트, 스크립트를 끈 브라우저
 
-                /**
-                 * WHEN
-                 * 없는 중첩 문서 직접 방문
-                 */
+                // WHEN 없는 중첩 문서 직접 방문
                 const response = await page.goto("/project/missing/nested/");
                 const image = page.locator("main img");
 
-                /**
-                 * THEN
-                 * 기본 이미지의 실제 표시, 좁은 화면의 중앙 배치와 접근 가능한 홈 복귀
-                 */
+                // THEN 기본 이미지의 실제 표시, 좁은 화면의 중앙 배치와 접근 가능한 홈 복귀
                 expect(response?.status()).toBe(404);
                 await expect(page.getByRole("heading", {name: "404 Page not found", exact: true})).toBeVisible();
                 await expect(image).toHaveAttribute("src", /^\/project\/_fh\/face-sad\.[a-f0-9]+\.svg$/);
@@ -73,24 +64,15 @@ test.describe("상태 화면", () => {
         test.use({javaScriptEnabled: true});
 
         test("[STA-009] 밝은 테마와 어두운 테마의 상태 화면은 axe 위반이 없다", {tag: "@high"}, async ({page}) => {
-            /**
-             * GIVEN
-             * 하위 경로에 빌드한 사이트
-             */
+            // GIVEN 하위 경로에 빌드한 사이트
             await page.goto("/project/missing/");
 
             for (const colorScheme of ["light", "dark"] as const) {
-                /**
-                 * WHEN
-                 * 시스템 테마별 상태 화면의 접근성 검사
-                 */
+                // WHEN 시스템 테마별 상태 화면의 접근성 검사
                 await page.emulateMedia({colorScheme});
                 const result = await new AxeBuilder({page}).analyze();
 
-                /**
-                 * THEN
-                 * WCAG와 권장 사례를 포함한 기본 규칙 위반 없음
-                 */
+                // THEN WCAG와 권장 사례를 포함한 기본 규칙 위반 없음
                 expect(result.violations).toStrictEqual([]);
             }
         });

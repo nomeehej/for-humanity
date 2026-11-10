@@ -13,29 +13,20 @@ import {z} from "zod/mini";
 describe("CLI 명령", () => {
     describe("도움말과 입력 검사", () => {
         test("[CMD-001] 도움말과 버전은 설정을 실행하거나 사이트를 빌드하지 않는다", async ({root}) => {
-            /**
-             * GIVEN
-             * 실행하면 실패하는 소비자 설정
-             */
+            // GIVEN 실행하면 실패하는 소비자 설정
             await writeFile(join(root, "for-humanity.config.ts"), 'throw new Error("CONFIG_MUST_NOT_RUN");');
 
             const cli = resolve("dist/cli.js");
             const manifest = z.object({version: z.string()}).parse(JSON.parse(await readFile("package.json", "utf8")));
 
-            /**
-             * WHEN
-             * 루트와 명령별 도움말, 버전 플래그의 독립 실행
-             */
+            // WHEN 루트와 명령별 도움말, 버전 플래그의 독립 실행
             const helps = [["--help"], ["-h"], ["dev", "--help"], ["build", "--help"], ["preview", "--help"]].map((args) => {
                 return {args, result: spawnSync(process.execPath, [cli, ...args], {cwd: root, encoding: "utf8", timeout: 5000})};
             });
 
             const versions = ["--version", "-v"].map((flag) => spawnSync(process.execPath, [cli, flag], {cwd: root, encoding: "utf8", timeout: 5000}));
 
-            /**
-             * THEN
-             * 설정 실행 없는 사용법 안내와 실제 패키지 버전
-             */
+            // THEN 설정 실행 없는 사용법 안내와 실제 패키지 버전
             for (const help of helps) {
                 expect(help.result.status, help.result.stderr).toBe(0);
                 expect(help.result.stdout).toContain("USAGE");
@@ -61,18 +52,12 @@ describe("CLI 명령", () => {
         });
 
         test("[CMD-002] 잘못된 명령, 옵션, 초과 인자는 빌드 전에 실패한다", async ({root}) => {
-            /**
-             * GIVEN
-             * 인자 검증 뒤에만 읽을 설정
-             */
+            // GIVEN 인자 검증 뒤에만 읽을 설정
             await writeFile(join(root, "for-humanity.config.ts"), 'throw new Error("CONFIG_MUST_NOT_RUN");');
 
             const cli = resolve("dist/cli.js");
 
-            /**
-             * WHEN
-             * 잘못된 명령, 옵션, 초과 인자의 CLI 실행
-             */
+            // WHEN 잘못된 명령, 옵션, 초과 인자의 CLI 실행
             const runs = [
                 ["unknown"],
                 ["build", "--unknown"],
@@ -88,10 +73,7 @@ describe("CLI 명령", () => {
                 return {args, result: spawnSync(process.execPath, [cli, ...args], {cwd: root, encoding: "utf8", timeout: 5000})};
             });
 
-            /**
-             * THEN
-             * 잘못된 입력의 종료 코드와 설정 미실행
-             */
+            // THEN 잘못된 입력의 종료 코드와 설정 미실행
             for (const run of runs) {
                 expect(run.result.status, JSON.stringify(run.args)).toBe(1);
                 expect(run.result.stderr).not.toContain("CONFIG_MUST_NOT_RUN");
@@ -102,17 +84,11 @@ describe("CLI 명령", () => {
 
     describe("빌드", () => {
         test("[CMD-003] 폴더를 생략한 빌드는 현재 프로젝트의 content를 사용하고 경고 뒤에도 성공한다", {timeout: 45000}, async ({root}) => {
-            /**
-             * GIVEN
-             * 없는 문서 링크를 포함한 홈
-             */
+            // GIVEN 없는 문서 링크를 포함한 홈
             await mkdir(join(root, "content/public"), {recursive: true});
             await writeFile(join(root, "content/README.md"), "# Local home\n\n[Missing](public/missing.md)\n");
 
-            /**
-             * WHEN
-             * 문서 폴더 인자 없는 빌드
-             */
+            // WHEN 문서 폴더 인자 없는 빌드
             const result = spawnSync(process.execPath, [resolve("dist/cli.js"), "build"], {
                 cwd: root,
                 encoding: "utf8",
@@ -125,10 +101,7 @@ describe("CLI 명령", () => {
                 },
             });
 
-            /**
-             * THEN
-             * 표준 출력의 성공 로그와 표준 오류의 파일 위치 경고
-             */
+            // THEN 표준 출력의 성공 로그와 표준 오류의 파일 위치 경고
             expect(result.error).toBeUndefined();
             expect(result.status, result.stderr).toBe(0);
             expect(result.stdout).toContain("for-humanity");
@@ -150,10 +123,7 @@ describe("CLI 명령", () => {
             {caseId: "CMD-010", name: "기본 dev 명령의 등호 CLI 주소", command: undefined, args: ["--host=127.0.0.1"], host: "192.0.2.1", output: "dist"},
             {caseId: "CMD-011", name: "preview의 내부판 옵션", command: "preview", args: ["--private"], host: "127.0.0.1", output: "dist-private"},
         ])("[$caseId] $name 입력을 적용해 HTTP 요청을 받는다", async (scenario, {root}) => {
-            /**
-             * GIVEN
-             * 빈 포트와 수신 주소를 지정한 최소 문서 프로젝트, 시나리오의 출력 폴더에만 있는 빌드 결과
-             */
+            // GIVEN 빈 포트와 수신 주소를 지정한 최소 문서 프로젝트, 시나리오의 출력 폴더에만 있는 빌드 결과
             const reservation = createServer();
             reservation.listen(0, "127.0.0.1");
             await once(reservation, "listening");
@@ -170,10 +140,7 @@ describe("CLI 명령", () => {
             await writeFile(join(root, "content", scenario.output, "index.html"), "<!doctype html><h1>Network home</h1>");
             await writeFile(join(root, "for-humanity.config.mjs"), `export default ${JSON.stringify({port: address.port, host: scenario.host})};\n`);
 
-            /**
-             * WHEN
-             * 실제 설치 진입점의 서버 명령 실행
-             */
+            // WHEN 실제 설치 진입점의 서버 명령 실행
             const server = spawn(process.execPath, [resolve("dist/cli.js"), ...(scenario.command === undefined ? [] : [scenario.command]), ...scenario.args], {
                 cwd: root,
                 stdio: ["ignore", "pipe", "pipe"],
@@ -209,10 +176,7 @@ describe("CLI 명령", () => {
                     )
                     .toBe(200);
 
-                /**
-                 * THEN
-                 * 지정한 주소로의 실제 HTTP 연결과 문서 응답
-                 */
+                // THEN 지정한 주소로의 실제 HTTP 연결과 문서 응답
                 expect(await (await fetch(url)).text()).toContain("Network home");
             } finally {
                 if (server.exitCode === null && server.signalCode === null) {

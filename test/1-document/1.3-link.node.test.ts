@@ -17,10 +17,7 @@ import {logger} from "@/util/logger/logger";
 describe("문서 링크와 목차", () => {
     describe("상대 링크", () => {
         test("[LNK-001] 상대 Markdown 링크는 쿼리와 앵커를 보존한다", async ({scope}) => {
-            /**
-             * GIVEN
-             * 쿼리와 앵커가 있는 상대 링크 문서
-             */
+            // GIVEN 쿼리와 앵커가 있는 상대 링크 문서
             const site = siteConfigSchema.parse({});
 
             await mkdir(join(scope.publicRoot, "guide"));
@@ -45,17 +42,11 @@ describe("문서 링크와 목차", () => {
                 ),
             ]);
 
-            /**
-             * WHEN
-             * 문서 링크와 목차 생성
-             */
+            // WHEN 문서 링크와 목차 생성
             const docs = await readDocs({scope, processor: toProcessor({site, scope})});
             const setup = docs.find((doc) => doc.id === "guide/setup");
 
-            /**
-             * THEN
-             * 쿼리와 앵커를 유지한 사이트 주소
-             */
+            // THEN 쿼리와 앵커를 유지한 사이트 주소
             expect(setup?.html).toMatch(/href="\/api\/\?mode=compact&#x26;lang=ko#details"/);
             expect(setup?.html).toMatch(/href="\/api\/\?mode=compact"/);
             expect(setup?.html).toMatch(/href="\/\?lang=ko#start"/);
@@ -71,48 +62,30 @@ describe("문서 링크와 목차", () => {
             {caseId: "LNK-002", source: "[Guide](setup%zz.md)"},
             {caseId: "LNK-003", source: '<img src="image%zz.png" alt="">'},
         ])("[$caseId] 잘못된 퍼센트 인코딩 참조 $source 입력은 작성 위치와 함께 거부한다", async (scenario, {scope}) => {
-            /**
-             * GIVEN
-             * 해석할 수 없는 인코딩을 포함한 상대 참조
-             */
+            // GIVEN 해석할 수 없는 인코딩을 포함한 상대 참조
             const site = siteConfigSchema.parse({});
 
             await writeFile(join(scope.publicRoot, "guide.md"), `---\nname: Guide\nlabel: Guide\ngroup: Guide\n---\n\n${scenario.source}\n`);
 
-            /**
-             * WHEN
-             * 문서 로드
-             */
+            // WHEN 문서 로드
             const result = readDocs({scope, processor: toProcessor({site, scope})});
 
-            /**
-             * THEN
-             * 인코딩 오류와 원본 행 번호
-             */
+            // THEN 인코딩 오류와 원본 행 번호
             await expect(result).rejects.toThrow(/Invalid percent-encoding/);
             await expect(result).rejects.toHaveProperty("line", 7);
         });
 
         test("[LNK-005] 없는 문서를 가리키는 Markdown 링크와 원시 HTML 링크는 작성 위치와 함께 경고한다", async ({scope}) => {
-            /**
-             * GIVEN
-             * 없는 문서를 가리키는 Markdown 링크와 원시 HTML 링크
-             */
+            // GIVEN 없는 문서를 가리키는 Markdown 링크와 원시 HTML 링크
             const site = siteConfigSchema.parse({});
             const warn = vi.spyOn(logger, "warn").mockImplementation(() => undefined);
 
             await writeFile(join(scope.publicRoot, "guide.md"), '---\nname: Guide\nlabel: Guide\ngroup: Guide\n---\n\n[Doc](gone.md)\n\n<a href="missing.md#start">Doc</a>\n');
 
-            /**
-             * WHEN
-             * 문서 로드
-             */
+            // WHEN 문서 로드
             const docs = await readDocs({scope, processor: toProcessor({site, scope})});
 
-            /**
-             * THEN
-             * 사이트 주소로 바꾼 두 링크, 파일과 줄 번호가 붙은 경고
-             */
+            // THEN 사이트 주소로 바꾼 두 링크, 파일과 줄 번호가 붙은 경고
             expect(docs[0].html).toContain('href="/gone/"');
             expect(docs[0].html).toContain('href="/missing/#start"');
 
@@ -123,25 +96,16 @@ describe("문서 링크와 목차", () => {
         });
 
         test("[LNK-006] 스킴으로 시작하는 Markdown 링크는 작성한 주소를 유지하고 경고하지 않는다", async ({scope}) => {
-            /**
-             * GIVEN
-             * 스킴으로 시작하는 .md 링크
-             */
+            // GIVEN 스킴으로 시작하는 .md 링크
             const site = siteConfigSchema.parse({});
             const warn = vi.spyOn(logger, "warn").mockImplementation(() => undefined);
 
             await writeFile(join(scope.publicRoot, "guide.md"), "---\nname: Guide\nlabel: Guide\ngroup: Guide\n---\n\n[Notes](web+app:notes.md)\n");
 
-            /**
-             * WHEN
-             * 문서 로드
-             */
+            // WHEN 문서 로드
             const docs = await readDocs({scope, processor: toProcessor({site, scope})});
 
-            /**
-             * THEN
-             * 작성한 주소의 링크와 경고 없음
-             */
+            // THEN 작성한 주소의 링크와 경고 없음
             expect(docs[0].html).toContain('href="web+app:notes.md"');
             expect(warn).not.toHaveBeenCalled();
         });
@@ -149,10 +113,7 @@ describe("문서 링크와 목차", () => {
 
     describe("제목과 목차", () => {
         test("[LNK-004] 제목과 목차는 작성한 텍스트와 번호를 보존한다", async ({scope}) => {
-            /**
-             * GIVEN
-             * 번호, 가름, 중복 제목이 있는 문서
-             */
+            // GIVEN 번호, 가름, 중복 제목이 있는 문서
             const site = siteConfigSchema.parse({});
 
             await writeFile(
@@ -160,10 +121,7 @@ describe("문서 링크와 목차", () => {
                 "---\nname: Guide\nlabel: Guide\ngroup: Guide\n---\n\n### Before the first section\n\n::part[Setup]\n\n## Overview\n\n### 01. Keep this number\n\n:::details[More]\n### Nested heading\n\nBody.\n:::\n\n## Overview\n",
             );
 
-            /**
-             * WHEN
-             * 문서 링크와 목차 생성
-             */
+            // WHEN 문서 링크와 목차 생성
             const docs = await readDocs({scope, processor: toProcessor({site, scope})});
 
             const app = toPageApp({
@@ -174,10 +132,7 @@ describe("문서 링크와 목차", () => {
 
             const html = await (await app.request("/guide/")).text();
 
-            /**
-             * THEN
-             * 작성한 텍스트와 번호를 유지한 제목 id와 목차
-             */
+            // THEN 작성한 텍스트와 번호를 유지한 제목 id와 목차
             expect(html).toMatch(/<h2[^>]*id="overview"[^>]*><span class="wg_article__headingText">Overview<\/span><\/h2>/);
             expect(html).toMatch(/<h3[^>]*id="01-keep-this-number"[^>]*><span class="wg_article__headingText">01\. Keep this number<\/span><\/h3>/);
             expect(html).toMatch(/href="#overview"[^>]*>Overview<\/a>/);
@@ -193,24 +148,15 @@ describe("문서 링크와 목차", () => {
             {caseId: "LNK-008", source: "::part[]"},
             {caseId: "LNK-009", source: "::part[ ]"},
         ])("[$caseId] 이름 없는 가름 $source 입력은 작성 위치와 함께 거부한다", async (scenario, {scope}) => {
-            /**
-             * GIVEN
-             * 이름을 생략하거나 비운 가름
-             */
+            // GIVEN 이름을 생략하거나 비운 가름
             const site = siteConfigSchema.parse({});
 
             await writeFile(join(scope.publicRoot, "guide.md"), `---\nname: Guide\nlabel: Guide\ngroup: Guide\n---\n\n${scenario.source}\n\n## Overview\n\nText.\n`);
 
-            /**
-             * WHEN
-             * 문서 로드
-             */
+            // WHEN 문서 로드
             const result = readDocs({scope, processor: toProcessor({site, scope})});
 
-            /**
-             * THEN
-             * 빈 제목 오류와 원본 행 번호
-             */
+            // THEN 빈 제목 오류와 원본 행 번호
             await expect(result).rejects.toThrow(/Invalid part syntax: part needs a non-empty title/);
             await expect(result).rejects.toHaveProperty("line", 7);
         });
@@ -223,24 +169,15 @@ describe("문서 링크와 목차", () => {
             {caseId: "LNK-014", source: "::part[Setup]{}", error: /Invalid part syntax: part has malformed attributes/},
             {caseId: "LNK-015", source: ":::part[Setup]\nBody.\n:::", error: /Invalid part syntax: part must be written as a ::part\[\.\.\.\] line/},
         ])("[$caseId] 서식, 속성, 블록 형태의 가름 $source 입력은 작성 위치와 함께 거부한다", async (scenario, {scope}) => {
-            /**
-             * GIVEN
-             * 이름에 서식이 있거나 속성을 붙이거나 블록으로 쓴 가름
-             */
+            // GIVEN 이름에 서식이 있거나 속성을 붙이거나 블록으로 쓴 가름
             const site = siteConfigSchema.parse({});
 
             await writeFile(join(scope.publicRoot, "guide.md"), `---\nname: Guide\nlabel: Guide\ngroup: Guide\n---\n\n${scenario.source}\n\n## Overview\n\nText.\n`);
 
-            /**
-             * WHEN
-             * 문서 로드
-             */
+            // WHEN 문서 로드
             const result = readDocs({scope, processor: toProcessor({site, scope})});
 
-            /**
-             * THEN
-             * 가름 문법 오류와 원본 행 번호
-             */
+            // THEN 가름 문법 오류와 원본 행 번호
             await expect(result).rejects.toThrow(scenario.error);
             await expect(result).rejects.toHaveProperty("line", 7);
         });
@@ -249,33 +186,21 @@ describe("문서 링크와 목차", () => {
             {caseId: "LNK-016", source: "::part[One]\n\n::part[Two]\n\n## Overview\n", line: 7},
             {caseId: "LNK-017", source: "## Overview\n\n::part[Tail]\n\nText.\n", line: 9},
         ])("[$caseId] 다음 가름이나 문서 끝 전에 ## 절이 없는 가름은 작성 위치와 함께 거부한다", async (scenario, {scope}) => {
-            /**
-             * GIVEN
-             * ## 절 없이 다음 가름이나 문서 끝이 오는 가름
-             */
+            // GIVEN ## 절 없이 다음 가름이나 문서 끝이 오는 가름
             const site = siteConfigSchema.parse({});
 
             await writeFile(join(scope.publicRoot, "guide.md"), `---\nname: Guide\nlabel: Guide\ngroup: Guide\n---\n\n${scenario.source}`);
 
-            /**
-             * WHEN
-             * 문서 로드
-             */
+            // WHEN 문서 로드
             const result = readDocs({scope, processor: toProcessor({site, scope})});
 
-            /**
-             * THEN
-             * 절 누락 오류와 그 가름의 행 번호
-             */
+            // THEN 절 누락 오류와 그 가름의 행 번호
             await expect(result).rejects.toThrow(/Invalid part syntax: part needs a ## section before the next part or the end of the document/);
             await expect(result).rejects.toHaveProperty("line", scenario.line);
         });
 
         test("[LNK-018] 콜론이 든 가름과 Note 제목은 원문 그대로 표시한다", async ({scope}) => {
-            /**
-             * GIVEN
-             * 콜론 뒤에 글자가 붙은 가름과 Note 제목
-             */
+            // GIVEN 콜론 뒤에 글자가 붙은 가름과 Note 제목
             const site = siteConfigSchema.parse({});
 
             await writeFile(
@@ -283,26 +208,17 @@ describe("문서 링크와 목차", () => {
                 "---\nname: Guide\nlabel: Guide\ngroup: Guide\n---\n\n::part[예:이것]\n\n## Overview\n\n:::note[예:요약]\nBody.\n:::\n",
             );
 
-            /**
-             * WHEN
-             * 문서 로드
-             */
+            // WHEN 문서 로드
             const docs = await readDocs({scope, processor: toProcessor({site, scope})});
 
-            /**
-             * THEN
-             * 본문 가름, 목차 묶음, Note 제목의 같은 원문
-             */
+            // THEN 본문 가름, 목차 묶음, Note 제목의 같은 원문
             expect(docs[0].outline.sections).toStrictEqual([{part: "예:이것"}]);
             expect(docs[0].html).toContain('<div class="wg_article__part">예:이것</div>');
             expect(docs[0].html).toContain('<strong class="wg_article__noteTitle">예:요약</strong>');
         });
 
         test("[LNK-019] 원시 HTML의 h2, h3에도 제목 id와 목차 항목을 만든다", async ({scope}) => {
-            /**
-             * GIVEN
-             * 원시 HTML 제목과 Markdown 제목이 섞인 문서
-             */
+            // GIVEN 원시 HTML 제목과 Markdown 제목이 섞인 문서
             const site = siteConfigSchema.parse({});
 
             await writeFile(
@@ -310,16 +226,10 @@ describe("문서 링크와 목차", () => {
                 '---\nname: Guide\nlabel: Guide\ngroup: Guide\n---\n\nLead.\n\n<h2>Raw section</h2>\n\n<h3 id="custom">Raw sub</h3>\n\n## Markdown section\n',
             );
 
-            /**
-             * WHEN
-             * 문서 로드
-             */
+            // WHEN 문서 로드
             const docs = await readDocs({scope, processor: toProcessor({site, scope})});
 
-            /**
-             * THEN
-             * 작성 순서의 제목 목록, 원시 h2의 생성 id와 머리 영역 밖 배치
-             */
+            // THEN 작성 순서의 제목 목록, 원시 h2의 생성 id와 머리 영역 밖 배치
             expect(docs[0].outline.headings).toStrictEqual([
                 {depth: 1, slug: "guide", text: "Guide"},
                 {depth: 2, slug: "raw-section", text: "Raw section"},
@@ -331,24 +241,15 @@ describe("문서 링크와 목차", () => {
         });
 
         test("[LNK-020] 자동 제목 id는 원시 HTML에 작성한 id와 겹치지 않는다", async ({scope}) => {
-            /**
-             * GIVEN
-             * 작성한 id가 있는 원시 HTML 제목과 같은 이름의 Markdown 제목
-             */
+            // GIVEN 작성한 id가 있는 원시 HTML 제목과 같은 이름의 Markdown 제목
             const site = siteConfigSchema.parse({});
 
             await writeFile(join(scope.publicRoot, "guide.md"), '---\nname: Guide\nlabel: Guide\ngroup: Guide\n---\n\n<h2 id="usage">Usage notes</h2>\n\n## Usage\n\nText.\n');
 
-            /**
-             * WHEN
-             * 문서 로드
-             */
+            // WHEN 문서 로드
             const docs = await readDocs({scope, processor: toProcessor({site, scope})});
 
-            /**
-             * THEN
-             * 작성한 id 유지와 다음 접미사의 자동 id
-             */
+            // THEN 작성한 id 유지와 다음 접미사의 자동 id
             expect(docs[0].outline.headings.map((heading) => heading.slug)).toStrictEqual(["guide", "usage", "usage-1"]);
             expect(docs[0].html.match(/id="usage"/g)).toHaveLength(1);
         });
@@ -362,24 +263,15 @@ describe("문서 링크와 목차", () => {
             },
             {caseId: "LNK-022", source: ":::details[More]\n<h1>Raw title</h1>\n\nBody.\n:::\n", error: /Invalid part syntax: details cannot contain # or ## headings/, line: 8},
         ])("[$caseId] Note, Details 안의 원시 HTML h1, h2는 그 제목의 위치와 함께 거부한다", async (scenario, {scope}) => {
-            /**
-             * GIVEN
-             * 원시 HTML의 h1이나 h2를 본문에 둔 Note와 Details
-             */
+            // GIVEN 원시 HTML의 h1이나 h2를 본문에 둔 Note와 Details
             const site = siteConfigSchema.parse({});
 
             await writeFile(join(scope.publicRoot, "guide.md"), `---\nname: Guide\nlabel: Guide\ngroup: Guide\n---\n\n${scenario.source}`);
 
-            /**
-             * WHEN
-             * 문서 로드
-             */
+            // WHEN 문서 로드
             const result = readDocs({scope, processor: toProcessor({site, scope})});
 
-            /**
-             * THEN
-             * 부품 제목 오류와 원시 HTML 제목의 행 번호
-             */
+            // THEN 부품 제목 오류와 원시 HTML 제목의 행 번호
             await expect(result).rejects.toThrow(scenario.error);
             await expect(result).rejects.toHaveProperty("line", scenario.line);
         });
@@ -387,33 +279,21 @@ describe("문서 링크와 목차", () => {
 
     describe("hash 앵커", () => {
         test("[LNK-023] 같은 문서에 없는 제목을 가리키는 hash 링크는 줄 번호와 함께 경고한다", async ({scope}) => {
-            /**
-             * GIVEN
-             * 있는 제목과 없는 제목을 가리키는 링크 둘
-             */
+            // GIVEN 있는 제목과 없는 제목을 가리키는 링크 둘
             const site = siteConfigSchema.parse({});
             const warn = vi.spyOn(logger, "warn").mockImplementation(() => undefined);
 
             await writeFile(join(scope.publicRoot, "guide.md"), "---\nname: Guide\nlabel: Guide\ngroup: Guide\n---\n\n## Setup\n\n[Ok](#setup)\n\n[Missing](#teardown)\n");
 
-            /**
-             * WHEN
-             * 문서 로드
-             */
+            // WHEN 문서 로드
             await readDocs({scope, processor: toProcessor({site, scope})});
 
-            /**
-             * THEN
-             * 없는 제목만 파일과 줄 번호가 붙은 경고
-             */
+            // THEN 없는 제목만 파일과 줄 번호가 붙은 경고
             expect(warn.mock.calls).toStrictEqual([[`${join("public", "guide.md")}:11 Link to a missing heading: #teardown`]]);
         });
 
         test("[LNK-024] 다른 문서에 없는 제목을 가리키는 링크는 전체 수집 뒤 경고한다", async ({scope}) => {
-            /**
-             * GIVEN
-             * 다른 문서의 있는 제목과 없는 제목, 문서가 아닌 주소를 가리키는 링크
-             */
+            // GIVEN 다른 문서의 있는 제목과 없는 제목, 문서가 아닌 주소를 가리키는 링크
             const site = siteConfigSchema.parse({});
             const warn = vi.spyOn(logger, "warn").mockImplementation(() => undefined);
 
@@ -425,24 +305,15 @@ describe("문서 링크와 목차", () => {
                 ),
             ]);
 
-            /**
-             * WHEN
-             * 문서 로드
-             */
+            // WHEN 문서 로드
             await readDocs({scope, processor: toProcessor({site, scope})});
 
-            /**
-             * THEN
-             * 있는 문서의 없는 제목만 경고. 문서가 아닌 주소는 제외
-             */
+            // THEN 있는 문서의 없는 제목만 경고, 문서가 아닌 주소는 제외
             expect(warn.mock.calls).toStrictEqual([[`${join("public", "screen.md")}:9 Link to a missing heading: /questions/#q4`]]);
         });
 
         test("[LNK-025] 원시 HTML로 쓴 id를 가리키는 hash 링크는 같은 문서에서 경고하지 않는다", async ({scope}) => {
-            /**
-             * GIVEN
-             * 제목 안의 <a id>와 본문의 <span id>, 그 둘과 자동 id, 없는 id를 가리키는 링크
-             */
+            // GIVEN 제목 안의 <a id>와 본문의 <span id>, 그 둘과 자동 id, 없는 id를 가리키는 링크
             const site = siteConfigSchema.parse({});
             const warn = vi.spyOn(logger, "warn").mockImplementation(() => undefined);
 
@@ -459,24 +330,15 @@ describe("문서 링크와 목차", () => {
                 ].join("\n\n"),
             );
 
-            /**
-             * WHEN
-             * 문서 로드
-             */
+            // WHEN 문서 로드
             await readDocs({scope, processor: toProcessor({site, scope})});
 
-            /**
-             * THEN
-             * 작성한 id와 자동 id는 통과, 없는 id만 경고
-             */
+            // THEN 작성한 id와 자동 id는 통과, 없는 id만 경고
             expect(warn.mock.calls).toStrictEqual([[`${join("public", "guide.md")}:17 Link to a missing heading: #02`]]);
         });
 
         test("[LNK-026] 다른 문서의 원시 HTML id를 가리키는 링크는 전체 수집 뒤에도 경고하지 않는다", async ({scope}) => {
-            /**
-             * GIVEN
-             * 다른 문서의 제목 안 <a id>, 그 자동 id, 없는 id를 가리키는 링크
-             */
+            // GIVEN 다른 문서의 제목 안 <a id>, 그 자동 id, 없는 id를 가리키는 링크
             const site = siteConfigSchema.parse({});
             const warn = vi.spyOn(logger, "warn").mockImplementation(() => undefined);
 
@@ -488,16 +350,10 @@ describe("문서 링크와 목차", () => {
                 ),
             ]);
 
-            /**
-             * WHEN
-             * 문서 로드
-             */
+            // WHEN 문서 로드
             await readDocs({scope, processor: toProcessor({site, scope})});
 
-            /**
-             * THEN
-             * 없는 id만 경고
-             */
+            // THEN 없는 id만 경고
             expect(warn.mock.calls).toStrictEqual([[`${join("public", "notes.md")}:11 Link to a missing heading: /rules/#04`]]);
         });
     });

@@ -9,7 +9,7 @@ import {initTitleSchema, initUrlSchema} from "@/entry/init/_type/init-input";
 const controllers: AbortController[] = [];
 
 // ----------------------------------------------------------------------------------------
-// 실제 readline 입력과 렌더링을 받는 독립 터미널
+// 실제 readline 입력과 렌더 수신 독립 터미널
 // ----------------------------------------------------------------------------------------
 const createTerminal = () => {
     const input = new PassThrough();
@@ -30,7 +30,7 @@ const question = {
 };
 
 beforeEach(() => {
-    // TERM=dumb에서는 Node readline이 방향키와 삭제를 편집으로 처리하지 않음
+    // TERM=dumb에서는 Node readline의 방향키와 삭제 편집 처리 없음
     vi.stubEnv("TERM", "xterm-256color");
 });
 

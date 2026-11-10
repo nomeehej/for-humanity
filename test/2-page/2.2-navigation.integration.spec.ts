@@ -18,10 +18,7 @@ test.use({viewport: {width: 1920, height: 600}});
 test.describe("문서 탐색", () => {
     test.describe("셸 컴포넌트 수명", () => {
         test("[NAV-014] 반복 마운트와 해제에서 구독과 타이머를 정리한다", {tag: "@high"}, async ({page}) => {
-            /**
-             * GIVEN
-             * 전역 구독을 관찰하는 실제 셸
-             */
+            // GIVEN 전역 구독을 관찰하는 실제 셸
             const errors: string[] = [];
 
             page.on("pageerror", (error) => errors.push(error.message));
@@ -32,7 +29,7 @@ test.describe("문서 탐색", () => {
                 const add = EventTarget.prototype.addEventListener;
                 const remove = EventTarget.prototype.removeEventListener;
 
-                // DOM이 전달하는 this를 보존하는 계측 경계
+                // 계측 경계, DOM이 전달하는 this 보존
                 EventTarget.prototype.addEventListener = function (type, listener, options) {
                     if (this === window || this === document || this === document.documentElement || this instanceof MediaQueryList) {
                         const owned = new Error().stack?.includes(`${location.origin}/lifecycle/`) === true;
@@ -72,15 +69,6 @@ test.describe("문서 탐색", () => {
 
             for (let cycle = 0; cycle < 3; cycle++) {
                 await test.step(`${cycle + 1}번째 마운트를 해제하면 구독과 타이머를 정리한다`, async () => {
-                    /**
-                     * GIVEN
-                     * 셸이 없는 갤러리 페이지
-                     */
-
-                    /**
-                     * WHEN
-                     * 셸 마운트와 앵커 강조 후 해제
-                     */
                     await page.evaluate(() => window.shellFixture.mount());
                     await page.mouse.move(500, 200);
                     await expect(page.locator("[data-cursor-face]")).toHaveCSS("visibility", "visible");
@@ -96,10 +84,6 @@ test.describe("문서 탐색", () => {
 
                     await page.evaluate(() => window.shellFixture.unmount());
 
-                    /**
-                     * THEN
-                     * 본문 유지, 구독과 타이머 정리
-                     */
                     expect(await main.evaluate((element) => element === document.querySelector<HTMLElement>("main"))).toBe(true);
 
                     // 강조 유지 시간 종료 전의 즉시 조회
@@ -110,16 +94,8 @@ test.describe("문서 탐색", () => {
             }
 
             await test.step("첫 프레임 전에 해제하면 늦은 구독을 설치하지 않는다", async () => {
-                /**
-                 * GIVEN
-                 * 지금까지 설치한 구독 수를 기록한 갤러리 페이지
-                 */
                 const start = await page.evaluate(() => window.shellListeners.length);
 
-                /**
-                 * WHEN
-                 * 첫 프레임 전의 마운트와 해제 후 두 프레임 대기
-                 */
                 await page.evaluate(() => {
                     window.shellFixture.mount();
                     window.shellFixture.unmount();
@@ -127,10 +103,6 @@ test.describe("문서 탐색", () => {
 
                 await page.evaluate(() => new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve))));
 
-                /**
-                 * THEN
-                 * 늦게 설치한 구독 없음, 모든 단계의 페이지 오류 없음
-                 */
                 expect(await readActiveListeners(start), "an unmount before the first frame must not leave late listeners").toStrictEqual([]);
                 expect(errors).toStrictEqual([]);
             });

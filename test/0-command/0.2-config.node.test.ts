@@ -10,10 +10,7 @@ import {describe, expect} from "vitest";
 describe("사이트 설정", () => {
     describe("설정 파일", () => {
         test("[CFG-001] TypeScript 설정의 제목과 탐색 순서가 빌드에 반영된다", async ({root}) => {
-            /**
-             * GIVEN
-             * 이름순과 반대인 탐색 설정, 두 묶음의 문서
-             */
+            // GIVEN 이름순과 반대인 탐색 설정, 두 묶음의 문서
             await mkdir(join(root, "content/public"), {recursive: true});
             await writeFile(join(root, "content/README.md"), "# Home\n");
 
@@ -25,18 +22,12 @@ describe("사이트 설정", () => {
             await writeFile(join(root, "content/public/alpha.md"), "---\nname: Alpha\nlabel: Alpha\ngroup: A group\n---\n\nFirst alphabetically.\n");
             await writeFile(join(root, "content/public/zeta.md"), "---\nname: Zeta\nlabel: Zeta\ngroup: Z group\n---\n\nFirst by configuration.\n");
 
-            /**
-             * WHEN
-             * 실제 CLI의 정적 사이트 빌드
-             */
+            // WHEN 실제 CLI의 정적 사이트 빌드
             execFileSync(process.execPath, ["dist/cli.js", "build", root]);
 
             const result = await readFile(join(root, "content/dist/index.html"), "utf8");
 
-            /**
-             * THEN
-             * 사이트 이름과 지정한 묶음 순서 적용
-             */
+            // THEN 사이트 이름과 지정한 묶음 순서 적용
             expect(result).toContain("Typed site");
             expect([...result.matchAll(/<section\b[^>]*aria-label="([^"]+)"/g)].map((match) => match[1])).toStrictEqual(["Z group", "A group"]);
         });

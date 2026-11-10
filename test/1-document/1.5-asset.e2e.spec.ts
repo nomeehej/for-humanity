@@ -23,16 +23,10 @@ test.describe("문서 자원", () => {
             test.use(layout.options);
 
             test(`[${layout.caseId}] SVG 그림은 적은 크기를 유지하고 본문보다 넓으면 가로로 스크롤한다`, {tag: "@mid"}, async ({page}) => {
-                /**
-                 * GIVEN
-                 * 문단에 혼자 있는 너비 560 SVG의 Images 문서
-                 */
+                // GIVEN 문단에 혼자 있는 너비 560 SVG의 Images 문서
                 await page.goto("/images/");
 
-                /**
-                 * WHEN
-                 * 그림과 그림 상자의 폭 조회
-                 */
+                // WHEN 그림과 그림 상자의 폭 조회
                 const figure = page.locator(".wg_article__figure--svg").filter({has: page.getByRole("img", {name: "Selected state in a fictional book list", exact: true})});
 
                 await expect(figure).toBeVisible();
@@ -42,10 +36,7 @@ test.describe("문서 자원", () => {
                     scroll: element.scrollWidth > element.clientWidth,
                 }));
 
-                /**
-                 * THEN
-                 * SVG에 적은 560px 그림, 휴대폰의 가로 스크롤과 데스크톱의 스크롤 없음, 키보드 포커스 가능한 그림 상자
-                 */
+                // THEN SVG에 적은 560px 그림, 휴대폰의 가로 스크롤과 데스크톱의 스크롤 없음, 키보드 포커스 가능한 그림 상자
                 expect(size).toStrictEqual({image: 560, scroll: layout.scroll});
                 await expect(figure).toHaveAttribute("tabindex", "0");
             });

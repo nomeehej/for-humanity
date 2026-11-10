@@ -10,10 +10,7 @@ import {siteConfigSchema} from "@/type/site-config";
 
 describe("하위 경로 배포", () => {
     test.for(["/agent-conventions/", "/projects/uoo/"] as const)("[BASE-001] %s의 빌드, 미리보기, 개발 서버가 같은 주소를 제공한다", async (basePath, {root}) => {
-        /**
-         * GIVEN
-         * 중첩 문서, 원시 HTML, 이미지, Mermaid와 내부 문서
-         */
+        // GIVEN 중첩 문서, 원시 HTML, 이미지, Mermaid와 내부 문서
         await mkdir(join(root, "content/public/guide"), {recursive: true});
         await mkdir(join(root, "content/private"), {recursive: true});
         await mkdir(join(root, "content/asset"));
@@ -48,19 +45,13 @@ describe("하위 경로 배포", () => {
             ].join("\n"),
         );
 
-        /**
-         * WHEN
-         * 실제 CLI 빌드와 하위 경로 미리보기
-         */
+        // WHEN 실제 CLI 빌드와 하위 경로 미리보기
         execFileSync(process.execPath, ["dist/cli.js", "build", root]);
         const home = await readFile(join(root, "content/dist/index.html"), "utf8");
         const page = await readFile(join(root, "content/dist/guide/nested/index.html"), "utf8");
         const sitemap = await readFile(join(root, "content/dist/sitemap.xml"), "utf8");
 
-        /**
-         * THEN
-         * 출력 폴더는 유지, 사이트 안의 모든 URL에 배포 경로 적용
-         */
+        // THEN 출력 폴더는 유지, 사이트 안의 모든 URL에 배포 경로 적용
         expect(home).toContain(`href="${basePath}guide/nested/"`);
         expect(page).toContain(`href="${basePath}"`);
         expect(page).toContain(`href="${basePath}guide/nested/?view=1#target"`);

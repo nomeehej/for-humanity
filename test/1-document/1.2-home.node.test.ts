@@ -16,10 +16,7 @@ import {siteConfigSchema} from "@/type/site-config";
 describe("홈", () => {
     describe("README 홈", () => {
         test("[HOM-001] 루트 README는 홈으로 렌더하고 중첩 문서의 홈 링크를 해석한다", async ({scope}) => {
-            /**
-             * GIVEN
-             * 루트 README와 홈으로 연결하는 중첩 문서
-             */
+            // GIVEN 루트 README와 홈으로 연결하는 중첩 문서
             const site = siteConfigSchema.parse({});
             const processor = toProcessor({site, scope});
 
@@ -33,10 +30,7 @@ describe("홈", () => {
                 writeFile(join(scope.publicRoot, "guide/setup.md"), "---\nname: Setup\nlabel: Setup\ngroup: Guide\n---\n\n[Home](../../readme.md#start)\n\n## Details\n"),
             ]);
 
-            /**
-             * WHEN
-             * 홈 렌더와 /readme/ 요청
-             */
+            // WHEN 홈 렌더와 /readme/ 요청
             const [docs, home] = await Promise.all([readDocs({scope, processor}), readHome({dir: scope.root, scope, processor})]);
 
             const app = toPageApp({
@@ -49,10 +43,7 @@ describe("홈", () => {
             const html = await response.text();
             const readme = await app.request("/readme/");
 
-            /**
-             * THEN
-             * README 본문의 홈, 중첩 문서의 홈 링크, /readme/의 404 응답
-             */
+            // THEN README 본문의 홈, 중첩 문서의 홈 링크, /readme/의 404 응답
             expect(response.status).toBe(200);
             expect(docs.map((doc) => doc.id)).toStrictEqual(["guide/setup"]);
             expect(html).toMatch(/<h1[^>]*><span[^>]*>My library<\/span><\/h1>/);
@@ -70,16 +61,10 @@ describe("홈", () => {
         });
 
         test("[HOM-002] README가 없으면 홈페이지 작성 안내를 표시한다", async ({scope}) => {
-            /**
-             * GIVEN
-             * README가 없는 문서 루트
-             */
+            // GIVEN README가 없는 문서 루트
             const site = siteConfigSchema.parse({});
 
-            /**
-             * WHEN
-             * 홈 렌더
-             */
+            // WHEN 홈 렌더
             const home = await readHome({dir: scope.root, scope, processor: toProcessor({site, scope})});
 
             const app = toPageApp({
@@ -90,37 +75,25 @@ describe("홈", () => {
 
             const html = await (await app.request("/")).text();
 
-            /**
-             * THEN
-             * 홈 작성 안내
-             */
+            // THEN 홈 작성 안내
             expect(home).toBe(undefined);
             expect(html).toMatch(/문서 폴더에 README\.md를 추가/);
             expect(html).not.toMatch(/pg_home__card|>Overview<|>Documents</);
         });
 
         test("[HOM-003] 번역 폴더의 README는 /<code>/ 홈으로 렌더하고 언어별 lang과 설명을 쓴다", async ({scope}) => {
-            /**
-             * GIVEN
-             * 영어 홈과 한국어 README, 언어별 설명, README가 없는 세 번째 언어
-             */
+            // GIVEN 영어 홈과 한국어 README, 언어별 설명, README가 없는 세 번째 언어
             const site = siteConfigSchema.parse({lang: "en", description: "English notes", locales: {ko: {description: "한국어 안내"}, ja: {}}});
 
             await mkdir(join(scope.root, "ko"));
 
             await Promise.all([writeFile(join(scope.root, "README.md"), "# Home\n\nWelcome.\n"), writeFile(join(scope.root, "ko/README.md"), "# 홈\n\n[English](../README.md)\n")]);
 
-            /**
-             * WHEN
-             * 사이트 로드와 세 홈 요청
-             */
+            // WHEN 사이트 로드와 세 홈 요청
             const siteApp = await loadSite({root: scope.root, kitRoot: resolve("."), site});
             const [home, korean, japanese] = await Promise.all(["/", "/ko/", "/ja/"].map(async (path) => (await siteApp.app.request(path)).text()));
 
-            /**
-             * THEN
-             * 언어별 lang과 설명, 번역 홈의 영어 홈 링크와 현재 페이지인 사이트 이름, README 없는 언어의 작성 안내
-             */
+            // THEN 언어별 lang과 설명, 번역 홈의 영어 홈 링크와 현재 페이지인 사이트 이름, README 없는 언어의 작성 안내
             expect(home).toContain('<html lang="en"');
             expect(home).toContain('name="description" content="English notes"');
             expect(home).toMatch(/Welcome\./);

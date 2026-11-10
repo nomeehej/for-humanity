@@ -16,10 +16,7 @@ test.use({
 test.describe("표 정렬", () => {
     test.describe("수명", () => {
         test("[TBL-006] 위젯을 해제하면 정렬한 표가 쓴 순서와 머리글 글자로 돌아오고 다시 마운트하면 버튼이 붙는다", {tag: "@high"}, async ({page}) => {
-            /**
-             * GIVEN
-             * 갤러리에서 마운트하고 한 열을 정렬한 표
-             */
+            // GIVEN 갤러리에서 마운트하고 한 열을 정렬한 표
             await page.goto("/lifecycle/");
             await page.evaluate(() => window.tableSortFixture.mount());
 
@@ -29,16 +26,10 @@ test.describe("표 정렬", () => {
             await table.getByRole("button", {name: "Name"}).click();
             await expect(names).toHaveText(["Apple", "Apple", "Banana", "Cherry"]);
 
-            /**
-             * WHEN
-             * 위젯 해제
-             */
+            // WHEN 위젯 해제
             await page.evaluate(() => window.tableSortFixture.unmount());
 
-            /**
-             * THEN
-             * 버튼, 화살표, 정렬 상태 없이 쓴 순서. 다시 마운트하면 버튼
-             */
+            // THEN 버튼, 화살표, 정렬 상태 없이 쓴 순서, 재마운트 뒤 버튼 추가
             await expect(table.getByRole("button")).toHaveCount(0);
             await expect(table.locator(".wg_tableSort__arrow")).toHaveCount(0);
             await expect(table.locator("[aria-sort]")).toHaveCount(0);

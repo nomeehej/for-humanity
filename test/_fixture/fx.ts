@@ -10,8 +10,8 @@ import {toPreviewConfig} from "@/entry/preview/to-preview-config";
 // ----------------------------------------------------------------------------------------
 // 네 종류의 그림과 그림 아래 제목을 둔 영어 문서
 //
-// 단계: data-on 세 형식, data-hl, data-pos, 캡션 셋
-// 탭: data-labels와 data-steps
+// 단계 그림의 data-on 세 형식, data-hl, data-pos, 캡션 셋
+// 탭 그림의 data-labels와 data-steps
 // 작성자 스크립트가 fx:step을 받고 fx:goto를 보내는 단계 그림
 // 슬라이더, 실행 상자, custom의 data-icon 버튼
 // hash 진입을 볼 그림 아래 제목과 화면보다 긴 본문

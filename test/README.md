@@ -139,9 +139,9 @@ grep -rhoE '\[[A-Z]{3}-[0-9]{3}\]|caseId: "[A-Z]{3}-[0-9]{3}"' test --include='*
 ## describe 중첩
 
 ```ts
-/**
- * 문서 수집, 주소, 부모 관계(src/app/_function/read-docs.ts) 검증
- */
+// ----------------------------------------------------------------------------------------
+// 문서 수집, 주소, 부모 관계(src/app/_function/read-docs.ts) 검증
+// ----------------------------------------------------------------------------------------
 describe("문서", () => {            // 바깥: 영역 이름
     describe("부모 문서", () => {   // 안쪽: 흐름이나 상태 묶음
         test("[DOC-009] 부모와 자식의 전체 묶음 경로가 다르면 거부한다", …);
@@ -155,62 +155,39 @@ describe("문서", () => {            // 바깥: 영역 이름
 
 ## GIVEN / WHEN / THEN
 
-테스트 하나는 시나리오 하나입니다. 모든 테스트에 GIVEN, WHEN, THEN 블록 주석을 이 순서로 둡니다. 주석 둘째 줄에는 그 구간의 내용을 한글 명사구 한 줄로 적습니다.
+테스트 하나는 시나리오 하나입니다. node, integration, e2e 테스트는 `// GIVEN 설명`처럼 라벨과 설명을 한 줄에 쓴 주석으로 구간을 나눕니다. 설명에는 그 구간의 내용을 한글 명사구로 적습니다.
+unit 테스트에는 구간 주석을 달지 않습니다. 빈 줄로 준비, 실행, 단언을 나눕니다.
 
 ```ts
 test("[MRM-010] 접힌 다이어그램을 열면 모듈을 요청하고 표시한다", {tag: "@high"}, async ({page}) => {
-    /**
-     * GIVEN
-     * 접힌 다이어그램만 있는 문서
-     */
+    // GIVEN 접힌 다이어그램만 있는 문서
     await page.goto("/hidden/");
 
-    /**
-     * WHEN
-     * 접힌 다이어그램 공개
-     */
+    // WHEN 접힌 다이어그램 공개
     await page.getByText("Hidden diagram", {exact: true}).click();
 
-    /**
-     * THEN
-     * 공개한 다이어그램 표시
-     */
+    // THEN 공개한 다이어그램 표시
     await expect(page.locator('[data-mermaid-status="rendered"]')).toHaveCount(1);
 });
 ```
 
-- GIVEN에는 시작 상태를 둡니다. 그려진 화면만 확인하는 테스트도 출발점인 fixture나 페이지를 GIVEN에, 그 화면을 여는 동작이나 조회를 WHEN에 둡니다. fixture, `beforeEach`, 반복 시나리오의 자료, 앞 step이 상태를 이미 만들었으면 GIVEN 블록에는 코드 없이 그 상태를 적은 주석만 둡니다.
+- GIVEN에는 입력, 준비한 파일과 설정, 준비 완료 대기 같은 사전조건을 둡니다. 준비할 것이 없으면 GIVEN 없이 WHEN과 THEN만 씁니다. fixture, `beforeEach`, 반복 시나리오의 자료가 만든 조건은 코드 없이 GIVEN 한 줄에 적을 수 있습니다.
+- WHEN에는 검증할 동작을 둡니다. `page.goto`는 이동이 검증 대상이면 WHEN, 다른 동작의 준비이면 GIVEN입니다. 이미 그려진 상태만 확인하는 테스트는 GIVEN과 THEN만 둘 수 있습니다.
 - THEN에는 `expect`만 둡니다. 동작은 WHEN에 둡니다. 확인한 뒤에 동작이 더 필요한 시나리오는 그 동작부터 다음 step으로 나눕니다.
 - 상태를 기다리거나 전제를 확인하는 `expect`는 GIVEN이나 WHEN에 둘 수 있습니다.
-- 함수 검사는 WHEN에서 결과를 상수에 담고 THEN에서 `expect`로 비교합니다. 값은 `toBe`, 구조는 `toStrictEqual`로 비교합니다.
-- 시나리오가 둘 이상이면 테스트를 나누거나 시나리오마다 `test.step("…")`으로 감쌉니다. step으로 나눈 테스트는 여러 step이 함께 쓰는 준비만 본문의 GIVEN에 둡니다. 동작과 확인은 step마다 GIVEN, WHEN, THEN으로 나눠 둡니다. step 이름에는 그 시나리오를 한 문장으로 적습니다.
+- 함수 검사는 실행 줄에서 결과를 상수에 담고 빈 줄 뒤에서 `expect`로 비교합니다. 값은 `toBe`, 구조는 `toStrictEqual`로 비교합니다.
+- 시나리오가 둘 이상이면 테스트를 나누거나 시나리오마다 `test.step("…")`으로 감쌉니다. step으로 나눈 테스트는 여러 step이 함께 쓰는 준비만 본문의 GIVEN에 둡니다. step 이름이 그 시나리오의 문장이므로 step 안에는 GIVEN, WHEN, THEN을 붙이지 않습니다. 동작과 확인은 빈 줄로 나눕니다.
 
 ```ts
 test("[DEV-009] CSS 파일 추가와 삭제는 HTML의 스타일 목록에 반영된다", {tag: "@high"}, async ({page, devSite}) => {
-    /**
-     * GIVEN
-     * 소스 스타일 목록을 사용하는 개발 페이지
-     */
+    // GIVEN 소스 스타일 목록을 사용하는 개발 페이지
     const path = join(devSite.kitRoot, "src/component/widget/shell/_wg-shell-test.css");
 
     await page.goto("/");
 
     await test.step("새 CSS 파일은 등록 설정 없이 적용한다", async () => {
-        /**
-         * GIVEN
-         * 테두리 스타일이 없는 본문
-         */
-
-        /**
-         * WHEN
-         * 기존 소유자 폴더에 스타일 파일 추가
-         */
         await writeFile(path, ".wg_shell__main { outline: 2px solid rgb(4, 5, 6); }\n");
 
-        /**
-         * THEN
-         * 새 HTML의 스타일 목록과 실제 렌더에 파일 반영
-         */
         await expect(page.getByRole("main")).toHaveCSS("outline-style", "solid");
     });
 

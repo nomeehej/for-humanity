@@ -35,7 +35,9 @@ interface DevFixture {
 }
 
 // ----------------------------------------------------------------------------------------
-// 케이스별 문서와 서버 격리, 소스 검사는 저장소 복사본 사용
+// 케이스별 문서와 서버를 격리하는 개발 서버 fixture
+//
+// 소스 검사는 저장소 복사본 사용
 // ----------------------------------------------------------------------------------------
 export const test = base.extend<DevFixture>({
     source: [false, {option: true}],
@@ -44,7 +46,8 @@ export const test = base.extend<DevFixture>({
         const directory = await realpath(await mkdtemp(join(tmpdir(), "for-humanity-dev-")));
         const kitRoot = source ? join(directory, "kit") : resolve(".");
 
-        // 저장소 개발과 같은 패키지 내부 문서 루트, Vite 허용 영역 안에서도 원본 차단 검증
+        // 저장소 개발과 같은 패키지 내부 문서 루트
+        // Vite 허용 영역 안에서도 원본 차단 검증
         const root = source ? join(kitRoot, "docs") : join(directory, "docs");
 
         try {
@@ -81,7 +84,7 @@ export const test = base.extend<DevFixture>({
                 await server.listen();
                 await use({root, kitRoot, server, errors});
             } finally {
-                // 화면의 준비 오류 뒤에 숨은 원인을 실패 보고서에 보존
+                // 실패 보고서에 원인 보존, 화면의 준비 오류로는 확인 불가
                 if (testInfo.status !== testInfo.expectedStatus && errors.length > 0) {
                     await testInfo.attach("dev-server-errors", {body: errors.join("\n"), contentType: "text/plain"});
                 }
